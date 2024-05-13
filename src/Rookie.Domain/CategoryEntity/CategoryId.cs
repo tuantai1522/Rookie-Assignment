@@ -1,9 +1,35 @@
-namespace Rookie.Domain.CategoryEntity;
-public partial struct CategoryId : IEquatable<CategoryId>
-{
-    public Guid Value { get; set; }
-    public CategoryId(Guid value) => this.Value = value;
+using CSharpFunctionalExtensions;
 
-    public bool Equals(CategoryId other) => Value.Equals(other.Value);
+namespace Rookie.Domain.CategoryEntity;
+public sealed class CategoryId : ValueObject
+{
+
+  public Guid Value { get; set; }
+
+  public CategoryId()
+  {
+
+  }
+  public CategoryId(Guid value)
+  {
+    Value = value;
+  }
+  public CategoryId(string value)
+  {
+    Value = new Guid(value);
+  }
+
+  public static CategoryId Create(Guid value)
+  {
+    return new CategoryId(value);
+  }
+  public static CategoryId CreateUnique()
+  {
+    return new CategoryId(Guid.NewGuid());
+  }
+  protected override IEnumerable<IComparable> GetEqualityComponents()
+  {
+    yield return Value;
+  }
 
 }

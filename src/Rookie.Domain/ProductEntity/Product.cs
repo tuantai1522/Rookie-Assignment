@@ -5,7 +5,7 @@ namespace Rookie.Domain.ProductEntity
 {
     public class Product : BaseEntity
     {
-        public ProductId Id { get; set; } = new(Guid.NewGuid());
+        public ProductId Id { get; set; } = new ProductId(Guid.NewGuid());
         public string? ProductName { get; set; }
         public string? Description { get; set; }
         public string? Images { get; set; }

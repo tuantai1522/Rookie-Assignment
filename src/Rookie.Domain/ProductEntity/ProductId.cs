@@ -1,10 +1,16 @@
+using CSharpFunctionalExtensions;
+
 namespace Rookie.Domain.ProductEntity;
-public partial struct ProductId : IEquatable<ProductId>
+
+public sealed class ProductId : ValueObject
 {
-  public Guid Value { get; set; }
-
-  public ProductId(Guid value) => this.Value = value;
-
-  public bool Equals(ProductId other) => Value.Equals(other.Value);
-
+  public Guid Value { get; }
+  public ProductId(Guid value)
+  {
+    Value = value;
+  }
+  protected override IEnumerable<IComparable> GetEqualityComponents()
+  {
+    yield return Value;
+  }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rookie.Persistence;
 
@@ -11,9 +12,11 @@ using Rookie.Persistence;
 namespace Rookie.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240513141814_Fix-Conversion-Strongly-Typed-Id")]
+    partial class FixConversionStronglyTypedId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +33,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 56, 51, 595, DateTimeKind.Utc).AddTicks(9075));
+                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 18, 13, 692, DateTimeKind.Utc).AddTicks(8089));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -41,7 +44,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 56, 51, 596, DateTimeKind.Utc).AddTicks(214));
+                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 18, 13, 692, DateTimeKind.Utc).AddTicks(9579));
 
                     b.HasKey("Id");
 
@@ -50,7 +53,7 @@ namespace Rookie.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a6274d63-8a81-4876-9ab8-65144be86dbb"),
+                            Id = new Guid("1c8db438-a94d-4b6e-8e5c-286d3d924b78"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Shirts for men and women",
                             Name = "Shirts",
@@ -58,7 +61,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d61f3d42-07f0-47ce-977e-d48f5e9bacc9"),
+                            Id = new Guid("f5947809-4f8e-4339-bb67-7ecb11aa31bd"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Pants for adults",
                             Name = "Pants",
@@ -66,7 +69,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("fa8dfc3c-c071-4652-bcdd-70b669a64b28"),
+                            Id = new Guid("3f5346cc-f801-4a10-afb4-315345ea4eec"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Shoes all sizes",
                             Name = "Shoes",
@@ -74,7 +77,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1cf7d4a0-2c4c-417b-a98e-14f0b8dec7b6"),
+                            Id = new Guid("9e41c00b-d0e3-43f1-b75c-f91ee95b54af"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Accessories for women",
                             Name = "Accessories",
@@ -93,7 +96,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 56, 51, 598, DateTimeKind.Utc).AddTicks(1654));
+                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 18, 13, 695, DateTimeKind.Utc).AddTicks(6972));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -110,7 +113,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 56, 51, 598, DateTimeKind.Utc).AddTicks(2741));
+                        .HasDefaultValue(new DateTime(2024, 5, 13, 14, 18, 13, 695, DateTimeKind.Utc).AddTicks(8660));
 
                     b.HasKey("Id");
 

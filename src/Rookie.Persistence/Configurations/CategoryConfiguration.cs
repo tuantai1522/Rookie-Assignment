@@ -11,15 +11,14 @@ namespace Rookie.Persistence.Configurations
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Id)
-                .HasConversion(
-                    id => id.Value,
-                    value => new(value)
-            );
+            builder.Property(x => x.Id)
+                    .ValueGeneratedNever()
+                    .HasConversion(x => x.Value, x => CategoryId.Create(x));
 
             builder.HasData(GetSampleData());
+
         }
-        private static IEnumerable<Category> GetSampleData()
+        public static IEnumerable<Category> GetSampleData()
         {
             yield return new Category()
             {

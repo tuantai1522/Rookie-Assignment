@@ -1,4 +1,3 @@
-
 using Rookie.Domain.Common;
 
 namespace Rookie.Domain.ProductEntity
