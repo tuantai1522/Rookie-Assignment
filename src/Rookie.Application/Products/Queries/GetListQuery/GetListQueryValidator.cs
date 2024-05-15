@@ -6,9 +6,6 @@ namespace Rookie.Application.Products.Queries.GetListQuery
     {
         public GetListQueryValidator()
         {
-            RuleFor(x => x.ProductParams!.OrderBy)
-                .NotEmpty();
-
             RuleFor(x => x.ProductParams!.PageNumber)
                 .GreaterThan(0);
 

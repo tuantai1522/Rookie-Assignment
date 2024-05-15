@@ -15,30 +15,55 @@ namespace Rookie.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductParams ProductParams)
         {
-            return Ok(await Mediator.Send(new GetListQuery { ProductParams = ProductParams }));
+            var result = await Mediator.Send(new GetListQuery { ProductParams = ProductParams });
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(Guid id)
         {
-            return Ok(await Mediator.Send(new GetByIdQuery { ProductId = new ProductId(id) }));
+            var result = await Mediator.Send(new GetByIdQuery { ProductId = new ProductId(id) });
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {
-            return Ok(await Mediator.Send(command));
+            var result = await Mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteProductById(Guid id)
         {
-            return Ok(await Mediator.Send(new DeleteProductCommand { ProductId = new ProductId(id) }));
+            var result = await Mediator.Send(new DeleteProductCommand { ProductId = new ProductId(id) });
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateProductById(UpdateProductCommand command)
         {
-            return Ok(await Mediator.Send(command));
+            var result = await Mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
     }
 }

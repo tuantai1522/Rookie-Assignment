@@ -1,32 +1,43 @@
-using AutoMapper;
 using MediatR;
 using Rookie.Domain.CategoryEntity;
+using Rookie.Domain.Common;
+using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
+using Result = Rookie.Domain.Common.Result;
 
 namespace Rookie.Application.Products.Commands.CreateProductCommand
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ProductId>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<ProductId>>
     {
         private readonly IProductRepository _productRepository;
-        public CreateProductCommandHandler(IProductRepository productRepository)
+        private readonly ICategoryRepository _categoryRepository;
+        public CreateProductCommandHandler(IProductRepository productRepository, ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
-        public async Task<ProductId> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Result<ProductId>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateProductCommandValidator();
 
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
+            //data is not valid
             if (validationResult.IsValid == false)
-                throw new Exception();
+                return Result.Failure<ProductId>(ProductErrors.CreateProductInvalidData);
+
+            //check whether this category exists or not
+            var category = await _categoryRepository.GetOne(x => x.Id.Equals(request.CategoryId));
+
+            if (category == null)
+                return Result.Failure<ProductId>(ProductErrors.NotFindCategory);
 
             var NewProduct = new Product();
             NewProduct.ProductName = request.ProductName;
             NewProduct.Description = request.Description;
             NewProduct.Price = request.Price;
             NewProduct.Images = request.Images;
-            NewProduct.CategoryId = new CategoryId(request.CategoryId);
+            NewProduct.CategoryId = request.CategoryId;
 
             _productRepository.Add(NewProduct);
 

@@ -63,9 +63,7 @@ namespace Rookie.Persistence.Repositories
                 prod.Price = entity.Price;
                 prod.CategoryId = entity.CategoryId;
                 prod.Images = entity.Images;
-
                 prod.UpdatedDate = DateTime.Now;
-
 
                 await this._context.SaveChangesAsync();
 

@@ -1,11 +1,13 @@
 using AutoMapper;
 using MediatR;
 using Rookie.Application.Products.ViewModels;
+using Rookie.Domain.Common;
+using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Products.Queries.GetListQuery
 {
-    public class GetListQueryHandler : IRequestHandler<GetListQuery, IEnumerable<ProductVm>>
+    public class GetListQueryHandler : IRequestHandler<GetListQuery, Result<IEnumerable<ProductVm>>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -16,12 +18,21 @@ namespace Rookie.Application.Products.Queries.GetListQuery
             this._mapper = mapper;
         }
 
-        public async Task<IEnumerable<ProductVm>> Handle(GetListQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<ProductVm>>> Handle(GetListQuery request, CancellationToken cancellationToken)
         {
+
+            var validator = new GetListQueryValidator();
+
+            var validationResult = await validator.ValidateAsync(request, cancellationToken);
+
+            if (validationResult.IsValid == false)
+                return Result.Failure<IEnumerable<ProductVm>>(ProductErrors.QueryProductInvalidData);
+
             var products = await _productRepository.GetAll(request.ProductParams, includeProperties: "Category");
 
-            // map data from Course to CourseVm wich is defined in Mappers
-            return _mapper.Map<IEnumerable<Product>, IEnumerable<ProductVm>>(products);
+            var productVms = _mapper.Map<IEnumerable<ProductVm>>(products);
+
+            return Result.Success(productVms);
         }
 
 
