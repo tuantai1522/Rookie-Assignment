@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Rookie.Application.Categories.Mappers;
+using Rookie.Application.Products.Mappers;
 
 namespace Rookie.Application
 {
@@ -15,6 +16,7 @@ namespace Rookie.Application
                 var config = new MapperConfiguration(cfg =>
                 {
                     cfg.AddProfile<CategoryProfile>();
+                    cfg.AddProfile<ProductProfile>();
                 });
                 return config.CreateMapper();
             });

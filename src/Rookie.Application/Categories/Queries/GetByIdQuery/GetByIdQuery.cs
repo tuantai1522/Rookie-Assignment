@@ -6,7 +6,7 @@ namespace Rookie.Application.Categories.Queries.GetByIdQuery
 {
     public class GetByIdQuery : IRequest<CategoryVm>
     {
-        public CategoryId? Id { get; set; }
+        public CategoryId Id { get; set; }
     }
 
 }

@@ -19,6 +19,7 @@ namespace Rookie.Persistence
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             base.OnModelCreating(builder);
+
         }
     }
 }

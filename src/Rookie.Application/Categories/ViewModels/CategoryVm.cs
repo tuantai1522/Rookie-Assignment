@@ -1,7 +1,10 @@
+using Rookie.Domain.CategoryEntity;
+
 namespace Rookie.Application.Categories.ViewModels
 {
     public sealed record CategoryVm(
-        string? Name,
-        string? Description
+        CategoryId Id,
+        string Name,
+        string Description
     );
 }

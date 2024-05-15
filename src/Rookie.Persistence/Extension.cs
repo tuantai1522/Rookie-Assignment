@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rookie.Application.Interface;
+using Rookie.Domain.CategoryEntity;
+using Rookie.Domain.ProductEntity;
+using Rookie.Persistence.Repositories;
 
 
 namespace Rookie.Persistence
@@ -18,6 +21,8 @@ namespace Rookie.Persistence
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
         }
     }
 }

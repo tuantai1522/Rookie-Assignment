@@ -9,6 +9,7 @@ namespace Rookie.Application.Categories.Mappers
         public CategoryProfile()
         {
             CreateMap<Category, CategoryVm>()
+                .ForMember(des => des.Id, act => act.MapFrom(src => src.Id.Value))
                 .ForMember(des => des.Name, act => act.MapFrom(src => src.Name))
                 .ForMember(des => des.Description, act => act.MapFrom(src => src.Description));
         }

@@ -12,7 +12,6 @@ namespace Rookie.Persistence.Configurations
             builder.HasKey(c => c.Id);
 
             builder.Property(x => x.Id)
-                    .ValueGeneratedNever()
                     .HasConversion(x => x.Value, x => CategoryId.Create(x));
 
             builder.HasData(GetSampleData());
@@ -29,19 +28,16 @@ namespace Rookie.Persistence.Configurations
             {
                 Name = "Pants",
                 Description = "Pants for adults"
-
             };
             yield return new Category()
             {
                 Name = "Shoes",
                 Description = "Shoes all sizes"
-
             };
             yield return new Category()
             {
                 Name = "Accessories",
                 Description = "Accessories for women"
-
             };
         }
     }

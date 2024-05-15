@@ -5,6 +5,8 @@ using Rookie.Domain.CategoryEntity;
 
 namespace Rookie.WebApi.Controllers
 {
+    [Route("api/category")]
+    [ApiController]
     public class CategoryController : BaseApiController
     {
         [HttpGet]
