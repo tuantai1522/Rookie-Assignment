@@ -7,8 +7,11 @@ namespace Rookie.Application.Categories.Queries.GetByIdQuery
         public GetByIdQueryValidator()
         {
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("Please provide id to find category")
+                .NotEmpty()
                 .NotNull();
+
+            RuleFor(x => x.Id)
+                .Must(categoryId => Guid.TryParse(categoryId, out _));
         }
     }
 }

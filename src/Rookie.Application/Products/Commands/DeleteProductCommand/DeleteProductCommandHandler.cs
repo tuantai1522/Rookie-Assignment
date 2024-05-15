@@ -19,9 +19,9 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (validationResult.IsValid == false)
-                return Result.Failure<int>(ProductErrors.NotProvidingId);
+                return Result.Failure<int>(ProductErrors.DeleteProductInvalidData);
 
-            var ProductDeleted = await _productRepository.GetOne(x => x.Id.Equals(request.ProductId));
+            var ProductDeleted = await _productRepository.GetOne(x => x.Id.Equals(new ProductId(request.ProductId)));
 
             if (ProductDeleted == null)
                 return Result.Failure<int>(ProductErrors.NotFindProduct);

@@ -32,18 +32,18 @@ namespace Rookie.Application.Products.Commands.UpdateProductCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<ProductVm>(ProductErrors.UpdateProductInvalidData);
 
-            var category = await _categoryRepository.GetOne(x => x.Id.Equals(request.CategoryId));
+            var category = await _categoryRepository.GetOne(x => x.Id.Equals(new CategoryId(request.CategoryId)));
             if (category == null)
                 return Result.Failure<ProductVm>(ProductErrors.NotFindCategory);
 
             var ProductUpdated = new Product
             {
-                Id = request.Id,
+                Id = new ProductId(request.Id),
                 ProductName = request.ProductName,
                 Description = request.Description,
                 Price = request.Price,
                 Images = request.Images,
-                CategoryId = request.CategoryId,
+                CategoryId = new CategoryId(request.CategoryId),
             };
 
             var temp = await _productRepository.Update(ProductUpdated);

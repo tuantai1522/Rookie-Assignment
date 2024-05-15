@@ -7,26 +7,30 @@ namespace Rookie.Application.Products.Commands.CreateProductCommand
         public CreateProductCommandValidator()
         {
             RuleFor(x => x.ProductName)
-                .NotEmpty().WithMessage("Please provide product name of this product")
+                .NotEmpty()
                 .NotNull();
 
             RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("Please provide description of this product")
+                .NotEmpty()
                 .NotNull();
 
-
             RuleFor(x => x.Images)
-                .NotEmpty().WithMessage("Please provide link image of this product")
+                .NotEmpty()
                 .NotNull();
 
             RuleFor(x => x.CategoryId)
-                .NotEmpty().WithMessage("Please provide type of this product")
+                .NotEmpty()
                 .NotNull();
 
             RuleFor(x => x.Price)
-                .NotEmpty().WithMessage("Please provide price of this product")
+                .NotEmpty()
                 .NotNull()
-                .GreaterThan(0).WithMessage("Price must be greater than 0");
+                .GreaterThan(0);
+
+
+            RuleFor(x => x.CategoryId)
+                .Must(CategoryId => Guid.TryParse(CategoryId, out _));
+
         }
 
     }

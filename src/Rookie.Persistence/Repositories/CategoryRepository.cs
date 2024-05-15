@@ -55,18 +55,21 @@ namespace Rookie.Persistence.Repositories
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task Update(Category entity)
+        public async Task<bool> Update(Category entity)
         {
-            Category category = await this._context.Categories.FindAsync(entity.Id);
-            if (category != null)
+            Category cate = await this._context.Categories.Where(x => x.Id.Equals(entity.Id)).FirstOrDefaultAsync();
+            if (cate != null)
             {
-                category.Name = entity.Name;
-                category.Description = entity.Description;
-                category.UpdatedDate = DateTime.Now;
+                cate.Name = entity.Name;
+                cate.Description = entity.Description;
+                cate.UpdatedDate = DateTime.Now;
 
-                await _context.SaveChangesAsync();
+                await this._context.SaveChangesAsync();
+
+                return true;
             }
 
+            return false;
         }
     }
 }

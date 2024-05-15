@@ -25,9 +25,9 @@ namespace Rookie.Application.Products.Queries.GetByIdQuery
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (validationResult.IsValid == false)
-                return Result.Failure<ProductVm>(ProductErrors.NotProvidingId);
+                return Result.Failure<ProductVm>(ProductErrors.QueryProductInvalidData);
 
-            var product = await _productCategory.GetOne(x => x.Id.Equals(request.ProductId), includeProperties: "Category");
+            var product = await _productCategory.GetOne(x => x.Id.Equals(new ProductId(request.ProductId)), includeProperties: "Category");
 
             if (product != null)
                 // map data from Course to CourseVm wich is defined in Mappers

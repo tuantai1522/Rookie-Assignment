@@ -2,11 +2,13 @@ using AutoMapper;
 using MediatR;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Domain.CategoryEntity;
+using Rookie.Domain.Common;
+using Rookie.Domain.DomainError;
 
 namespace Rookie.Application.Categories.Queries.GetByIdQuery
 {
     //to define fields or properperties needed to handle this GetByIdQuery
-    public class GetByIdQueryHandler : IRequestHandler<GetByIdQuery, CategoryVm>
+    public class GetByIdQueryHandler : IRequestHandler<GetByIdQuery, Result<CategoryVm>>
     {
         private readonly ICategoryRepository _categoryRepository;
 
@@ -16,20 +18,22 @@ namespace Rookie.Application.Categories.Queries.GetByIdQuery
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
-        public async Task<CategoryVm> Handle(GetByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<CategoryVm>> Handle(GetByIdQuery request, CancellationToken cancellationToken)
         {
             var validator = new GetByIdQueryValidator();
 
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (validationResult.IsValid == false)
-                throw new Exception("Error when fetching data");
+                return Result.Failure<CategoryVm>(CategoryErrors.GetCategoryByIdInvalidData);
 
-            var category = await _categoryRepository.GetOne(x => x.Id.Equals(request.Id), includeProperties: "Products");
+            var category = await _categoryRepository.GetOne(x => x.Id.Equals(new CategoryId(request.Id)), includeProperties: "Products");
 
-            // map data from Course to CourseVm wich is defined in Mappers
-            return _mapper.Map<Category, CategoryVm>(category);
-
+            if (category != null)
+                // map data from Course to CourseVm wich is defined in Mappers
+                return _mapper.Map<Category, CategoryVm>(category);
+            else
+                return Result.Failure<CategoryVm>(CategoryErrors.NotFindCategory);
         }
     }
 }

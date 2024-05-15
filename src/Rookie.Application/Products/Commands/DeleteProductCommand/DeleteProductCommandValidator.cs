@@ -7,8 +7,11 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
         public DeleteProductCommandValidator()
         {
             RuleFor(c => c.ProductId)
-                .NotEmpty().WithMessage("Please provide id of product to delete")
+                .NotEmpty()
                 .NotNull();
+
+            RuleFor(x => x.ProductId)
+                .Must(ProductId => Guid.TryParse(ProductId, out _));
         }
     }
 }

@@ -7,8 +7,12 @@ namespace Rookie.Application.Products.Queries.GetByIdQuery
         public GetByIdQueryValidator()
         {
             RuleFor(x => x.ProductId)
-                .NotEmpty().WithMessage("Please provide id to find product")
+                .NotEmpty()
                 .NotNull();
+
+
+            RuleFor(x => x.ProductId)
+                .Must(ProductId => Guid.TryParse(ProductId, out _));
         }
     }
 }

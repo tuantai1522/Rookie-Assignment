@@ -27,7 +27,7 @@ namespace Rookie.Application.Products.Commands.CreateProductCommand
                 return Result.Failure<ProductId>(ProductErrors.CreateProductInvalidData);
 
             //check whether this category exists or not
-            var category = await _categoryRepository.GetOne(x => x.Id.Equals(request.CategoryId));
+            var category = await _categoryRepository.GetOne(x => x.Id.Equals(new CategoryId(request.CategoryId)));
 
             if (category == null)
                 return Result.Failure<ProductId>(ProductErrors.NotFindCategory);
@@ -37,7 +37,7 @@ namespace Rookie.Application.Products.Commands.CreateProductCommand
             NewProduct.Description = request.Description;
             NewProduct.Price = request.Price;
             NewProduct.Images = request.Images;
-            NewProduct.CategoryId = request.CategoryId;
+            NewProduct.CategoryId = new CategoryId(request.CategoryId);
 
             _productRepository.Add(NewProduct);
 

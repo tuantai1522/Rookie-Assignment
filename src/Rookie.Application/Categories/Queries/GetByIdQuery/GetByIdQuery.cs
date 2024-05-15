@@ -1,12 +1,12 @@
 using MediatR;
 using Rookie.Application.Categories.ViewModels;
-using Rookie.Domain.CategoryEntity;
+using Rookie.Domain.Common;
 
 namespace Rookie.Application.Categories.Queries.GetByIdQuery
 {
-    public class GetByIdQuery : IRequest<CategoryVm>
+    public class GetByIdQuery : IRequest<Result<CategoryVm>>
     {
-        public CategoryId Id { get; set; }
+        public string Id { get; set; }
     }
 
 }

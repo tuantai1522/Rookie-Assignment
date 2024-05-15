@@ -23,9 +23,9 @@ namespace Rookie.WebApi.Controllers
                 return BadRequest(new { Error = result.Error.Message });
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(Guid id)
+        public async Task<IActionResult> GetProductById(string id)
         {
-            var result = await Mediator.Send(new GetByIdQuery { ProductId = new ProductId(id) });
+            var result = await Mediator.Send(new GetByIdQuery { ProductId = id });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -45,9 +45,9 @@ namespace Rookie.WebApi.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteProductById(Guid id)
+        public async Task<IActionResult> DeleteProductById(string id)
         {
-            var result = await Mediator.Send(new DeleteProductCommand { ProductId = new ProductId(id) });
+            var result = await Mediator.Send(new DeleteProductCommand { ProductId = id });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
