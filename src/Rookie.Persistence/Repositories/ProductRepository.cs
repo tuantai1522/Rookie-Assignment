@@ -14,7 +14,7 @@ namespace Rookie.Persistence.Repositories
             this._context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetAll(ProductParams productParams, string includeProperties = null)
+        public async Task<PagedList<Product>> GetAll(ProductParams productParams, string includeProperties = null)
         {
             //Sort, Search, and Filter
             var productList = _context.Products
@@ -28,7 +28,7 @@ namespace Rookie.Persistence.Repositories
             var products = await PagedList<Product>.ToPagedList(productList, productParams.PageNumber,
                                             productParams.PageSize);
 
-            return products.ToList();
+            return products;
         }
 
         public async Task<Product> GetOne(Expression<Func<Product, bool>> filter, string includeProperties = null)

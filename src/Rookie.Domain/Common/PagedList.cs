@@ -27,6 +27,5 @@ namespace Rookie.Domain.Common
                                    .Take(PageSize).ToListAsync();
             return new PagedList<T>(items, Count, PageNumber, PageSize);
         }
-
     }
 }

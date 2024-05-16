@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Products.Commands.CreateProductCommand;
 using Rookie.Application.Products.Commands.DeleteProductCommand;
@@ -16,9 +17,11 @@ namespace Rookie.WebApi.Controllers
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductParams ProductParams)
         {
             var result = await Mediator.Send(new GetListQuery { ProductParams = ProductParams });
-
             if (result.IsSuccess)
+            {
+                Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
                 return Ok(result.Value);
+            }
             else
                 return BadRequest(new { Error = result.Error.Message });
         }

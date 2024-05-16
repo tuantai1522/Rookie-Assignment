@@ -1,0 +1,104 @@
+@using Rookie.Application.Categories.ViewModels;
+@model IEnumerable<Rookie.Application.Products.ViewModels.ProductVm>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var categoryList = ViewData["categoryList"] as List<CategoryVm>;
+    var totalPage = ViewData["totalPage"] != null ? (int)ViewData["totalPage"] : 0;
+    var pageSize = ViewData["pageSize"] != null ? (int)ViewData["pageSize"] : 0;
+    var curPage = ViewData["curPage"] != null ? (int)ViewData["curPage"] : 0;
+}
+
+<div>      
+    <div class="container">
+        @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+        {
+            <div class="row">
+                <div class="col-3">
+                    <h3>Search products</h3>
+                    <div class="mb-3">
+                        <input value="@(@ViewContext.HttpContext.Request.Query["KeyWord"])" type="text" class="form-control" name="KeyWord" id="search" placeholder="Search...">
+                    </div>
+                    <div class="mb-3">
+                        <h3>Order</h3>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="OrderBy" value="nameAsc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "nameAsc" ? "checked" : "")>
+                                <label class="form-check-label" for="OrderBy">
+                                        Name ascending
+                                </label>
+                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="OrderBy" value="priceAsc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "priceAsc" ? "checked" : "")>
+                            <label class="form-check-label" for="OrderBy">
+                                Price ascending
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="OrderBy" value="priceDesc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "priceDesc" ? "checked" : "")>
+                                <label class="form-check-label" for="OrderBy">
+                                    Price descending
+                                </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h3>Categories</h3>
+                        @foreach (var item in @categoryList)
+                        {
+                            <div class="form-check">
+                                <input name="CategoryType" value="@item.Name" class="form-check-input" type="checkbox"
+                                @(@ViewContext.HttpContext.Request.Query["CategoryType"].Contains(@item.Name) ? "checked" : "")>
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        @item.Name
+                                    </label>
+                            </div>
+                        }
+                    </div> 
+                    <input type="submit" value="Search" class="btn btn-primary mt-2">
+
+                </div>
+                @if(@Model.Count() > 0)
+                {
+                    <div class="col-9">
+                        <div class="row gy-3">
+                            @foreach (var item in Model)
+                            {
+                                <div class="col-4">
+                                    <div class="col d-flex justify-content-center">
+                                        <div class="card p-3" style="width: 24rem">
+                                            <img style="height: 15rem" src="@item.Images" alt="@item.ProductName">
+                                            <h5 class="card-title fs-5">@item.ProductName</h5>
+                                            <p class="card-text text-center">@item.Description</p>
+                                            <p class="card-text text-center">@item.Price</p>
+                                            <div class="d-flex align-items-center justify-content-center gap-3">
+                                                <a href="#" class="btn btn-primary">Add to cart</a>
+                                                <a href="#" class="btn btn-secondary">View details</a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            @if(@Model.Count() > 0)
+            {
+                <div class="d-flex align-items-center justify-content-center">
+                    <ul class="pagination d-flex gap-3 mt-3">
+                            <button @(curPage == 1 ? "disabled" : " ") type="submit" class="page-link" name="pageNumber" value=@(curPage - 1)>Previous</button>
+                            @for(int i = 1; i <= totalPage; ++i)
+                            {
+                                <li class="page-item">
+                                    <button type="submit" class="page-link" name="pageNumber" value="@i">@i</button>
+                                </li>
+                            }
+                            <button @(curPage == totalPage ? "disabled" : " ") type="submit" class="page-link" name="pageNumber" value=@(curPage + 1)>Next</button>
+                    </ul>
+                </div>
+            }
+        }
+    </div>
+</div>
