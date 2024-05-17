@@ -42,7 +42,7 @@ namespace Rookie.Application.Products.Commands.UpdateProductCommand
                 ProductName = request.ProductName,
                 Description = request.Description,
                 Price = request.Price,
-                Images = request.Images,
+                QuantityInStock = request.QuantityInStock,
                 CategoryId = new CategoryId(request.CategoryId),
             };
 

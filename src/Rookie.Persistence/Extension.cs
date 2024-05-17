@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Interface;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.ProductEntity;
@@ -23,6 +24,10 @@ namespace Rookie.Persistence
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+            services.AddScoped<IMainImageRepository, MainImageRepository>();
+
+
         }
     }
 }

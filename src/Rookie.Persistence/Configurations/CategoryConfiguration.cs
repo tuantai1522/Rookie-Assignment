@@ -12,7 +12,7 @@ namespace Rookie.Persistence.Configurations
             builder.HasKey(c => c.Id);
 
             builder.Property(x => x.Id)
-                    .HasConversion(x => x.Value, x => CategoryId.Create(x));
+                    .HasConversion(x => x.Value, x => new CategoryId(x));
 
             builder.HasData(GetSampleData());
 
@@ -21,23 +21,28 @@ namespace Rookie.Persistence.Configurations
         {
             yield return new Category()
             {
-                Name = "Shirts",
-                Description = "Shirts for men and women"
+                Name = "Laptop",
+                Description = "Laptop for students and business man"
             };
             yield return new Category()
             {
-                Name = "Pants",
-                Description = "Pants for adults"
+                Name = "Phone",
+                Description = "Phone for calling or texting"
             };
             yield return new Category()
             {
-                Name = "Shoes",
-                Description = "Shoes all sizes"
+                Name = "Tablet",
+                Description = "Tablet to surf website"
             };
             yield return new Category()
             {
-                Name = "Accessories",
-                Description = "Accessories for women"
+                Name = "Player",
+                Description = "Listen to music or watch video"
+            };
+            yield return new Category()
+            {
+                Name = "Smartwatch",
+                Description = "Watch for tracking sports"
             };
         }
     }

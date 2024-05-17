@@ -25,5 +25,13 @@ namespace Rookie.Domain.DomainError
         public static readonly Error DeleteProductInvalidData = new Error(
             "Product.DeleteProductInvalidData",
             "Info you provide to delete product is not valid");
+
+        public static readonly Error UploadImageFailed = new Error(
+            "Product.UploadImageFailed",
+            "Upload image failed, please try again!");
+
+        public static readonly Error DeleteImageFailed = new Error(
+            "Product.DeleteImageFailed",
+            "Delete image failed, please try again!");
     }
 }

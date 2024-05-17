@@ -14,7 +14,7 @@ namespace Rookie.Application.Products.Commands.CreateProductCommand
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(x => x.Images)
+            RuleFor(x => x.FileImage)
                 .NotEmpty()
                 .NotNull();
 

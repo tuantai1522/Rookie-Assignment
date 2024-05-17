@@ -1,5 +1,5 @@
-
 using Rookie.Application;
+using Rookie.Infrastructure;
 using Rookie.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
