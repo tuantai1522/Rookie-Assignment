@@ -1,6 +1,6 @@
-namespace Rookie.Application.Products.ViewModels
+namespace Rookie.Application.Images.ViewModels
 {
-    public class ImageDto
+    public class ImageVm
     {
         public string Url { get; set; }
         public string PublicId { get; set; }

@@ -6,5 +6,7 @@ namespace Rookie.Application.Contracts.Persistence
     public interface IMainImageRepository : IGenericRepository<MainImage>
     {
         Task<MainImage> GetOne(Expression<Func<MainImage, bool>> filter, string includeProperties = null);
+        Task<bool> Update(MainImage entity);
+
     }
 }

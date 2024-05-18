@@ -32,5 +32,22 @@ namespace Rookie.Persistence.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<bool> Update(MainImage entity)
+        {
+            MainImage mainImage = await this._context.MainImages.Where(x => x.ProductId.Equals(entity.ProductId)).FirstOrDefaultAsync();
+            if (mainImage != null)
+            {
+                mainImage.ImageId = entity.ImageId;
+
+                mainImage.UpdatedDate = DateTime.Now;
+
+                await this._context.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
     }
 }

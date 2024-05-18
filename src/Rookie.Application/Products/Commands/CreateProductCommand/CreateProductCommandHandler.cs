@@ -1,7 +1,7 @@
 using MediatR;
 using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Application.Contracts.Persistence;
-using Rookie.Application.Products.ViewModels;
+using Rookie.Application.Images.ViewModels;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
@@ -47,7 +47,7 @@ namespace Rookie.Application.Products.Commands.CreateProductCommand
                 return Result.Failure<ProductId>(ProductErrors.NotFindCategory);
 
             //upload image on cloud
-            ImageDto imageDto = await _imageService.AddPhoto(request.FileImage);
+            ImageVm imageDto = await _imageService.AddPhoto(request.FileImage);
 
             if (imageDto.Url.Equals(""))
                 return Result.Failure<ProductId>(ProductErrors.UploadImageFailed);

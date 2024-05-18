@@ -3,7 +3,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Rookie.Application.Contracts.Infrastructure;
-using Rookie.Application.Products.ViewModels;
+using Rookie.Application.Images.ViewModels;
 
 namespace Rookie.Infrastructure.Images
 {
@@ -19,7 +19,7 @@ namespace Rookie.Infrastructure.Images
             );
             _cloudinary = new Cloudinary(cloudinaryAccount);
         }
-        public async Task<ImageDto> AddPhoto(IFormFile file)
+        public async Task<ImageVm> AddPhoto(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
 
@@ -37,7 +37,7 @@ namespace Rookie.Infrastructure.Images
                     uploadResult = await _cloudinary.UploadAsync(uploadParams);
                 }
             }
-            var newImageDto = new ImageDto();
+            var newImageDto = new ImageVm();
             //success
             if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
             {

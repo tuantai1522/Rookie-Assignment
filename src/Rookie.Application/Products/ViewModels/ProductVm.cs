@@ -1,4 +1,3 @@
-using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Products.ViewModels
