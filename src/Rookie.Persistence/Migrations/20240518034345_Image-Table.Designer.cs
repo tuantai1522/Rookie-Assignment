@@ -12,8 +12,8 @@ using Rookie.Persistence;
 namespace Rookie.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240517091702_Init-table")]
-    partial class Inittable
+    [Migration("20240518034345_Image-Table")]
+    partial class ImageTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,7 +33,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 107, DateTimeKind.Utc).AddTicks(2788));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 834, DateTimeKind.Utc).AddTicks(7642));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -44,7 +44,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 107, DateTimeKind.Utc).AddTicks(4269));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 834, DateTimeKind.Utc).AddTicks(8721));
 
                     b.HasKey("Id");
 
@@ -53,7 +53,7 @@ namespace Rookie.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a11078ec-a336-4e40-8b55-5f4bbe67dda8"),
+                            Id = new Guid("a0e40da5-f642-46df-a4f4-a9b6b87935ad"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Laptop for students and business man",
                             Name = "Laptop",
@@ -61,7 +61,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6e95197b-91ae-4fed-b297-ba6f8cb34417"),
+                            Id = new Guid("fee6d536-00c5-479d-b37f-57d59752e8e4"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Phone for calling or texting",
                             Name = "Phone",
@@ -69,7 +69,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7b950a7c-018f-4173-beb5-7429289401ca"),
+                            Id = new Guid("2f6e80fe-c912-4493-867f-1e3472a80ef7"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Tablet to surf website",
                             Name = "Tablet",
@@ -77,7 +77,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("64a3e096-aa4f-484a-9f74-9dd9efbd5247"),
+                            Id = new Guid("aad50e83-7ea3-4677-bfb3-e2e838096616"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Listen to music or watch video",
                             Name = "Player",
@@ -85,7 +85,7 @@ namespace Rookie.Persistence.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7647b1a2-bcb9-4b5b-a484-dc7823c8c8d5"),
+                            Id = new Guid("2544b768-b7d9-4fa1-8a60-c7f61853475b"),
                             CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Watch for tracking sports",
                             Name = "Smartwatch",
@@ -101,7 +101,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 110, DateTimeKind.Utc).AddTicks(1253));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 836, DateTimeKind.Utc).AddTicks(8255));
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -112,7 +112,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 110, DateTimeKind.Utc).AddTicks(2427));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 836, DateTimeKind.Utc).AddTicks(9199));
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -132,7 +132,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 115, DateTimeKind.Utc).AddTicks(2042));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 841, DateTimeKind.Utc).AddTicks(6684));
 
                     b.Property<Guid?>("ImageId")
                         .HasColumnType("uniqueidentifier");
@@ -140,7 +140,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 115, DateTimeKind.Utc).AddTicks(3617));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 841, DateTimeKind.Utc).AddTicks(8912));
 
                     b.HasKey("ProductId");
 
@@ -160,7 +160,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 118, DateTimeKind.Utc).AddTicks(9251));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 845, DateTimeKind.Utc).AddTicks(5163));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -177,7 +177,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 5, 17, 9, 17, 2, 119, DateTimeKind.Utc).AddTicks(403));
+                        .HasDefaultValue(new DateTime(2024, 5, 18, 3, 43, 44, 845, DateTimeKind.Utc).AddTicks(6160));
 
                     b.HasKey("Id");
 
@@ -201,12 +201,13 @@ namespace Rookie.Persistence.Migrations
                 {
                     b.HasOne("Rookie.Domain.ImageEntity.Image", "Image")
                         .WithMany()
-                        .HasForeignKey("ImageId");
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Rookie.Domain.ProductEntity.Product", "Product")
                         .WithOne("MainImage")
                         .HasForeignKey("Rookie.Domain.MainImageEntity.MainImage", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Image");

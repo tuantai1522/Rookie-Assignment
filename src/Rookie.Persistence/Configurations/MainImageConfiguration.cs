@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Rookie.Domain.ImageEntity;
 using Rookie.Domain.MainImageEntity;
@@ -18,6 +19,12 @@ namespace Rookie.Persistence.Configurations
 
             builder.Property(x => x.ImageId)
                     .HasConversion(x => x.Value, x => new ImageId(x));
+
+            builder.HasOne(mi => mi.Image)
+                    .WithMany()
+                    .HasForeignKey(mi => mi.ImageId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
 
         }
     }

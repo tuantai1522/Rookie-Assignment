@@ -31,11 +31,14 @@ namespace Rookie.Persistence.Configurations
                 .HasForeignKey(i => i.ProductId)
                 .IsRequired();
 
+
             //One Product has only One MainImage
             builder.HasOne(p => p.MainImage)
                    .WithOne(mi => mi.Product)
                    .HasForeignKey<MainImage>(mi => mi.ProductId)
-                   .IsRequired();
+                   .IsRequired()
+                   .OnDelete(DeleteBehavior.NoAction);
+
 
         }
         private static IEnumerable<Product> GetSampleData()

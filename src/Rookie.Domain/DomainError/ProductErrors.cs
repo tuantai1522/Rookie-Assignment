@@ -33,5 +33,9 @@ namespace Rookie.Domain.DomainError
         public static readonly Error DeleteImageFailed = new Error(
             "Product.DeleteImageFailed",
             "Delete image failed, please try again!");
+
+        public static readonly Error NotFindImage = new Error(
+            "Product.NotFindImage",
+            "Can't find any images");
     }
 }

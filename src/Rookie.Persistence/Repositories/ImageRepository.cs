@@ -32,5 +32,24 @@ namespace Rookie.Persistence.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Image>> GetAll(Expression<Func<Image, bool>> filter, string includeProperties = null)
+        {
+            IQueryable<Image> query = this._context.Images;
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                //there are multiple includes
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return await query.ToListAsync();
+        }
     }
 }

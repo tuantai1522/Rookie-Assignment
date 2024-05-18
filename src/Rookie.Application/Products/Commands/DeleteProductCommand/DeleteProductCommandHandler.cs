@@ -1,5 +1,6 @@
 using MediatR;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
@@ -9,11 +10,15 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result<int>>
     {
         private readonly IProductRepository _productRepository;
+        private readonly IImageRepository _imageRepository;
         private readonly IImageService _imageService;
-        public DeleteProductCommandHandler(IProductRepository productRepository, IImageService imageService)
+        public DeleteProductCommandHandler(IProductRepository productRepository,
+                                           IImageService imageService,
+                                           IImageRepository imageRepository)
         {
             _productRepository = productRepository;
             _imageService = imageService;
+            _imageRepository = imageRepository;
         }
         public async Task<Result<int>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
@@ -29,18 +34,28 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
             if (ProductDeleted == null)
                 return Result.Failure<int>(ProductErrors.NotFindProduct);
 
-            //delete on cloud
-            int checkDelete = await _imageService.DeletePhoto("pyfx6fidzml09degawh8");
+            //find all images related to this product 
+            var images = await _imageRepository.GetAll(x => x.ProductId.Equals(new ProductId(request.ProductId)));
 
-            //delete on cloud successfully
-            if (checkDelete == 1)
+            if (images == null)
+                return Result.Failure<int>(ProductErrors.NotFindImage);
+
+            //delete on local
+            _productRepository.Delete(ProductDeleted);
+
+
+            //delete on cloud
+            int check = 1;
+            foreach (var image in images)
             {
-                //delete on local
-                _productRepository.Delete(ProductDeleted);
-                return 1;
+                int temp = await _imageService.DeletePhoto(image.PublicId);
+                if (temp == 0)
+                {
+                    check = 0;
+                    break;
+                }
             }
-            else
-                return 0;
+            return check == 1 ? 1 : 0;
         }
     }
 }
