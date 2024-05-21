@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Rookie.Application.Categories.Mappers;
 using Rookie.Application.MainImages.Mappers;
+using Rookie.Application.PagedList;
 using Rookie.Application.Products.Mappers;
 
 namespace Rookie.Application
@@ -16,6 +17,8 @@ namespace Rookie.Application
             {
                 var config = new MapperConfiguration(cfg =>
                 {
+                    cfg.AddProfile(new PagedListProfile());
+
                     cfg.AddProfile<CategoryProfile>();
                     cfg.AddProfile<ProductProfile>();
                     cfg.AddProfile<MainImageProfile>();

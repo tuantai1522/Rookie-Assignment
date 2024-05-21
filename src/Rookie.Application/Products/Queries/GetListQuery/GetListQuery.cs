@@ -5,7 +5,7 @@ using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Products.Queries.GetListQuery
 {
-    public class GetListQuery : IRequest<Result<PagedList<Product>>>
+    public class GetListQuery : IRequest<Result<PagedList<ProductVm>>>
     {
         public ProductParams ProductParams { get; set; }
     }

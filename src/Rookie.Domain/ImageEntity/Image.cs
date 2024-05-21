@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
 
@@ -8,7 +9,7 @@ namespace Rookie.Domain.ImageEntity
         public ImageId Id { get; set; } = new ImageId(Guid.NewGuid());
         public string? Url { get; set; }
         public string? PublicId { get; set; }
-
+        [JsonIgnore]
         public ProductId? ProductId { get; set; }
         public Product? Product { get; set; }
 

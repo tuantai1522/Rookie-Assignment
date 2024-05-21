@@ -1,12 +1,13 @@
 using AutoMapper;
 using MediatR;
+using Rookie.Application.Products.ViewModels;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Products.Queries.GetListQuery
 {
-    public class GetListQueryHandler : IRequestHandler<GetListQuery, Result<PagedList<Product>>>
+    public class GetListQueryHandler : IRequestHandler<GetListQuery, Result<PagedList<ProductVm>>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
@@ -17,7 +18,7 @@ namespace Rookie.Application.Products.Queries.GetListQuery
             this._mapper = mapper;
         }
 
-        public async Task<Result<PagedList<Product>>> Handle(GetListQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PagedList<ProductVm>>> Handle(GetListQuery request, CancellationToken cancellationToken)
         {
 
             var validator = new GetListQueryValidator();
@@ -25,11 +26,13 @@ namespace Rookie.Application.Products.Queries.GetListQuery
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
             if (validationResult.IsValid == false)
-                return Result.Failure<PagedList<Product>>(ProductErrors.QueryProductInvalidData);
+                return Result.Failure<PagedList<ProductVm>>(ProductErrors.QueryProductInvalidData);
 
-            var products = await _productRepository.GetAll(request.ProductParams, includeProperties: "Category");
+            var products = await _productRepository.GetAll(request.ProductParams, "Category,MainImage,Images");
 
-            return Result.Success(products);
+            var productVms = _mapper.Map<PagedList<ProductVm>>(products);
+
+            return Result.Success(productVms);
         }
 
 

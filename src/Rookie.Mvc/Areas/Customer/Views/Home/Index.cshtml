@@ -1,104 +1,241 @@
 @using Rookie.Application.Categories.ViewModels;
+@using Rookie.Mvc.Models;
 @model IEnumerable<Rookie.Application.Products.ViewModels.ProductVm>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    var categoryList = ViewData["categoryList"] as List<CategoryVm>;
-    var totalPage = ViewData["totalPage"] != null ? (int)ViewData["totalPage"] : 0;
-    var pageSize = ViewData["pageSize"] != null ? (int)ViewData["pageSize"] : 0;
-    var curPage = ViewData["curPage"] != null ? (int)ViewData["curPage"] : 0;
+    var orderList = new List<OrderProduct>
+    {
+        new OrderProduct { Label = "Default", Value = "nameAsc", Checked = true },
+        new OrderProduct { Label = "Price: Low to High", Value = "priceAsc", Checked = false },
+        new OrderProduct { Label = "Price: High to Low", Value = "priceDesc", Checked = false }
+    };
+
+  var categoryList = ViewData["categoryList"] as List<CategoryVm>;
+
+  var totalPage = ViewData["totalPage"] != null ? (int)ViewData["totalPage"] : 0;
+  var curPage = ViewData["curPage"] != null ? (int)ViewData["curPage"] : 0; 
 }
 
-<div>      
-    <div class="container">
-        @using (Html.BeginForm("Index", "Home", FormMethod.Get))
-        {
+<div>    
+    <section class="section-slide">
+        <div class="wrap-slick1">
+            <div class="slick1">
+            <div
+                class="item-slick1"
+                style="background-image: url(images/slide-01.webp)"
+            >
+                <div class="container h-full">
+                <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="fadeInDown"
+                    data-delay="0"
+                    >
+                    <span class="ltext-101 cl2 respon2">
+                        Macbook Collection 2024
+                    </span>
+                    </div>
+
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="fadeInUp"
+                    data-delay="800"
+                    >
+                    <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                        NEW VERSION
+                    </h2>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+
+            <div
+                class="item-slick1"
+                style="background-image: url(images/slide-02.png)"
+            >
+                <div class="container h-full">
+                <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="rollIn"
+                    data-delay="0"
+                    >
+                    <span class="ltext-101 cl2 respon2"> Apple Ipad </span>
+                    </div>
+
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="lightSpeedIn"
+                    data-delay="800"
+                    >
+                    <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                        Ipad pro m4
+                    </h2>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div
+                class="item-slick1"
+                style="background-image: url(images/slide-03.jpg)"
+            >
+                <div class="container h-full">
+                <div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="rotateInDownLeft"
+                    data-delay="0"
+                    >
+                    <span class="ltext-101 cl2 respon2">
+                        Apple watch collection
+                    </span>
+                    </div>
+
+                    <div
+                    class="layer-slick1 animated visible-false"
+                    data-appear="rotateInUpRight"
+                    data-delay="800"
+                    >
+                    <h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
+                        New arrivals
+                    </h2>
+                    </div>
+
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>  
+    <!-- Product -->
+    <section class="bg0 p-t-50 p-b-140">
+        <div class="container">
+            <div class="p-b-10">
+                <h3 class="ltext-103 cl5">Product Overview</h3>
+            </div>
+
+            <!-- Filter -->
             <div class="row">
                 <div class="col-3">
-                    <h3>Search products</h3>
-                    <div class="mb-3">
-                        <input value="@(@ViewContext.HttpContext.Request.Query["KeyWord"])" type="text" class="form-control" name="KeyWord" id="search" placeholder="Search...">
-                    </div>
-                    <div class="mb-3">
-                        <h3>Order</h3>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="OrderBy" value="nameAsc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "nameAsc" ? "checked" : "")>
-                                <label class="form-check-label" for="OrderBy">
-                                        Name ascending
-                                </label>
-                            </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="OrderBy" value="priceAsc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "priceAsc" ? "checked" : "")>
-                            <label class="form-check-label" for="OrderBy">
-                                Price ascending
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="OrderBy" value="priceDesc" @(@ViewContext.HttpContext.Request.Query["OrderBy"] == "priceDesc" ? "checked" : "")>
-                                <label class="form-check-label" for="OrderBy">
-                                    Price descending
-                                </label>
+                    <!-- Search product -->
+                    <div class="panel-search w-full p-b-15">
+                        <div class="bor8 dis-flex p-l-15">
+                            <form class="d-flex" onsubmit="fetchProduct(event)">
+                                <button type="submit" class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                                    <i class="zmdi zmdi-search"></i>
+                                </button>
+                                <input
+                                    id="search-product"
+                                    class="mtext-107 cl2 size-114 plh2 p-r-15"
+                                    type="text"
+                                    name="search-product"
+                                    placeholder="Search"
+                                />
+                            </form>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <h3>Categories</h3>
-                        @foreach (var item in @categoryList)
-                        {
-                            <div class="form-check">
-                                <input name="CategoryType" value="@item.Name" class="form-check-input" type="checkbox"
-                                @(@ViewContext.HttpContext.Request.Query["CategoryType"].Contains(@item.Name) ? "checked" : "")>
-                                    <label class="form-check-label" for="flexCheckChecked">
-                                        @item.Name
-                                    </label>
-                            </div>
-                        }
-                    </div> 
-                    <input type="submit" value="Search" class="btn btn-primary mt-2">
+                    <!-- Filter order-->
+                    <div class="panel-filter w-full p-t-10">
+                        <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm ">
+                            <div class="p-r-15 p-b-27">
+                                <div class="mtext-102 cl2 p-b-15">Sort By</div>
 
+                                <ul>
+                                    @foreach(var item in orderList)
+                                    {
+                                      <li class="p-b-6">
+                                        <div class="form-check">
+                                          <input onchange="fetchProduct()" class="form-check-input" type="radio" name="orderOptions" id="@item.Value" value="@item.Value" checked=@item.Checked>
+                                          <label class="form-check-label filter-link stext-106 trans-04" for="@item">
+                                            @item.Label
+                                          </label>
+                                        </div>
+                                      </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Filter categories-->
+                    <div class="panel-filter w-full p-t-10">
+                        <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm ">
+                            <div class="p-r-15 p-b-27">
+                                <div class="mtext-102 cl2 p-b-15">Categories</div>
+                                <ul>
+                                    @foreach(var item in categoryList)
+                                    {
+                                      <li class="p-b-6">
+                                        <div class="form-check">
+                                          <input onchange="fetchProduct()" class="form-check-input" type="checkbox" name="categoryOptions" value="@item.Name" id="@item.Name">
+                                          <label class="form-check-label filter-link stext-106 trans-04" for="@item.Name">
+                                            @item.Name
+                                          </label>
+                                        </div>
+                                      </li>
+                                    }
+ 
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                @if(@Model.Count() > 0)
-                {
-                    <div class="col-9">
-                        <div class="row gy-3">
-                            @foreach (var item in Model)
-                            {
-                                <div class="col-4">
-                                    <div class="col d-flex justify-content-center">
-                                        <div class="card p-3" style="width: 24rem">
-                                            <img style="height: 15rem" src="@item.Images" alt="@item.ProductName">
-                                            <h5 class="card-title fs-5">@item.ProductName</h5>
-                                            <p class="card-text text-center">@item.Description</p>
-                                            <p class="card-text text-center">@item.Price</p>
-                                            <div class="d-flex align-items-center justify-content-center gap-3">
-                                                <a href="#" class="btn btn-primary">Add to cart</a>
-                                                <a href="#" class="btn btn-secondary">View details</a>
 
-                                            </div>
+            <!-- List products -->
+                <div class="col-9">
+                    <div class="row isotope-grid" id="list-products">
+                        @foreach(var item in Model)
+                        {
+                          <div class="col-sm-6 col-md-4 col-lg-3 p-b-35">
+                              <!-- Block2 -->
+                                  <div class="block2">
+                                    <div class="block2-pic hov-img0">
+                                        <img src="@item.MainImageUrl" alt="IMG-PRODUCT" />
+
+                                        <a href=Customer/Home/Details/@item.Id
+                                        class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                        Details
+                                        </a>
+
+                                    </div>
+                                    <div class="block2-txt flex-w flex-t p-t-14">
+                                        <div class="block2-txt-child1 flex-col-l">
+                                        <a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                            @item.ProductName
+                                        </a>
+
+                                        <span class="stext-105 cl3"> @item.Price.ToString("C2", new System.Globalization.CultureInfo("en-US")) </span>
                                         </div>
                                     </div>
-                                </div>
-
-                            }
-                        </div>
+                                  </div>
+                          </div>
+                        }
                     </div>
-                }
-            </div>
-            @if(@Model.Count() > 0)
-            {
-                <div class="d-flex align-items-center justify-content-center">
-                    <ul class="pagination d-flex gap-3 mt-3">
-                            <button @(curPage == 1 ? "disabled" : " ") type="submit" class="page-link" name="pageNumber" value=@(curPage - 1)>Previous</button>
-                            @for(int i = 1; i <= totalPage; ++i)
-                            {
-                                <li class="page-item">
-                                    <button type="submit" class="page-link" name="pageNumber" value="@i">@i</button>
-                                </li>
-                            }
-                            <button @(curPage == totalPage ? "disabled" : " ") type="submit" class="page-link" name="pageNumber" value=@(curPage + 1)>Next</button>
+                </div>
+
+            <!-- Pagination -->
+
+                <div class="col-12 d-flex align-items-center justify-content-center mt-4">
+                    <ul id="pagination">
+                        <button onclick="fetchProductWithPagination(this)" value=@(@curPage - 1) class="m-r-5 btn btn-primary @(totalPage == 0 || @curPage == 1 ? "disabled" : "")">
+                            <li class="previous-button">
+                                <span >Previous</span>
+                            </li>
+                        </button>
+                        <button onclick="fetchProductWithPagination(this)" value=@(@curPage + 1) class="btn btn-primary @(totalPage == 0 ? "disabled" : "")">
+                            <li class="next-button">
+                                <span >Next</span>
+                            </li>
+                        </button>
+
                     </ul>
                 </div>
-            }
-        }
-    </div>
+            </div>
+      </div>
+    </section>
+
 </div>
+

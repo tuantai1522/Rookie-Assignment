@@ -21,8 +21,17 @@ namespace Rookie.Persistence.Repositories
                 .Sort(productParams.OrderBy)
                 .Search(productParams.KeyWord)
                 .Filter(productParams.CategoryType)
-                .Include("Category")
                 .AsQueryable();
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                //there are multiple includes
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    productList = productList.Include(includeProp);
+                }
+            }
 
             //Pagination
             var products = await PagedList<Product>.ToPagedList(productList, productParams.PageNumber,
@@ -36,9 +45,7 @@ namespace Rookie.Persistence.Repositories
             IQueryable<Product> query = this._context.Products;
 
             if (filter != null)
-            {
                 query = query.Where(filter);
-            }
 
             if (!string.IsNullOrEmpty(includeProperties))
             {

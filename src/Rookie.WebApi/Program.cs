@@ -1,6 +1,7 @@
 using Rookie.Application;
 using Rookie.Infrastructure;
 using Rookie.Persistence;
+using Rookie.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -21,6 +22,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//to fix CORS policy
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .WithExposedHeaders("pagination");
+});
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseHttpsRedirection();

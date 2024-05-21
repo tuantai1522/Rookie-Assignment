@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Rookie.Domain.Common;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Application.Products.ViewModels;
-using PagedList;
 namespace Rookie.Mvc.Areas.Customer.Controllers
 {
     [Area("Customer")]
@@ -26,8 +25,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers
             string CategoryTypeFormat = string.Join(",", CategoryType ?? Enumerable.Empty<string>());
 
             List<ProductVm> productList = new List<ProductVm>();
-            HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress +
-                        $"/product?OrderBy={OrderBy}&KeyWord={KeyWord}&CategoryType={CategoryTypeFormat}&PageNumber={PageNumber}&PageSize={PageSize}");
+            HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress + $"/product");
 
             if (response1.IsSuccessStatusCode)
             {
@@ -43,7 +41,6 @@ namespace Rookie.Mvc.Areas.Customer.Controllers
                 ViewData["curPage"] = curPage;
                 ViewData["totalPage"] = totalPage;
                 ViewData["pageSize"] = pageSize;
-
             }
 
             //call categories
@@ -56,8 +53,27 @@ namespace Rookie.Mvc.Areas.Customer.Controllers
             }
             ViewData["categoryList"] = categoryList;
 
-
             return View(productList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+                return NotFound();
+
+            ProductVm product = new ProductVm();
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/product/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                string data = await response.Content.ReadAsStringAsync();
+                product = JsonConvert.DeserializeObject<ProductVm>(data);
+
+            }
+            if (product == null)
+                return NotFound();
+
+            return View(product);
         }
     }
 }
