@@ -11,6 +11,12 @@ namespace Rookie.Infrastructure
         {
             services.AddScoped<IImageService, ImageService>();
 
+            services.AddStackExchangeRedisCache(redisOptions =>
+            {
+                string connection = configuration.GetConnectionString("Redis");
+                redisOptions.Configuration = connection;
+            });
+
         }
     }
 }

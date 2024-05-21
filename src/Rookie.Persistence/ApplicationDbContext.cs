@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Interface;
+using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.ImageEntity;
 using Rookie.Domain.MainImageEntity;
@@ -7,12 +9,11 @@ using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Persistence
 {
-    public class ApplicationDbContext : DbContext, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Image> Images { get; set; }

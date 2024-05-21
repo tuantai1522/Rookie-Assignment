@@ -4,7 +4,6 @@ using Rookie.Application.Categories.Commands.DeleteCategoryCommand;
 using Rookie.Application.Categories.Commands.UpdateCategoryCommand;
 using Rookie.Application.Categories.Queries.GetByIdQuery;
 using Rookie.Application.Categories.Queries.GetListQuery;
-using Rookie.Domain.CategoryEntity;
 
 namespace Rookie.WebApi.Controllers
 {

@@ -14,7 +14,7 @@ namespace Rookie.Persistence.Configurations
             builder.Property(x => x.Id)
                     .HasConversion(x => x.Value, x => new CategoryId(x));
 
-            builder.HasData(GetSampleData());
+            // builder.HasData(GetSampleData());
 
         }
         public static IEnumerable<Category> GetSampleData()

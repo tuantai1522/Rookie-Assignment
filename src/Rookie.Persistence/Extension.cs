@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Interface;
+using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.ProductEntity;
 using Rookie.Persistence.Repositories;
@@ -22,6 +23,11 @@ namespace Rookie.Persistence
                     b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+
+            services
+                .AddIdentityCore<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
