@@ -6,7 +6,7 @@ namespace Rookie.Application.Users.Commands.LoginCommand
     {
         public LoginCommandValidator()
         {
-            RuleFor(x => x.Email)
+            RuleFor(x => x.UserName)
                 .NotEmpty()
                 .NotNull();
 

@@ -16,6 +16,10 @@ namespace Rookie.Domain.DomainError
             "User.EmailExisted",
             "This email has already existed");
 
+        public static readonly Error UserNameExisted = new Error(
+            "User.UserNameExisted",
+            "This user name has already existed");
+
         // Method to create custom error messages
         public static Error CreateCustomRegisterError(string customMessage)
         {

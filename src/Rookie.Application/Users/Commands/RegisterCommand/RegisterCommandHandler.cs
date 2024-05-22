@@ -27,8 +27,12 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<UserRegisterVm>(UserErrors.NotEnoughInfo);
 
+            if (_userManager.Users.All(u => u.Email != request.Email) == false)
+                //This email has already existed
+                return Result.Failure<UserRegisterVm>(UserErrors.EmailExisted);
+
             //create new user
-            if (_userManager.Users.All(u => u.Email != request.Email))
+            if (_userManager.Users.All(u => u.UserName != request.UserName))
             {
                 var user = new ApplicationUser
                 {
@@ -48,8 +52,10 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
                 return _mapper.Map<UserRegisterVm>(user);
             }
 
-            //This email has already existed
-            return Result.Failure<UserRegisterVm>(UserErrors.EmailExisted);
+            //This user name has already existed
+            return Result.Failure<UserRegisterVm>(UserErrors.UserNameExisted);
+
+
         }
     }
 }
