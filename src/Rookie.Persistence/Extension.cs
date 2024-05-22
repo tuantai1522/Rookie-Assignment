@@ -26,12 +26,15 @@ namespace Rookie.Persistence
 
             services
                 .AddIdentityCore<ApplicationUser>()
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMainImageRepository, MainImageRepository>();
+
+            services.AddScoped<ApplicationDbContextInitializer>();
 
 
         }

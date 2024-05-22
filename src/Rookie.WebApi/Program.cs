@@ -19,18 +19,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //init database
+    await app.InitializeDatabaseAsync();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//to fix CORS policy
-app.UseCors(options =>
-{
-    options.AllowAnyOrigin()
-           .AllowAnyMethod()
-           .AllowAnyHeader()
-           .WithExposedHeaders("pagination");
-});
+
+app.AddApi();
+
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseHttpsRedirection();

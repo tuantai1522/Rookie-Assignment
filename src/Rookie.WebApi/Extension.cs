@@ -2,15 +2,15 @@ namespace Rookie.WebApi
 {
     public static class Extension
     {
-        public static void AddApi(this IServiceCollection services)
+        public static void AddApi(this WebApplication app)
         {
-            services.AddCors(options =>
+            //to fix CORS policy
+            app.UseCors(options =>
             {
-                options.AddDefaultPolicy(builder =>
-                    builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                options.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .WithExposedHeaders("pagination");
             });
         }
     }
