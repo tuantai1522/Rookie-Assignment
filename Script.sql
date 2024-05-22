@@ -3,7 +3,7 @@ INSERT INTO Categories (Id, Name, Description)
 VALUES (
     '2F6E80FE-C912-4493-867F-1E3472A80EF7',
     'Tablet', 
-    'Tablet to surf website', 
+    'Tablet to surf website' 
 );
 
 --Category 2
@@ -11,28 +11,28 @@ INSERT INTO Categories (Id, Name, Description)
 VALUES (
     'FEE6D536-00C5-479D-B37F-57D59752E8E4',
     'Phone', 
-    'Phone for calling or texting', 
+    'Phone for calling or texting' 
 );
 --Category 3
 INSERT INTO Categories (Id, Name, Description)
 VALUES (
     'A0E40DA5-F642-46DF-A4F4-A9B6B87935AD',
     'Laptop', 
-    'Laptop for students and business man', 
+    'Laptop for students and business man' 
 );
 --Category 4
 INSERT INTO Categories (Id, Name, Description)
 VALUES (
     '2544B768-B7D9-4FA1-8A60-C7F61853475B',
     'Smartwatch', 
-    'Watch for tracking sports', 
+    'Watch for tracking sports' 
 );
 --Category 5
 INSERT INTO Categories (Id, Name, Description)
 VALUES (
     'AAD50E83-7EA3-4677-BFB3-E2E838096616',
     'Player', 
-    'Listen to music or watch video', 
+    'Listen to music or watch video' 
 );
 
 --Product 1

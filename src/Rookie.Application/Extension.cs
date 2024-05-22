@@ -23,6 +23,7 @@ namespace Rookie.Application
                     cfg.AddProfile<CategoryProfile>();
                     cfg.AddProfile<ProductProfile>();
                     cfg.AddProfile<MainImageProfile>();
+
                     cfg.AddProfile<UserProfile>();
                 });
                 return config.CreateMapper();

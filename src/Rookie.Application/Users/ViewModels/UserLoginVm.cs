@@ -10,6 +10,6 @@ namespace Rookie.Application.Users.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public ICollection<ApplicationUserAddress> ApplicationUserAddresses { get; set; } = [];
-
+        public string Token { get; set; }
     }
 }

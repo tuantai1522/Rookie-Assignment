@@ -9,12 +9,20 @@ namespace Rookie.Application.Users.Mappers
         public UserProfile()
         {
             CreateMap<ApplicationUser, UserLoginVm>()
-                .ForMember(des => des.Id, act => act.MapFrom(src => src.Id))
-                .ForMember(des => des.FirstName, act => act.MapFrom(src => src.FirstName))
-                .ForMember(des => des.LastName, act => act.MapFrom(src => src.LastName))
-                .ForMember(des => des.UserName, act => act.MapFrom(src => src.UserName))
-                .ForMember(des => des.Email, act => act.MapFrom(src => src.Email))
-                .ForMember(des => des.ApplicationUserAddresses, act => act.MapFrom(src => src.ApplicationUserAddresses));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.ApplicationUserAddresses, opt => opt.MapFrom(src => src.ApplicationUserAddresses))
+                .ForMember(dest => dest.Token, opt => opt.Ignore());
+
+
+            CreateMap<ApplicationUser, UserRegisterVm>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
         }
     }
 }

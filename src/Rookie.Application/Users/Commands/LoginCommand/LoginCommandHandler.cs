@@ -38,8 +38,10 @@ namespace Rookie.Application.Users.Commands.LoginCommand
             if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
                 return Result.Failure<UserLoginVm>(UserErrors.NotCorrectInfo);
 
+            var UserLoginVm = _mapper.Map<UserLoginVm>(user);
+            UserLoginVm.Token = "New Token";
 
-            return _mapper.Map<ApplicationUser, UserLoginVm>(user);
+            return UserLoginVm;
         }
     }
 }
