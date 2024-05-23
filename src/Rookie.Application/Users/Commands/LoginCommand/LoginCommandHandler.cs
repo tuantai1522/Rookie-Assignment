@@ -35,13 +35,14 @@ namespace Rookie.Application.Users.Commands.LoginCommand
 
             var user = await _userManager.Users
                 .Include(x => x.ApplicationUserAddresses)
-                .FirstOrDefaultAsync(u => u.UserName == request.UserName);
+                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
                 return Result.Failure<UserLoginVm>(UserErrors.NotCorrectInfo);
 
             var UserLoginVm = _mapper.Map<UserLoginVm>(user);
+
             UserLoginVm.Token = await _tokenService.GenerateToken(user);
 
             return UserLoginVm;

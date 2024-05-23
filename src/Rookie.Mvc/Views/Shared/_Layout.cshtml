@@ -16,15 +16,15 @@
     <link rel="stylesheet" type="text/css" href="~/vendor/perfect-scrollbar/perfect-scrollbar.css" />
     
     @* ======================= CSS  =======================*@
-    <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/util.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Main/main.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Main/util.css" asp-append-version="true" />
 
     @* ======================= FONTS  =======================*@
     <link rel="stylesheet" type="text/css" href="~/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" type="text/css" href="~/fonts/iconic/css/material-design-iconic-font.min.css" />
     <link rel="stylesheet" type="text/css" href="~/fonts/linearicons-v1.0.0/icon-font.min.css" />
 
-
+  @RenderSection("styles", required: false)
 </head>
 <body>
     <!-- Header -->
@@ -39,7 +39,7 @@
             </div>
 
             <div class="right-top-bar flex-w h-full">
-              <a href="#" class="flex-c-m trans-04 p-lr-25"> Login </a>
+              @await Html.PartialAsync("_UserInfo")
             </div>
           </div>
         </div>

@@ -27,7 +27,7 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<UserRegisterVm>(UserErrors.NotEnoughInfo);
 
-            if (_userManager.Users.All(u => u.Email != request.Email) == false)
+            if (_userManager.Users.Any(u => u.Email != request.Email) == false)
                 //This email has already existed
                 return Result.Failure<UserRegisterVm>(UserErrors.EmailExisted);
 

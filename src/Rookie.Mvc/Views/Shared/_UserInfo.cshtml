@@ -1,0 +1,22 @@
+@using Rookie.Mvc.Interface;
+
+@inject IUserService UserService
+@{
+    string token = UserService.IsUserLoggedIn();
+    string userName = string.Empty;
+
+    if (!string.IsNullOrEmpty(token))
+    {
+        userName = Context.Session.GetString("userName");
+    }
+}
+
+@if (string.IsNullOrEmpty(token))
+{
+    <a href="@Url.Action("Index", "Login", new { area = "Identity" })" class="flex-c-m trans-04 p-lr-25">Login</a>
+}
+else
+{
+     <span class="flex-c-m trans-04 p-lr-25">Welcome, @userName</span>
+     <a href="@Url.Action("LogoutUser", "Logout", new { area = "Identity" })" class="flex-c-m trans-04 p-lr-25">Log out</a>
+}

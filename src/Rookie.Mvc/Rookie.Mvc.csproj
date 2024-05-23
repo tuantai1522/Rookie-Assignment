@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Rookie.Domain\Rookie.Domain.csproj" />
     <ProjectReference Include="..\Rookie.Application\Rookie.Application.csproj" />
+    <ProjectReference Include="..\Rookie.Persistence\Rookie.Persistence.csproj" />
+    <ProjectReference Include="..\Rookie.Infrastructure\Rookie.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,4 @@
-namespace Rookie.Mvc.Models
+namespace Rookie.Mvc.Areas.Customer.Models.Home
 {
     public class OrderProduct
     {

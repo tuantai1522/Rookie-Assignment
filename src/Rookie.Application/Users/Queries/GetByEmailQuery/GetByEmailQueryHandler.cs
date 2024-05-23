@@ -33,7 +33,7 @@ namespace Rookie.Application.Users.Queries.GetByEmailQuery
 
             var user = await _userManager.Users
                 .Include(x => x.ApplicationUserAddresses)
-                .FirstOrDefaultAsync(u => u.UserName == request.UserName);
+                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null)

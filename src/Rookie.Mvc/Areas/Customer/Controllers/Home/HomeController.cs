@@ -3,27 +3,24 @@ using Newtonsoft.Json;
 using Rookie.Domain.Common;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Application.Products.ViewModels;
-namespace Rookie.Mvc.Areas.Customer.Controllers
+using Rookie.Mvc.Utils;
+namespace Rookie.Mvc.Areas.Customer.Controllers.Home
 {
     [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly HttpClient _client;
-        private readonly Uri baseAddress = new Uri("http://localhost:5201/api");
 
         public HomeController()
         {
             _client = new HttpClient();
-            _client.BaseAddress = baseAddress;
+            _client.BaseAddress = Utilities.BASE_ADDRESS;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string KeyWord, string OrderBy, string[] CategoryType,
-                                                string PageNumber = "1", string PageSize = "6")
+        public async Task<IActionResult> Index()
         {
             //call products
-            string CategoryTypeFormat = string.Join(",", CategoryType ?? Enumerable.Empty<string>());
-
             List<ProductVm> productList = new List<ProductVm>();
             HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress + $"/product");
 

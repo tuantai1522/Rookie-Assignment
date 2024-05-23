@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -48,5 +50,6 @@ namespace Rookie.Infrastructure.Token
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
+
     }
 }
