@@ -9,8 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // Register the user service
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddHttpContextAccessor(); 
+builder.Services.AddScoped<IClaimsService, ClaimsService>();
+builder.Services.AddHttpContextAccessor();
 
 
 //to config session
