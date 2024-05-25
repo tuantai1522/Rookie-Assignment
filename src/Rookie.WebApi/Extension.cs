@@ -25,5 +25,7 @@ namespace Rookie.WebApi
             app.UseAuthentication();
             app.UseAuthorization();
         }
+
+
     }
 }

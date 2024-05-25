@@ -2,10 +2,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Infrastructure.Images;
-using Rookie.Infrastructure.Token;
+using Rookie.Infrastructure.Security.TokenGenerator;
 
 namespace Rookie.Infrastructure
 {
@@ -13,7 +14,7 @@ namespace Rookie.Infrastructure
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration config)
         {
-            services.AddIdentity(config);
+            services.AddAuthentication(config);
 
             services.AddService();
 
@@ -21,29 +22,11 @@ namespace Rookie.Infrastructure
 
         }
 
-        private static void AddIdentity(this IServiceCollection services, IConfiguration config)
-        {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(option =>
-                    {
-                        option.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(config["JWTSettings:TokenKey"])
-                            )
-                        };
-                    });
-            services.AddAuthorization();
-        }
         private static void AddService(this IServiceCollection services)
         {
             services.AddScoped<IImageService, ImageService>();
-            services.AddScoped<ITokenService, TokenService>();
 
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         }
         private static void AddRedis(this IServiceCollection services, IConfiguration config)
         {
@@ -52,6 +35,35 @@ namespace Rookie.Infrastructure
                 string connection = config.GetConnectionString("Redis");
                 redisOptions.Configuration = connection;
             });
+        }
+        private static void AddAuthentication(this IServiceCollection services,
+                                              IConfiguration config)
+        {
+            var JwtSettings = new JwtSettings();
+            config.Bind(JwtSettings.Section, JwtSettings);
+
+            services.AddSingleton(Options.Create(JwtSettings));
+            services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+            services
+                .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(option =>
+                    {
+                        option.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = JwtSettings.Issuer,
+                            ValidAudience = JwtSettings.Audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(JwtSettings.Secret
+                            ))
+                        };
+                    });
+            services.AddAuthorization();
+
         }
     }
 }

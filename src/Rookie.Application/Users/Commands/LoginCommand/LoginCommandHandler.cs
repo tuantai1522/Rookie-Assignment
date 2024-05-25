@@ -13,13 +13,15 @@ namespace Rookie.Application.Users.Commands.LoginCommand
     public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<UserLoginVm>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ITokenService _tokenService;
+
+        private readonly IJwtTokenGenerator _tokenGenerator;
         private readonly IMapper _mapper;
-        public LoginCommandHandler(UserManager<ApplicationUser> userManager, IMapper mapper, ITokenService tokenService)
+        public LoginCommandHandler(UserManager<ApplicationUser> userManager,
+                                   IMapper mapper, IJwtTokenGenerator tokenGenerator)
         {
             _userManager = userManager;
             _mapper = mapper;
-            _tokenService = tokenService;
+            _tokenGenerator = tokenGenerator;
         }
 
         public async Task<Result<UserLoginVm>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -41,9 +43,20 @@ namespace Rookie.Application.Users.Commands.LoginCommand
             if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
                 return Result.Failure<UserLoginVm>(UserErrors.NotCorrectInfo);
 
+
+            //find role of current user
+            var roles = await _userManager.GetRolesAsync(user);
+
             var UserLoginVm = _mapper.Map<UserLoginVm>(user);
 
-            UserLoginVm.Token = await _tokenService.GenerateToken(user);
+            UserLoginVm.Token = _tokenGenerator.GenerateToken(
+                user.Id,
+                user.FirstName,
+                user.LastName,
+                user.UserName,
+                user.Email,
+                roles.ToList()
+            );
 
             return UserLoginVm;
         }

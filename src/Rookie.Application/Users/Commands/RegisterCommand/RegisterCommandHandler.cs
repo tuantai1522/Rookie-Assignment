@@ -34,6 +34,7 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
             //create new user
             if (_userManager.Users.All(u => u.UserName != request.UserName))
             {
+                //add user
                 var user = new ApplicationUser
                 {
                     Email = request.Email,
@@ -48,6 +49,9 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
                     string temp = string.Join(". ", result.Errors.Select(e => e.Description));
                     return Result.Failure<UserRegisterVm>(UserErrors.CreateCustomRegisterError(temp));
                 }
+
+                //add role
+                await _userManager.AddToRoleAsync(user, "Customer");
 
                 return _mapper.Map<UserRegisterVm>(user);
             }
