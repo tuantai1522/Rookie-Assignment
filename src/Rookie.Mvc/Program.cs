@@ -1,4 +1,6 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Rookie.Mvc.Implementation;
 using Rookie.Mvc.Interface;
 
@@ -8,10 +10,58 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+    {
+        // custom scheme defined in .AddPolicyScheme() below
+        options.DefaultScheme = "JWT_OR_COOKIE";
+        options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+    })
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = $"/Identity/Login/Index";
+        options.LogoutPath = $"/Customer/Home/Index";
+        options.AccessDeniedPath = $"/Identity/AccessDenied/Index";
+
+        options.ExpireTimeSpan = TimeSpan.FromDays(1);
+    })
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
+            ValidAudience = builder.Configuration["JWTSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:Secret"]))
+        };
+    })
+    // this is the key piece!
+    .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
+    {
+        // runs on each request
+        options.ForwardDefaultSelector = context =>
+        {
+            // filter by auth type
+            string authorization = context.Request.Headers[HeaderNames.Authorization];
+            if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                return "Bearer";
+
+            // otherwise always check for cookie auth
+            return "Cookies";
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
+});
+
 // Register the user service
 builder.Services.AddScoped<IClaimsService, ClaimsService>();
 builder.Services.AddHttpContextAccessor();
-
 
 //to config session
 builder.Services.AddDistributedMemoryCache();
@@ -37,11 +87,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 // Add session middleware
 app.UseSession();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.MapRazorPages();
 app.MapControllerRoute(

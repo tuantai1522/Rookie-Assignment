@@ -1,16 +1,12 @@
-@using Rookie.Mvc.Interface;
+@using System.Security.Claims
+@using System.IdentityModel.Tokens.Jwt;
 
-@{
-    var userName = Context.Session.GetString("userName");
-}
-
-@if (string.IsNullOrEmpty(userName))
-{
+@if (!User.Identity.IsAuthenticated){
     <a href="@Url.Action("Index", "Login", new { area = "Identity" })" class="flex-c-m trans-04 p-lr-25">Login</a>
     <a href="@Url.Action("Index", "Register", new { area = "Identity" })" class="flex-c-m trans-04 p-lr-25">Register</a>
 }
 else
 {
-     <span class="flex-c-m trans-04 p-lr-25">Welcome, @userName</span>
+     <span class="flex-c-m trans-04 p-lr-25">Welcome, @User.FindFirstValue(JwtRegisteredClaimNames.UniqueName)</span>
      <a href="@Url.Action("LogoutUser", "Logout", new { area = "Identity" })" class="flex-c-m trans-04 p-lr-25">Log out</a>
-}
+}    

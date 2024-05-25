@@ -31,7 +31,7 @@ namespace Rookie.Infrastructure.Security.TokenGenerator
             new("id", id),
         };
 
-            roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
+            roles.ForEach(role => claims.Add(new("role", role)));
 
             var token = new JwtSecurityToken(
                 _jwtSettings.Issuer,

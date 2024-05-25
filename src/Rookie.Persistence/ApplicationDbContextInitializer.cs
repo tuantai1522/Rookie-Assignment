@@ -63,9 +63,9 @@ namespace Rookie.Persistence
             var user1 = new ApplicationUser
             {
                 Email = "user1@gmail.com",
-                FirstName = "John",
-                LastName = "Doe",
-                UserName = "J.Doe"
+                FirstName = "fNUser1",
+                LastName = "lNUser",
+                UserName = "user1"
             };
             if (_userManager.Users.All(u => u.UserName != user1.UserName))
             {
@@ -74,7 +74,7 @@ namespace Rookie.Persistence
                 if (!result.Succeeded)
                     throw new ValidationException(result.Errors.First().Description);
 
-                await _userManager.AddToRolesAsync(user1, [admin.Name!, customer.Name!]);
+                await _userManager.AddToRolesAsync(user1, [admin.Name!]);
 
                 _logger.LogDebug("[{Prefix}] administrator created", nameof(ApplicationDbContextInitializer));
             }
@@ -86,9 +86,9 @@ namespace Rookie.Persistence
             var user2 = new ApplicationUser
             {
                 Email = "user2@gmail.com",
-                FirstName = "Michael",
-                LastName = "Cole ",
-                UserName = "M.Cole"
+                FirstName = "fNUser2",
+                LastName = "lNUser2 ",
+                UserName = "user2"
             };
 
             if (_userManager.Users.All(u => u.UserName != user2.UserName))

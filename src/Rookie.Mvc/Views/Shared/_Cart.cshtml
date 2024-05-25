@@ -1,9 +1,5 @@
-@{
-    var userName = Context.Session.GetString("userName");
-}
 <!-- Cart -->
-@if (!string.IsNullOrEmpty(userName))
-{
+@if (User.Identity.IsAuthenticated){
     <div class="wrap-header-cart js-panel-cart">
       <div class="s-full js-hide-cart"></div>
 

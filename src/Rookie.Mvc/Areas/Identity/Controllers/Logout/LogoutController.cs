@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Rookie.Mvc.Areas.Identity.Controllers.Logout
@@ -6,9 +8,9 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Logout
 
     public class LogoutController : Controller
     {
-        public IActionResult LogoutUser()
+        public async Task<IActionResult> LogoutUser()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home", new { area = "Customer" });
         }
     }

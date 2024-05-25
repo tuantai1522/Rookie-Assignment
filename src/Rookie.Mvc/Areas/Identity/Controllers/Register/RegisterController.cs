@@ -21,7 +21,6 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Register
 
         public ActionResult Index()
         {
-            HttpContext.Session.Clear();
             return View();
         }
         [HttpPost]
