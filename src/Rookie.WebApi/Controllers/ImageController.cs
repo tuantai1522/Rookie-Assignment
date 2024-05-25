@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Images.Commands.CreateImageCommand;
 
@@ -8,7 +9,8 @@ namespace Rookie.WebApi.Controllers
     public class ImageController : BaseApiController
     {
         [HttpPost]
-        public async Task<IActionResult> CreateCategory(CreateImageCommand command)
+        [Authorize(Policy = "RequireAdminRole")]
+        public async Task<IActionResult> CreateImage(CreateImageCommand command)
         {
             var result = await Mediator.Send(command);
 

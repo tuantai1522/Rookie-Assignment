@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Categories.Commands.CreateCategoryCommand;
 using Rookie.Application.Categories.Commands.DeleteCategoryCommand;
@@ -26,7 +27,10 @@ namespace Rookie.WebApi.Controllers
             else
                 return BadRequest(new { Error = result.Error.Message });
         }
+
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
+
         public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
             var result = await Mediator.Send(command);
@@ -37,6 +41,7 @@ namespace Rookie.WebApi.Controllers
                 return BadRequest(new { Error = result.Error.Message });
         }
         [HttpDelete]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> DeleteCategoryById(string id)
         {
             var result = await Mediator.Send(new DeleteCategoryCommand { CategoryId = id });

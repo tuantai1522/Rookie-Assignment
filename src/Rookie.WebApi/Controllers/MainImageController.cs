@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.MainImages.Commands.UpdateMainImageCommand;
 
@@ -8,7 +9,9 @@ namespace Rookie.WebApi.Controllers
     public class MainImageController : BaseApiController
     {
         [HttpPut]
-        public async Task<IActionResult> CreateCategory(UpdateMainImageCommand command)
+        [Authorize(Policy = "RequireAdminRole")]
+
+        public async Task<IActionResult> CreateMainImage(UpdateMainImageCommand command)
         {
             var result = await Mediator.Send(command);
 

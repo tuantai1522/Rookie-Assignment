@@ -4,6 +4,7 @@ using Rookie.Domain.Common;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Application.Products.ViewModels;
 using Rookie.Mvc.Utils;
+using Microsoft.AspNetCore.Authorization;
 namespace Rookie.Mvc.Areas.Customer.Controllers.Home
 {
     [Area("Customer")]
@@ -65,8 +66,10 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Home
             {
                 string data = await response.Content.ReadAsStringAsync();
                 product = JsonConvert.DeserializeObject<ProductVm>(data);
-
             }
+            else
+                return View();
+
             if (product == null)
                 return NotFound();
 

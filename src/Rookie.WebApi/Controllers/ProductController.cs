@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Products.Commands.CreateProductCommand;
 using Rookie.Application.Products.Commands.DeleteProductCommand;
@@ -37,6 +38,7 @@ namespace Rookie.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {
             var result = await Mediator.Send(command);
@@ -48,6 +50,7 @@ namespace Rookie.WebApi.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> DeleteProductById(string id)
         {
             var result = await Mediator.Send(new DeleteProductCommand { ProductId = id });

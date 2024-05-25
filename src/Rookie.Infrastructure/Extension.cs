@@ -62,7 +62,12 @@ namespace Rookie.Infrastructure
                             ))
                         };
                     });
-            services.AddAuthorization();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
+            });
 
         }
     }
