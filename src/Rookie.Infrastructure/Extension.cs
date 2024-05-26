@@ -5,8 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Infrastructure.Carts;
 using Rookie.Infrastructure.Images;
 using Rookie.Infrastructure.Security.TokenGenerator;
+using StackExchange.Redis;
 
 namespace Rookie.Infrastructure
 {
@@ -27,13 +29,29 @@ namespace Rookie.Infrastructure
             services.AddScoped<IImageService, ImageService>();
 
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+            services.AddScoped<ICartService, CartService>();
+
+            services.AddScoped<IDatabase>(sp =>
+            {
+                var connectionMultiplexer = sp.GetRequiredService<IConnectionMultiplexer>();
+                return connectionMultiplexer.GetDatabase();
+            });
         }
         private static void AddRedis(this IServiceCollection services, IConfiguration config)
         {
-            services.AddStackExchangeRedisCache(redisOptions =>
+            // Add Redis Connect
+            services.AddStackExchangeRedisCache(options =>
             {
+
                 string connection = config.GetConnectionString("Redis");
-                redisOptions.Configuration = connection;
+                options.Configuration = connection;
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = ConfigurationOptions.Parse(config.GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);
             });
         }
         private static void AddAuthentication(this IServiceCollection services,
