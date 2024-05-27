@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Domain.ApplicationUserEntity;
-using Rookie.Domain.CartEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
 {
-    public class ChangeCartQuantityCommandHandler : IRequestHandler<ChangeCartQuantityCommand, Result<Dictionary<string, int>>>
+    public class ChangeCartQuantityCommandHandler : IRequestHandler<ChangeCartQuantityCommand, Result<int>>
     {
         private readonly ICartService _cartService;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -25,7 +24,7 @@ namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
             _productRepository = productRepository;
         }
 
-        public async Task<Result<Dictionary<string, int>>> Handle(ChangeCartQuantityCommand request, CancellationToken cancellationToken)
+        public async Task<Result<int>> Handle(ChangeCartQuantityCommand request, CancellationToken cancellationToken)
         {
             var validator = new ChangeCartQuantityCommandValidator();
 
@@ -33,7 +32,7 @@ namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
 
             //data is not valid and don't upload image
             if (validationResult.IsValid == false)
-                return Result.Failure<Dictionary<string, int>>(CartErrors.ChangeCartQuantityInvalidData);
+                return Result.Failure<int>(CartErrors.ChangeCartQuantityInvalidData);
 
 
             var user = await _userManager.Users
@@ -41,21 +40,20 @@ namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
 
             //can not find user
             if (user is null)
-                return Result.Failure<Dictionary<string, int>>(CartErrors.CanNotFindUser);
+                return Result.Failure<int>(CartErrors.CanNotFindUser);
 
             var product = await _productRepository
                             .GetOne(x => x.Id == new ProductId(request.ProductId));
 
             //can not find product
             if (product is null)
-                return Result.Failure<Dictionary<string, int>>(CartErrors.CanNotFindProduct);
+                return Result.Failure<int>(CartErrors.CanNotFindProduct);
 
-            Dictionary<string, int> updatedCart = await _cartService.ChangeCartQuantity(
-                                                        request.UserName,
-                                                        request.ProductId,
-                                                        request.Quantity);
+            await _cartService.ChangeCartQuantity(user.UserName,
+                                                  request.ProductId,
+                                                  request.Quantity);
 
-            return updatedCart;
+            return 1;
         }
     }
 }

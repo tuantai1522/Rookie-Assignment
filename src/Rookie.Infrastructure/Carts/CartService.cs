@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Domain.CartEntity;
+using Rookie.Domain.ProductEntity;
 using StackExchange.Redis;
 namespace Rookie.Infrastructure.Carts
 {
@@ -8,16 +10,20 @@ namespace Rookie.Infrastructure.Carts
     {
         private readonly IDistributedCache _distributedCache;
         private readonly IDatabase _database;
+        private readonly IProductRepository _productRepository;
 
-        public CartService(IDistributedCache distributedCache, IDatabase database)
+        public CartService(IDistributedCache distributedCache, IDatabase database,
+                            IProductRepository productRepository)
         {
             _distributedCache = distributedCache;
             _database = database;
+            _productRepository = productRepository;
         }
 
-        public async Task<Dictionary<string, int>> ChangeCartQuantity(string UserId, string ProductId, int Quantity)
+        public async Task<Dictionary<string, int>> ChangeCartQuantity(string UserName, string ProductId, int Quantity)
         {
-            var cart = await GetCartFromCacheAsync(UserId);
+            var cart = await GetCartFromCacheAsync(UserName);
+            var cacheKey = GetCacheKey(UserName);
 
             if (cart.ContainsKey(ProductId))
                 cart[ProductId] += Quantity;
@@ -28,27 +34,58 @@ namespace Rookie.Infrastructure.Carts
             if (cart[ProductId] <= 0)
             {
                 cart.Remove(ProductId);
-                await _database.HashDeleteAsync(UserId, ProductId);
+                await _database.HashDeleteAsync(UserName, ProductId);
             }
             else
-                await _database.HashSetAsync(UserId, ProductId, cart[ProductId]);
+                await _database.HashSetAsync(UserName, ProductId, cart[ProductId]);
 
 
-            await SetCartToCacheAsync(UserId, cart);
+            await SetCartToCacheAsync(cacheKey, cart);
 
             return cart;
         }
 
-        public async Task SetCartToCacheAsync(string UserId, Dictionary<string, int> cart)
+        public async Task<Cart> GetCart(string UserName)
+        {
+            List<CartItem> items = new List<CartItem>();
+            Dictionary<string, int> myDictionary = await GetCartFromCacheAsync(UserName);
+
+            foreach (var temp in myDictionary)
+            {
+                var product = await _productRepository.GetOne(x => x.Id == new ProductId(temp.Key), "MainImage,Images");
+                if (product != null)
+                {
+                    var cartItem = new CartItem
+                    {
+                        ProductImage = product.MainImage.Image.Url,
+                        ProductPrice = product.Price,
+                        ProductName = product.ProductName,
+                        Quantity = temp.Value,
+                        TotalPrice = temp.Value * product.Price,
+                    };
+                    items.Add(cartItem);
+                }
+            }
+
+            var cart = new Cart()
+            {
+                CartItems = items,
+                TotalPrice = CalculateTotalPrice(items),
+            };
+
+            return cart;
+        }
+
+        private async Task SetCartToCacheAsync(string UserId, Dictionary<string, int> cartItems)
         {
             var cacheKey = GetCacheKey(UserId);
-            var serializedCart = JsonConvert.SerializeObject(cart);
+            var serializedCart = JsonConvert.SerializeObject(cartItems);
             await _distributedCache.SetStringAsync(cacheKey, serializedCart);
         }
 
-        public async Task<Dictionary<string, int>> GetCartFromCacheAsync(string UserId)
+        private async Task<Dictionary<string, int>> GetCartFromCacheAsync(string UserName)
         {
-            var cacheKey = GetCacheKey(UserId);
+            var cacheKey = GetCacheKey(UserName);
             var cachedCart = await _distributedCache.GetStringAsync(cacheKey);
 
             if (!string.IsNullOrEmpty(cachedCart))
@@ -56,7 +93,7 @@ namespace Rookie.Infrastructure.Carts
                 return JsonConvert.DeserializeObject<Dictionary<string, int>>(cachedCart);
             }
 
-            var hashEntries = await _database.HashGetAllAsync(UserId);
+            var hashEntries = await _database.HashGetAllAsync(UserName);
             Dictionary<string, int> cart;
 
             if (hashEntries != null && hashEntries.Length != 0)
@@ -67,11 +104,13 @@ namespace Rookie.Infrastructure.Carts
             else
                 cart = new Dictionary<string, int>();
 
-            await SetCartToCacheAsync(UserId, cart);
+            await SetCartToCacheAsync(cacheKey, cart);
 
             return cart;
         }
 
-        private string GetCacheKey(string UserId) => $"cart:{UserId}";
+        private string GetCacheKey(string UserName) => $"cart:{UserName}";
+
+        private decimal CalculateTotalPrice(List<CartItem> items) => items.Sum(item => item.TotalPrice);
     }
 }

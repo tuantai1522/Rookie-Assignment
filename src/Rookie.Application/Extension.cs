@@ -2,6 +2,7 @@ using System.Reflection;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Rookie.Application.Carts.Mappers;
 using Rookie.Application.Categories.Mappers;
 using Rookie.Application.MainImages.Mappers;
 using Rookie.Application.PagedList;
@@ -25,6 +26,8 @@ namespace Rookie.Application
                     cfg.AddProfile<MainImageProfile>();
 
                     cfg.AddProfile<UserProfile>();
+                    cfg.AddProfile<CartProfile>();
+
                 });
                 return config.CreateMapper();
             });
