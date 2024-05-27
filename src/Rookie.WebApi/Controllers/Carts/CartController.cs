@@ -23,7 +23,6 @@ namespace Rookie.WebApi.Controllers.Carts
 
         [HttpPost]
         [Authorize(Policy = "RequireCustomerRole")]
-
         public async Task<IActionResult> ChangeCartQuantity(ChangeCartQuantityRequest command)
         {
             var result = await Mediator.Send(new ChangeCartQuantityCommand

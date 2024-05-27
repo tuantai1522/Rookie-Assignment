@@ -1,4 +1,4 @@
-@model Rookie.Application.Products.ViewModels.ProductVm
+@model Rookie.Mvc.Areas.Customer.Models.Home.ProductVm
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -63,7 +63,7 @@
 						</h4>
 
 						<span class="mtext-106 cl2">
-							$@Model.Price
+							@Model.Price.ToString("C2", new System.Globalization.CultureInfo("en-US"))
 						</span>
 
 						<p class="stext-102 cl3 p-t-23">

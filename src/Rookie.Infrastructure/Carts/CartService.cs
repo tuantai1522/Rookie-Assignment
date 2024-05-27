@@ -34,13 +34,13 @@ namespace Rookie.Infrastructure.Carts
             if (cart[ProductId] <= 0)
             {
                 cart.Remove(ProductId);
-                await _database.HashDeleteAsync(UserName, ProductId);
+                await _database.HashDeleteAsync(cacheKey, ProductId);
             }
             else
-                await _database.HashSetAsync(UserName, ProductId, cart[ProductId]);
+                await _database.HashSetAsync(cacheKey, ProductId, cart[ProductId]);
 
 
-            await SetCartToCacheAsync(cacheKey, cart);
+            await SetCartToCacheAsync(UserName, cart);
 
             return cart;
         }
@@ -76,11 +76,12 @@ namespace Rookie.Infrastructure.Carts
             return cart;
         }
 
-        private async Task SetCartToCacheAsync(string UserId, Dictionary<string, int> cartItems)
+        private async Task SetCartToCacheAsync(string UserName, Dictionary<string, int> cartItems)
         {
-            var cacheKey = GetCacheKey(UserId);
-            var serializedCart = JsonConvert.SerializeObject(cartItems);
-            await _distributedCache.SetStringAsync(cacheKey, serializedCart);
+            var cacheKey = GetCacheKey(UserName);
+
+            foreach (var item in cartItems)
+                await _database.HashSetAsync(cacheKey, item.Key.ToString(), item.Value);
         }
 
         private async Task<Dictionary<string, int>> GetCartFromCacheAsync(string UserName)
@@ -93,7 +94,7 @@ namespace Rookie.Infrastructure.Carts
                 return JsonConvert.DeserializeObject<Dictionary<string, int>>(cachedCart);
             }
 
-            var hashEntries = await _database.HashGetAllAsync(UserName);
+            var hashEntries = await _database.HashGetAllAsync(cacheKey);
             Dictionary<string, int> cart;
 
             if (hashEntries != null && hashEntries.Length != 0)
@@ -104,7 +105,7 @@ namespace Rookie.Infrastructure.Carts
             else
                 cart = new Dictionary<string, int>();
 
-            await SetCartToCacheAsync(cacheKey, cart);
+            await SetCartToCacheAsync(UserName, cart);
 
             return cart;
         }

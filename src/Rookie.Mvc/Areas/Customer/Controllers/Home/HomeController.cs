@@ -1,23 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Rookie.Domain.Common;
-using Rookie.Application.Categories.ViewModels;
-using Rookie.Application.Products.ViewModels;
-using Rookie.Mvc.Utils;
-using Microsoft.AspNetCore.Authorization;
+using Rookie.Mvc.Areas.Customer.Controllers.Common;
+using Rookie.Mvc.Areas.Customer.Models.Home;
 namespace Rookie.Mvc.Areas.Customer.Controllers.Home
 {
     [Area("Customer")]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly HttpClient _client;
-
-        public HomeController()
-        {
-            _client = new HttpClient();
-            _client.BaseAddress = Utilities.BASE_ADDRESS;
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {

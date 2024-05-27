@@ -51,7 +51,15 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Login
                             if (doc.RootElement.TryGetProperty("token", out JsonElement tokenElement))
                             {
                                 string tokenString = tokenElement.GetString();
-                                HttpContext.Session.SetString("JWT", tokenString);
+
+                                // Save the token in a secure HTTP-only cookie
+                                Response.Cookies.Append("Jwt", tokenString, new CookieOptions
+                                {
+                                    HttpOnly = true,
+                                    Secure = true, // Set to true if using HTTPS
+                                    SameSite = SameSiteMode.Strict // Adjust as needed
+                                });
+
 
                                 JwtSecurityToken token = new JwtSecurityTokenHandler().ReadJwtToken(tokenString);
 

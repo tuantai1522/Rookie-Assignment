@@ -11,6 +11,7 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Logout
         public async Task<IActionResult> LogoutUser()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
             return RedirectToAction("Index", "Home", new { area = "Customer" });
         }
     }

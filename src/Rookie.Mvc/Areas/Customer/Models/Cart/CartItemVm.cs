@@ -1,4 +1,5 @@
-namespace Rookie.Application.Carts.ViewModels
+
+namespace Rookie.Mvc.Areas.Customer.Models.Cart
 {
     public class CartItemVm
     {

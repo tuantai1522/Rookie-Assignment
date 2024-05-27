@@ -1,4 +1,4 @@
-namespace Rookie.Application.Products.ViewModels
+namespace Rookie.Mvc.Areas.Customer.Models.Home
 {
     public class ProductVm
     {
