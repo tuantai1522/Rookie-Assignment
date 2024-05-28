@@ -15,7 +15,7 @@ const AppLayout = () => {
             <Grid item xs={12}>
               <Header />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ marginTop: "2rem", padding: "1rem" }}>
               <Outlet />
             </Grid>
           </Grid>

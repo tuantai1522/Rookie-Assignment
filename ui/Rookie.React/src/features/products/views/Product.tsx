@@ -1,9 +1,9 @@
-import { Typography } from "@mui/material";
+import ProductTable from "./ProductTable";
 
 const Product = () => {
   return (
     <>
-      <Typography>Product</Typography>
+      <ProductTable />
     </>
   );
 };

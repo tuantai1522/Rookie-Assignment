@@ -13,9 +13,10 @@ namespace Rookie.WebApi
             //to fix CORS policy
             app.UseCors(options =>
             {
-                options.AllowAnyOrigin()
+                options.AllowAnyHeader()
                        .AllowAnyMethod()
-                       .AllowAnyHeader()
+                       .AllowCredentials()
+                       .WithOrigins("http://localhost:3000")
                        .WithExposedHeaders("pagination");
             });
         }

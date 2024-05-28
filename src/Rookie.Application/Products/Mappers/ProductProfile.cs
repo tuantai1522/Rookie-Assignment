@@ -12,6 +12,7 @@ namespace Rookie.Application.Products.Mappers
                 .ForMember(des => des.Id, act => act.MapFrom(src => src.Id.Value))
                 .ForMember(des => des.ProductName, act => act.MapFrom(src => src.ProductName))
                 .ForMember(des => des.Description, act => act.MapFrom(src => src.Description))
+                .ForMember(des => des.QuantityInStock, act => act.MapFrom(src => src.QuantityInStock))
                 .ForMember(des => des.MainImageUrl, act => act.MapFrom(src => src.MainImage != null ? src.MainImage.Image.Url : string.Empty))
                 .ForMember(des => des.ImageUrls, act => act.MapFrom(src => src.Images != null ? src.Images.Select(img => img.Url).ToList() : new List<string>()))
                 .ForMember(des => des.Price, act => act.MapFrom(src => src.Price))

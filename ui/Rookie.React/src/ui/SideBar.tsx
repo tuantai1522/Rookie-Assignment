@@ -1,56 +1,22 @@
-import { Divider, List, ListItem, ListItemIcon } from "@mui/material";
-import MyNavLink from "./MyNavLink";
-import AddHomeIcon from "@mui/icons-material/AddHome";
-import CategoryIcon from "@mui/icons-material/Category";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
-import Inventory2Icon from "@mui/icons-material/Inventory2";
-import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import { Divider, List } from "@mui/material";
+
+import styled from "styled-components";
+import MainListItem from "./MainListItem";
+
+const StyledSideBar = styled.div`
+  background-color: #ce7045;
+  height: 100vh;
+`;
 
 const SideBar = () => {
   return (
     <>
-      <div>
+      <StyledSideBar>
         <List component="nav">
-          <ListItem>
-            <ListItemIcon>
-              <AddHomeIcon />
-            </ListItemIcon>
-            <MyNavLink to="/" children="Home" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <CategoryIcon />
-            </ListItemIcon>
-            <MyNavLink to="/category" children="Category" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <Inventory2Icon />
-            </ListItemIcon>
-            <MyNavLink to="/product" children="Product" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <ManageAccountsIcon />
-            </ListItemIcon>
-            <MyNavLink to="/user" children="User" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <ProductionQuantityLimitsIcon />
-            </ListItemIcon>
-            <MyNavLink to="/Order" children="Order" />
-          </ListItem>
-          <ListItem>
-            <ListItemIcon>
-              <AutoGraphIcon />
-            </ListItemIcon>
-            <MyNavLink to="/report" children="Report" />
-          </ListItem>
+          <MainListItem />
         </List>
         <Divider />
-      </div>
+      </StyledSideBar>
     </>
   );
 };
