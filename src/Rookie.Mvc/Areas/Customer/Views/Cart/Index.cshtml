@@ -49,25 +49,23 @@
 											<td class="column-4">
 												<div class="wrap-num-product flex-w m-r-0">
 													<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-														@using (Html.BeginForm("ChangeCart", "Cart", new { area = "Customer" }, FormMethod.Post))
-														{
-															<button type="submit" name="productId" value="@item.ProductId">
+														<form class="w-100 h-100" action="/Customer/Cart/ChangeCart" method="post">
+															<button class="w-100 h-100" type="submit" name="productId" value="@item.ProductId">
 																	<i class="fs-16 zmdi zmdi-minus"></i>
 															</button>
-															<input type="hidden" name="action" value="remove">
-														}
+															<input type="hidden" name="action" value="remove">	
+														</form>
 													</div>
 
 													<input class="mtext-104 cl3 txt-center num-product" type="number"  value="@item.Quantity">
 
 													<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-														@using (Html.BeginForm("ChangeCart", "Cart", new { area = "Customer" }, FormMethod.Post))
-														{
-															<button type="submit" name="productId" value="@item.ProductId">
-																	<i class="fs-16 zmdi zmdi-plus"></i>
-															</button>
-															<input type="hidden" name="action" value="add">
-														}
+															<form class="w-100 h-100" action="/Customer/Cart/ChangeCart" method="post">
+																<button class="w-100 h-100" type="submit" name="productId" value="@item.ProductId">
+																		<i class="fs-16 zmdi zmdi-plus"></i>
+																</button>
+																<input type="hidden" name="action" value="add">
+															</form>
 													</div>
 
 												</div>
