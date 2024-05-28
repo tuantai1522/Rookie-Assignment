@@ -22,6 +22,7 @@ namespace Rookie.Infrastructure.Carts
 
         public async Task<Dictionary<string, int>> ChangeCartQuantity(string UserName, string ProductId, int Quantity)
         {
+            ProductId = ProductId.ToUpper();
             var cart = await GetCartFromCacheAsync(UserName);
             var cacheKey = GetCacheKey(UserName);
 
@@ -57,6 +58,7 @@ namespace Rookie.Infrastructure.Carts
                 {
                     var cartItem = new CartItem
                     {
+                        ProductId = product.Id.Value.ToString(),
                         ProductImage = product.MainImage.Image.Url,
                         ProductPrice = product.Price,
                         ProductName = product.ProductName,

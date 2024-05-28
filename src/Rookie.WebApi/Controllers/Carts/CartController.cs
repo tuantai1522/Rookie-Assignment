@@ -6,6 +6,8 @@ using Rookie.WebApi.Controllers.Carts.Request;
 
 namespace Rookie.WebApi.Controllers.Carts
 {
+    [Route("api/cart")]
+    [ApiController]
     public class CartController : BaseApiController
     {
         [HttpGet("GetCurrentCart")]
