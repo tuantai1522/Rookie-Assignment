@@ -1,14 +1,9 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BACKEND_URL } from "../utils/config";
-import Product from "../features/products/models/product";
-import ProductParams from "../features/products/models/productParams";
-import Pagination from "../features/common/models/pagination";
-
-interface ProductResponse {
-  products: Product[];
-  pagination: Pagination;
-}
+import { BACKEND_URL } from "../../utils/config";
+import Product from "../../features/products/models/product";
+import ProductParams from "../../features/products/models/productParams";
+import ProductResponse from "./viewModels/listProductResponse";
 
 // Define a service using a base URL and expected endpoints
 export const productApi = createApi({

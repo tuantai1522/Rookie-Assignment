@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { useGetAllCategoriesQuery } from "../services/apiCategories";
+import { useGetAllCategoriesQuery } from "../services/categories/apiCategories";
 
 interface Props {
   title: string;

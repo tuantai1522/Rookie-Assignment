@@ -6,6 +6,10 @@ import ProductPage from "./pages/ProductPage";
 import OrderPage from "./pages/OrderPage";
 import ReportPage from "./pages/ReportPage";
 import UserPage from "./pages/UserPage";
+import LoginPage from "./pages/LoginPage";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -21,9 +25,22 @@ function App() {
             <Route path="order" element={<OrderPage />} />
             <Route path="report" element={<ReportPage />} />
             <Route path="user" element={<UserPage />} />
+            <Route path="login" element={<LoginPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

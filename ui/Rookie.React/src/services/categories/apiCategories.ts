@@ -1,10 +1,8 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BACKEND_URL } from "../utils/config";
+import { BACKEND_URL } from "../../utils/config";
+import CategoryResponse from "./viewModels/listCategoryResponse";
 
-interface CategoryResponse {
-  categories: Category[];
-}
 
 // Define a service using a base URL and expected endpoints
 export const categoryApi = createApi({

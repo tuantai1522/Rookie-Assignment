@@ -22,7 +22,7 @@ import ProductType from "./ProductType";
 import { PAGE_NUMBER, PAGE_SIZE } from "../../../utils/config";
 import ProductParams from "../models/productParams";
 import { useState } from "react";
-import { useGetAllProductsQuery } from "../../../services/apiProducts";
+import { useGetAllProductsQuery } from "../../../services/products/apiProducts";
 
 const initialState: ProductParams = {
   orderBy: "name",
