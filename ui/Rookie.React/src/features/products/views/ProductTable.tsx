@@ -1,24 +1,28 @@
 import {
   Box,
-  Button,
   Grid,
   IconButton,
+  Pagination,
+  Stack,
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store/store";
-import { useEffect, useState } from "react";
-import { fetchProducts } from "../slices/ProductSlice";
-import ProductParams from "../models/productParams";
-import { PAGE_NUMBER, PAGE_SIZE } from "../../../utils/config";
 import { formatCurrency } from "../../../utils/helper";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ProductSearch from "./ProductSearch";
+import ProductSort from "./ProductSort";
+import ProductType from "./ProductType";
+import { PAGE_NUMBER, PAGE_SIZE } from "../../../utils/config";
+import ProductParams from "../models/productParams";
+import { useState } from "react";
+import { useGetAllProductsQuery } from "../../../services/apiProducts";
 
 const initialState: ProductParams = {
   orderBy: "name",
@@ -29,35 +33,75 @@ const initialState: ProductParams = {
 };
 
 const ProductTable = () => {
-  const [params] = useState<ProductParams>(initialState);
+  const [page, setPage] = useState(1);
+  const [params, setParams] = useState<ProductParams>(initialState);
+  const { data, isFetching } = useGetAllProductsQuery(params);
 
-  const { products, loading } = useAppSelector((state) => state.product);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(fetchProducts(params));
-  }, [dispatch]);
-
-  if (loading) return <Typography>Loading</Typography>;
-
-  console.log(products);
+  if (isFetching) return <Typography>Loading</Typography>;
 
   return (
     <>
       <Typography variant={"h3"}>Products</Typography>
+      <Grid
+        container
+        gap={2}
+        sx={{ marginTop: "2rem" }}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Grid item xs={4}>
+          <ProductSearch
+            textValue={params.keyWord}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setParams({
+                ...params,
+                keyWord: event.target.value,
+                pageNumber: 1,
+              });
+              setPage(1);
+            }}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <ProductSort
+            item={params.orderBy}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setParams({
+                ...params,
+                orderBy: event.target.value,
+                pageNumber: 1,
+              });
+              setPage(1);
+            }}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <ProductType
+            checked={params.categoryType}
+            onChange={(checkedItems: string[]) => {
+              setParams({
+                ...params,
+                categoryType: checkedItems,
+                pageNumber: 1,
+              });
+              setPage(1);
+            }}
+          />
+        </Grid>
+      </Grid>
       <Table size="small">
         <TableHead>
           <TableRow>
             <TableCell align="center">ProductName</TableCell>
-            <TableCell>Price</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Quantity</TableCell>
+            <TableCell align="center">Price</TableCell>
+            <TableCell align="center">Category</TableCell>
+            <TableCell align="center">Quantity</TableCell>
             <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products &&
-            products.map((product) => (
+          {data &&
+            data.products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
                   <Grid
@@ -67,7 +111,6 @@ const ProductTable = () => {
                     gap={2}
                   >
                     <Grid item>
-                      {" "}
                       <Box
                         component="img"
                         sx={{
@@ -83,9 +126,11 @@ const ProductTable = () => {
                     <Grid item>{product.productName}</Grid>
                   </Grid>
                 </TableCell>
-                <TableCell>{formatCurrency(product.price)}</TableCell>
-                <TableCell>{product.categoryName}</TableCell>
-                <TableCell>{product.quantityInStock}</TableCell>
+                <TableCell align="center">
+                  {formatCurrency(product.price)}
+                </TableCell>
+                <TableCell align="center">{product.categoryName}</TableCell>
+                <TableCell align="center">{product.quantityInStock}</TableCell>
                 <TableCell align="right">
                   <Grid
                     container
@@ -108,6 +153,28 @@ const ProductTable = () => {
               </TableRow>
             ))}
         </TableBody>
+        <TableFooter>
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="flex-end"
+            sx={{ marginTop: "2rem" }}
+          >
+            <Grid item>
+              <Stack spacing={2}>
+                <Pagination
+                  onChange={(_, page) => {
+                    setParams({ ...params, pageNumber: page });
+                    setPage(page);
+                  }}
+                  count={data?.pagination.TotalPage || 0}
+                  color="secondary"
+                  page={page}
+                />
+              </Stack>
+            </Grid>
+          </Grid>
+        </TableFooter>
       </Table>
     </>
   );

@@ -1,16 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { productSlice } from "../features/products/slices/ProductSlice";
+import { productApi } from "../services/apiProducts";
+import { categoryApi } from "../services/apiCategories";
 
 export const store = configureStore({
   reducer: {
-    // //redux
-    product: productSlice.reducer,
+    //redux toolkit query
+    [productApi.reducerPath]: productApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware()
+      .concat(productApi.middleware)
+      .concat(categoryApi.middleware),
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

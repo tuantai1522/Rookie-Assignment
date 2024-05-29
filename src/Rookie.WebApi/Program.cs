@@ -65,7 +65,6 @@ app.AddApi();
 
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseHttpsRedirection();
 
 app.Run();
 

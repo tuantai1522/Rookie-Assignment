@@ -32,8 +32,7 @@ const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 instance.interceptors.response.use(
   async function (response) {
     await sleep();
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
+
     return response.data;
   },
   function (error) {
