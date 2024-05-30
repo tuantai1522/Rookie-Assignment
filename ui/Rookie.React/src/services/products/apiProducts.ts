@@ -1,24 +1,30 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BACKEND_URL } from "../../utils/config";
 import Product from "../../features/products/models/product";
 import ProductParams from "../../features/products/models/productParams";
 import ProductResponse from "./viewModels/listProductResponse";
+import { BACKEND_URL } from "../../utils/config";
+import { getToken } from "../../utils/helper";
 
 // Define a service using a base URL and expected endpoints
 export const productApi = createApi({
   reducerPath: "products",
+  tagTypes: ["Products"],
   baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
   endpoints: (builder) => ({
     getAllProducts: builder.query<ProductResponse, ProductParams | void>({
-      query: (args) => {
-        if (!args) return "/api/product";
-
-        const { orderBy, keyWord, categoryType, pageNumber, pageSize } = args;
-        const type = categoryType.join("%2C");
-
-        return `/api/product?OrderBy=${orderBy}&KeyWord=${keyWord}&CategoryType=${type}&PageNumber=${pageNumber}&PageSize=${pageSize}`;
-      },
+      query: (args: ProductParams) => ({
+        url: "/api/product",
+        method: "GET",
+        params: {
+          OrderBy: args.orderBy,
+          KeyWord: args.keyWord,
+          CategoryType: args.categoryType,
+          PageNumber: args.pageNumber,
+          PageSize: args.pageSize,
+        },
+      }),
+      //build data after receiving data from server
       transformResponse: (response: Product[], meta) => {
         const headers = meta?.response?.headers;
 
@@ -29,13 +35,59 @@ export const productApi = createApi({
           pagination: paginationHeader ? JSON.parse(paginationHeader) : null,
         };
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.products.map(({ id }) => ({
+                type: "Products" as const,
+                id,
+              })),
+              { type: "Products", id: "LIST" },
+            ]
+          : [{ type: "Products", id: "LIST" }],
     }),
+
     getProduct: builder.query<Product, string>({
-      query: (args) => `/api/Product/${args}`,
+      query: (args) => ({
+        url: "/api/product",
+        method: "GET",
+        params: {
+          id: args,
+        },
+      }),
+      providesTags: (result, error, id) => [{ type: "Products", id }],
+    }),
+
+    addProduct: builder.mutation<string, FormData>({
+      query: (body) => ({
+        url: "/api/product",
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body,
+      }),
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
+    }),
+
+    deleteProduct: builder.mutation<number, string>({
+      query: (id) => ({
+        url: `/api/product/${id}`,
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }),
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
   }),
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllProductsQuery, useGetProductQuery } = productApi;
+export const {
+  useGetAllProductsQuery,
+  useGetProductQuery,
+  useAddProductMutation,
+  useDeleteProductMutation,
+} = productApi;

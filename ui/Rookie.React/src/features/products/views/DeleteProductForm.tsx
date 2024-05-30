@@ -6,6 +6,10 @@ import Modal from "@mui/material/Modal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 
+interface Props {
+  id: string;
+  name: string;
+}
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -18,7 +22,7 @@ const style = {
   p: 4,
 };
 
-const DeleteProductForm = () => {
+const DeleteProductForm = ({ id, name }: Props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

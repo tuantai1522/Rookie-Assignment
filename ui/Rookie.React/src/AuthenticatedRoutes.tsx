@@ -3,18 +3,24 @@ import { useEffect } from "react";
 import { useGetCurrentUserQuery } from "./services/users/apiUsers";
 
 const AuthenticatedRoutes = () => {
-  const { data } = useGetCurrentUserQuery();
-
+  const { data, error, isLoading } = useGetCurrentUserQuery();
   const navigate = useNavigate();
 
-  useEffect(
-    function () {
-      if (!data?.token) navigate("/login");
-    },
-    [data, navigate]
-  );
+  useEffect(() => {
+    if (!isLoading && (!data || error)) {
+      navigate("/login");
+    }
+  }, [data, error, isLoading, navigate]);
 
-  if (data?.token) return <Outlet />;
+  if (isLoading) {
+    return <div>Loading...</div>; // Add a loading indicator if necessary
+  }
+
+  if (data) {
+    return <Outlet />;
+  }
+
+  return null;
 };
 
 export default AuthenticatedRoutes;

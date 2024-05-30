@@ -43,7 +43,7 @@ const CheckBoxGroup = ({ title, checked, onChange }: Props) => {
         <FormLabel component="legend">{title}</FormLabel>
 
         <FormGroup>
-          {data.categories.map((category: Category) => (
+          {data.map((category: Category) => (
             <FormControlLabel
               key={category.id}
               value={category.name}

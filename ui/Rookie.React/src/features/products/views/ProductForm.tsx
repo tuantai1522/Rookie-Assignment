@@ -13,7 +13,8 @@ import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import NormalTextField from "../../../ui/NormalTextField";
 import { useGetAllCategoriesQuery } from "../../../services/categories/apiCategories";
 import { ChangeEvent, useState } from "react";
-import CreateProductRequest from "../../../services/products/viewModels/createProductRequest";
+import { useAddProductMutation } from "../../../services/products/apiProducts";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
   productName: yup.string().required("Product name is required"),
@@ -28,8 +29,8 @@ const schema = yup.object().shape({
     .typeError("Quantity must be a number")
     .moreThan(-1, "Quantity must be greater than -1")
     .required("Quantity is required"),
-  categoryName: yup.string().required("Category name is required"),
-  productImage: yup.string().required("Product image is required"),
+  categoryId: yup.string().required("Category name is required"),
+  productImage: yup.mixed().required("File is required"),
 });
 
 const ProductForm = () => {
@@ -37,27 +38,40 @@ const ProductForm = () => {
 
   const { data, isFetching } = useGetAllCategoriesQuery();
 
+  const [addProduct, { isLoading }] = useAddProductMutation();
+
   const methods = useForm({
     mode: "onTouched",
     resolver: yupResolver(schema),
   });
 
   const submitForm = async (data: FieldValues) => {
-    if (!file) {
-      console.error("File is not selected.");
-      return;
+    try {
+      if (!file) {
+        toast.error("Please choose one image.");
+        return;
+      }
+
+      //prepare data
+      const formData = new FormData();
+      formData.append("ProductName", data.productName);
+      formData.append("Description", data.description);
+      formData.append("QuantityInStock", data.quantityInStock);
+      formData.append("FileImage", file);
+      formData.append("Price", data.price);
+      formData.append("CategoryId", data.categoryId.toUpperCase());
+
+      await addProduct(formData)
+        .unwrap()
+        .then(() => {
+          toast.success("Adding new product successfully");
+        })
+        .catch((error) => {
+          toast.error(error.data.error);
+        });
+    } catch (err) {
+      console.log(err);
     }
-
-    const createProductRequest: CreateProductRequest = {
-      productName: data.productName,
-      description: data.description,
-      quantityInStock: parseInt(data.quantityInStock),
-      fileImage: file,
-      price: parseFloat(data.price),
-      categoryId: data.categoryId,
-    };
-
-    console.log(createProductRequest);
   };
 
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -163,10 +177,10 @@ const ProductForm = () => {
               <TextField
                 select
                 label="Category name"
-                {...methods.register("categoryName")}
+                {...methods.register("categoryId")}
                 fullWidth
               >
-                {data?.categories.map((category) => (
+                {data?.map((category) => (
                   <MenuItem key={category.id} value={category.id}>
                     {category.name}
                   </MenuItem>
@@ -200,7 +214,7 @@ const ProductForm = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={!methods.formState.isValid}
+            disabled={!methods.formState.isValid || isLoading}
           >
             Create
           </Button>

@@ -39,7 +39,7 @@ namespace Rookie.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> CreateProduct(CreateProductCommand command)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductCommand command)
         {
             var result = await Mediator.Send(command);
 

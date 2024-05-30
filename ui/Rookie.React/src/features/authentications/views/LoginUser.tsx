@@ -19,7 +19,8 @@ import { useLoginUserMutation } from "../../../services/users/apiUsers";
 import PasswordTextField from "../../../ui/PasswordTextField";
 import NormalTextField from "../../../ui/NormalTextField";
 import { toast } from "react-toastify";
-import { setToken } from "../../../utils/helper";
+import { removeToken, setToken } from "../../../utils/helper";
+import { useEffect } from "react";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -33,6 +34,11 @@ function LoginForm() {
     mode: "onTouched",
     resolver: yupResolver(schema),
   });
+
+  //if user moves back to login page after logging in, remove token
+  useEffect(() => {
+    removeToken();
+  }, []);
 
   const [loginUser, { isLoading }] = useLoginUserMutation();
 

@@ -1,5 +1,5 @@
-import Pagination from "../../features/common/models/pagination";
-import Product from "../../features/products/models/product";
+import Pagination from "../../../features/common/models/pagination";
+import Product from "../../../features/products/models/product";
 
 interface ProductResponse {
   products: Product[];

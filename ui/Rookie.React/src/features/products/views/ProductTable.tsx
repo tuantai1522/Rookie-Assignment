@@ -143,7 +143,10 @@ const ProductTable = () => {
                       <EditProductForm />
                     </Grid>
                     <Grid item>
-                      <DeleteProductForm />
+                      <DeleteProductForm
+                        id={product.id}
+                        name={product.productName}
+                      />
                     </Grid>
                     <Grid item>
                       <ProductDetails />
