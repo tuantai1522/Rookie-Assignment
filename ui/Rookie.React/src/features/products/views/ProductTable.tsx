@@ -1,7 +1,6 @@
 import {
   Box,
   Grid,
-  IconButton,
   Pagination,
   Stack,
   Table,
@@ -14,8 +13,6 @@ import {
 } from "@mui/material";
 import { formatCurrency } from "../../../utils/helper";
 
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ProductSearch from "./ProductSearch";
 import ProductSort from "./ProductSort";
 import ProductType from "./ProductType";
@@ -23,6 +20,10 @@ import { PAGE_NUMBER, PAGE_SIZE } from "../../../utils/config";
 import ProductParams from "../models/productParams";
 import { useState } from "react";
 import { useGetAllProductsQuery } from "../../../services/products/apiProducts";
+import EditProductForm from "./EditProductForm";
+import AddProductForm from "./AddProductForm";
+import ProductDetails from "./ProductDetails";
+import DeleteProductForm from "./DeleteProductForm";
 
 const initialState: ProductParams = {
   orderBy: "name",
@@ -42,6 +43,7 @@ const ProductTable = () => {
   return (
     <>
       <Typography variant={"h3"}>Products</Typography>
+      <AddProductForm />
       <Grid
         container
         gap={2}
@@ -92,18 +94,22 @@ const ProductTable = () => {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell align="center">ProductName</TableCell>
+            <TableCell sx={{ width: "60%" }} align="center">
+              ProductName
+            </TableCell>
             <TableCell align="center">Price</TableCell>
             <TableCell align="center">Category</TableCell>
             <TableCell align="center">Quantity</TableCell>
-            <TableCell align="center">Actions</TableCell>
+            <TableCell sx={{ width: "25%" }} align="center">
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data &&
             data.products.map((product) => (
               <TableRow key={product.id}>
-                <TableCell>
+                <TableCell sx={{ width: "60%" }} align="center">
                   <Grid
                     container
                     justifyContent="flex-start"
@@ -114,10 +120,10 @@ const ProductTable = () => {
                       <Box
                         component="img"
                         sx={{
-                          height: 250,
-                          width: 250,
-                          maxHeight: { xs: 233, md: 167 },
-                          maxWidth: { xs: 350, md: 250 },
+                          height: 80,
+                          width: 100,
+                          maxHeight: { xs: 80, md: 80 },
+                          maxWidth: { xs: 100, md: 100 },
                         }}
                         alt="The house from the offer."
                         src={product.mainImageUrl}
@@ -131,22 +137,16 @@ const ProductTable = () => {
                 </TableCell>
                 <TableCell align="center">{product.categoryName}</TableCell>
                 <TableCell align="center">{product.quantityInStock}</TableCell>
-                <TableCell align="right">
-                  <Grid
-                    container
-                    justifyContent="flex-end"
-                    alignItems="center"
-                    gap={1}
-                  >
+                <TableCell sx={{ width: "25%" }} align="center">
+                  <Grid container alignItems="center" justifyContent="center">
                     <Grid item>
-                      <IconButton color="primary" aria-label="Edit">
-                        <EditIcon />
-                      </IconButton>
+                      <EditProductForm />
                     </Grid>
                     <Grid item>
-                      <IconButton color="secondary" aria-label="Delete">
-                        <DeleteIcon />
-                      </IconButton>
+                      <DeleteProductForm />
+                    </Grid>
+                    <Grid item>
+                      <ProductDetails />
                     </Grid>
                   </Grid>
                 </TableCell>
