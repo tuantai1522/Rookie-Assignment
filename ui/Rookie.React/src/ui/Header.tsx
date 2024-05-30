@@ -1,7 +1,12 @@
-import { AppBar, Grid, Switch, Toolbar, Typography } from "@mui/material";
+import { AppBar, Grid, Switch, Toolbar } from "@mui/material";
 import MyNavLink from "./MyNavLink";
+import { useGetCurrentUserQuery } from "../services/users/apiUsers";
+import SignInMenu from "./SignInMenu";
 
 const Header = () => {
+  const { data, isFetching } = useGetCurrentUserQuery();
+
+  if (isFetching) return;
   return (
     <>
       <AppBar position="static">
@@ -16,7 +21,15 @@ const Header = () => {
 
             <Grid item>
               <Grid container alignItems="center">
-                <Typography>User info</Typography>
+                {data ? (
+                  <>
+                    <SignInMenu user={data} />
+                  </>
+                ) : (
+                  <>
+                    <MyNavLink children="Login" to="/login" />
+                  </>
+                )}
               </Grid>
             </Grid>
           </Grid>

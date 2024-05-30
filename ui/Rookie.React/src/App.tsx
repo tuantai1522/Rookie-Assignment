@@ -1,3 +1,6 @@
+import { ThemeProvider } from "@mui/material/styles";
+import createTheme from "@mui/material/styles/createTheme";
+
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./ui/AppLayout";
 import CategoryPage from "./pages/CategoryPage";
@@ -10,37 +13,46 @@ import LoginPage from "./pages/LoginPage";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthenticatedRoutes from "./AuthenticatedRoutes";
+
+const defaultTheme = createTheme();
 
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<Navigate replace to="home" />} />
-            <Route path="home" element={<Home />} />
+      <ThemeProvider theme={defaultTheme}>
+        <BrowserRouter>
+          <Routes>
+            <Route element={<AppLayout />}>
+              {/* Authenticated route */}
+              <Route element={<AuthenticatedRoutes />}>
+                <Route path="category" element={<CategoryPage />} />
+                <Route path="product" element={<ProductPage />} />
+                <Route path="order" element={<OrderPage />} />
+                <Route path="report" element={<ReportPage />} />
+                <Route path="user" element={<UserPage />} />
+              </Route>
 
-            <Route path="category" element={<CategoryPage />} />
-            <Route path="product" element={<ProductPage />} />
-            <Route path="order" element={<OrderPage />} />
-            <Route path="report" element={<ReportPage />} />
-            <Route path="user" element={<UserPage />} />
+              {/* Not authenticated route */}
+              <Route index element={<Navigate replace to="home" />} />
+              <Route path="home" element={<Home />} />
+            </Route>
             <Route path="login" element={<LoginPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+          </Routes>
+        </BrowserRouter>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+      </ThemeProvider>
     </>
   );
 }
