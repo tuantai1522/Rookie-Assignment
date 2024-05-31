@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthenticatedRoutes from "./AuthenticatedRoutes";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 
 const defaultTheme = createTheme();
 
@@ -27,7 +28,10 @@ function App() {
               {/* Authenticated route */}
               <Route element={<AuthenticatedRoutes />}>
                 <Route path="category" element={<CategoryPage />} />
+
                 <Route path="product" element={<ProductPage />} />
+                <Route path="product/:id" element={<ProductDetailsPage />} />
+
                 <Route path="order" element={<OrderPage />} />
                 <Route path="report" element={<ReportPage />} />
                 <Route path="user" element={<UserPage />} />

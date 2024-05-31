@@ -5,12 +5,13 @@ import Modal from "@mui/material/Modal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid, IconButton } from "@mui/material";
 import { useState } from "react";
-import { useDeleteProductMutation } from "../../../services/products/apiProducts";
 import { toast } from "react-toastify";
+import { useDeleteImageMutation } from "../../../services/images/apiImages";
+import { useGetProductQuery } from "../../../services/products/apiProducts";
 
 interface Props {
-  id: string;
-  name: string;
+  imageId: string;
+  productId: string;
 }
 const style = {
   position: "absolute" as "absolute",
@@ -24,20 +25,23 @@ const style = {
   p: 4,
 };
 
-const DeleteProductForm = ({ id, name }: Props) => {
+const DeleteImageForm = ({ imageId, productId }: Props) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [deleteProduct, { isLoading }] = useDeleteProductMutation();
+  const [deleteImage, { isLoading }] = useDeleteImageMutation();
+  const { refetch } = useGetProductQuery(productId);
 
   const handleSubmit = async () => {
     try {
-      await deleteProduct(id)
+      await deleteImage(imageId)
         .unwrap()
         .then(() => {
-          toast.success("Delete product successfully");
+          toast.success("Delete image successfully");
+          refetch();
+          handleClose();
         })
         .catch((error) => {
           toast.error(error.data.error);
@@ -54,9 +58,7 @@ const DeleteProductForm = ({ id, name }: Props) => {
       </IconButton>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h4">Do you want to delete product</Typography>
-          <Typography variant="h5">Produt name: {name}</Typography>
-          <Typography variant="h5">Product id: {id}</Typography>
+          <Typography variant="h4">Do you want to delete this image</Typography>
 
           <Grid
             container
@@ -77,10 +79,10 @@ const DeleteProductForm = ({ id, name }: Props) => {
             </Grid>
             <Grid item>
               <Button
+                disabled={isLoading}
                 variant="contained"
                 color="error"
                 onClick={handleClose}
-                disabled={isLoading}
               >
                 No
               </Button>
@@ -92,4 +94,4 @@ const DeleteProductForm = ({ id, name }: Props) => {
   );
 };
 
-export default DeleteProductForm;
+export default DeleteImageForm;

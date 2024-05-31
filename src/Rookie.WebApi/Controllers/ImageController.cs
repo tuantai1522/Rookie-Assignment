@@ -23,9 +23,9 @@ namespace Rookie.WebApi.Controllers
 
         [HttpDelete]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> DeleteImage(DeleteImageCommand command)
+        public async Task<IActionResult> DeleteImage(string id)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new DeleteImageCommand { ImageId = id });
 
             if (result.IsSuccess)
                 return Ok(result.Value);

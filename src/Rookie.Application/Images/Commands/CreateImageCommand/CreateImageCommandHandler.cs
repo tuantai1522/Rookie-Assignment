@@ -34,7 +34,7 @@ namespace Rookie.Application.Images.Commands.CreateImageCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<ImageId>(ImageErrors.CreateImageInvalidData);
 
-            //check whether this category exists or not
+            //check whether this product exists or not
             var product = await _productRepository.GetOne(x => x.Id.Equals(new ProductId(request.ProductId)));
             if (product == null)
                 return Result.Failure<ImageId>(ImageErrors.NotFindProduct);

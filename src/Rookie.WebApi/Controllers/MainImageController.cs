@@ -10,8 +10,7 @@ namespace Rookie.WebApi.Controllers
     {
         [HttpPut]
         [Authorize(Policy = "RequireAdminRole")]
-
-        public async Task<IActionResult> CreateMainImage(UpdateMainImageCommand command)
+        public async Task<IActionResult> CreateMainImage([FromForm] UpdateMainImageCommand command)
         {
             var result = await Mediator.Send(command);
 

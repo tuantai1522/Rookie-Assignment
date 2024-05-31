@@ -1,6 +1,7 @@
 import {
   Box,
   Grid,
+  IconButton,
   Pagination,
   Stack,
   Table,
@@ -11,7 +12,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+
 import { formatCurrency } from "../../../utils/helper";
+
+import InfoIcon from "@mui/icons-material/Info";
 
 import ProductSearch from "./ProductSearch";
 import ProductSort from "./ProductSort";
@@ -22,8 +26,8 @@ import { useState } from "react";
 import { useGetAllProductsQuery } from "../../../services/products/apiProducts";
 import EditProductForm from "./EditProductForm";
 import AddProductForm from "./AddProductForm";
-import ProductDetails from "./ProductDetails";
 import DeleteProductForm from "./DeleteProductForm";
+import { useNavigate } from "react-router-dom";
 
 const initialState: ProductParams = {
   orderBy: "name",
@@ -38,12 +42,17 @@ const ProductTable = () => {
   const [params, setParams] = useState<ProductParams>(initialState);
   const { data, isFetching } = useGetAllProductsQuery(params);
 
+  const navigate = useNavigate();
+
   if (isFetching) return <Typography>Loading</Typography>;
 
   return (
     <>
-      <Typography variant={"h3"}>Products</Typography>
-      <AddProductForm />
+      <Grid container alignItems="center" justifyContent="space-between">
+        <Typography variant={"h3"}>Products</Typography>
+        <AddProductForm />
+      </Grid>
+
       <Grid
         container
         gap={2}
@@ -125,7 +134,7 @@ const ProductTable = () => {
                           maxHeight: { xs: 80, md: 80 },
                           maxWidth: { xs: 100, md: 100 },
                         }}
-                        alt="The house from the offer."
+                        alt={product.productName}
                         src={product.mainImageUrl}
                       />
                     </Grid>
@@ -149,7 +158,13 @@ const ProductTable = () => {
                       />
                     </Grid>
                     <Grid item>
-                      <ProductDetails />
+                      <IconButton
+                        onClick={() => navigate(`/product/${product.id}`)}
+                        color="success"
+                        aria-label="Edit"
+                      >
+                        <InfoIcon />
+                      </IconButton>
                     </Grid>
                   </Grid>
                 </TableCell>

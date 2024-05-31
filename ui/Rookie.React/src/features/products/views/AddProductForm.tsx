@@ -4,6 +4,9 @@ import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import ProductForm from "./ProductForm";
 
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Grid } from "@mui/material";
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -24,7 +27,10 @@ const AddProductForm = () => {
   return (
     <div>
       <Button variant="contained" color="secondary" onClick={handleOpen}>
-        Add new product
+        <Grid container alignItems="center" justifyContent="center" gap={1}>
+          <AddCircleIcon />
+          Add new product
+        </Grid>
       </Button>
       <Modal
         open={open}

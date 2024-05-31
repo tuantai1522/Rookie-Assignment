@@ -1,3 +1,5 @@
+import Image from "../../images/models/image";
+
 interface Product {
   id: string;
   productName: string;
@@ -7,7 +9,7 @@ interface Product {
   categoryName: string;
 
   mainImageUrl: string;
-  imageUrls: Array<string>;
+  imageUrls: Image[];
 }
 
 export default Product;

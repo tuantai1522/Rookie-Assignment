@@ -49,11 +49,8 @@ export const productApi = createApi({
 
     getProduct: builder.query<Product, string>({
       query: (args) => ({
-        url: "/api/product",
+        url: `/api/product/${args}`,
         method: "GET",
-        params: {
-          id: args,
-        },
       }),
       providesTags: (result, error, id) => [{ type: "Products", id }],
     }),
