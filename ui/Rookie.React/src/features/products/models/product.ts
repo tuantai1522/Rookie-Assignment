@@ -3,9 +3,11 @@ interface Product {
   productName: string;
   description: string;
   price: number;
-  mainImageUrl: string;
   quantityInStock: number;
   categoryName: string;
+
+  mainImageUrl: string;
+  imageUrls: Array<string>;
 }
 
 export default Product;
