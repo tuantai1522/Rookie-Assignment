@@ -140,7 +140,7 @@ const ProductTable = () => {
                 <TableCell sx={{ width: "25%" }} align="center">
                   <Grid container alignItems="center" justifyContent="center">
                     <Grid item>
-                      <EditProductForm />
+                      <EditProductForm product={product} />
                     </Grid>
                     <Grid item>
                       <DeleteProductForm

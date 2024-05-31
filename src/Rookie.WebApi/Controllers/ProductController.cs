@@ -62,7 +62,7 @@ namespace Rookie.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProductById(UpdateProductCommand command)
+        public async Task<IActionResult> UpdateProductById([FromForm] UpdateProductCommand command)
         {
             var result = await Mediator.Send(command);
 

@@ -19,10 +19,6 @@ namespace Rookie.Application.Products.Commands.UpdateProductCommand
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(x => x.Images)
-                .NotEmpty()
-                .NotNull();
-
             RuleFor(x => x.CategoryId)
                 .NotEmpty()
                 .NotNull();

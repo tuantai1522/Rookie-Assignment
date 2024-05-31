@@ -72,11 +72,23 @@ export const productApi = createApi({
 
     deleteProduct: builder.mutation<number, string>({
       query: (id) => ({
-        url: `/api/product/${id}`,
+        url: `/api/product/?id=${id}`,
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
         },
+      }),
+      invalidatesTags: [{ type: "Products", id: "LIST" }],
+    }),
+
+    updateProduct: builder.mutation<Product, FormData>({
+      query: (body) => ({
+        url: `/api/product/`,
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body,
       }),
       invalidatesTags: [{ type: "Products", id: "LIST" }],
     }),
@@ -90,4 +102,5 @@ export const {
   useGetProductQuery,
   useAddProductMutation,
   useDeleteProductMutation,
+  useUpdateProductMutation,
 } = productApi;
