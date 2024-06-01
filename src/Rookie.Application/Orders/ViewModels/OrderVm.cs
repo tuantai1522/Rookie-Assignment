@@ -11,6 +11,6 @@ namespace Rookie.Application.Orders.ViewModels
         public decimal SubTotal { get; set; }
         public decimal DeliveryFee { get; set; }
         public decimal Total { get; set; }
-
+        public ICollection<OrderItemVm> OrderItems { get; set; } = [];
     }
 }

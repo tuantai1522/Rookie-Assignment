@@ -17,6 +17,7 @@ namespace Rookie.WebApi
                        .AllowAnyMethod()
                        .AllowCredentials()
                        .WithOrigins("http://localhost:3000")
+                       .WithOrigins("http://localhost:5227")
                        .WithExposedHeaders("pagination");
             });
         }

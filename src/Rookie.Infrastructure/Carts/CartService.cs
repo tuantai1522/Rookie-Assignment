@@ -78,6 +78,17 @@ namespace Rookie.Infrastructure.Carts
             return cart;
         }
 
+        public async Task ClearCart(string UserName)
+        {
+            var cacheKey = GetCacheKey(UserName);
+
+            // Remove from cache
+            await _distributedCache.RemoveAsync(cacheKey);
+
+            // Remove from database
+            await _database.KeyDeleteAsync(cacheKey);
+        }
+
         private async Task SetCartToCacheAsync(string UserName, Dictionary<string, int> cartItems)
         {
             var cacheKey = GetCacheKey(UserName);
@@ -115,5 +126,7 @@ namespace Rookie.Infrastructure.Carts
         private string GetCacheKey(string UserName) => $"cart:{UserName}";
 
         private decimal CalculateTotalPrice(List<CartItem> items) => items.Sum(item => item.TotalPrice);
+
+
     }
 }

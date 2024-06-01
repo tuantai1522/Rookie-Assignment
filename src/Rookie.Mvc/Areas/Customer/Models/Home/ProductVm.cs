@@ -1,5 +1,3 @@
-using Rookie.Application.Images.ViewModels;
-
 namespace Rookie.Mvc.Areas.Customer.Models.Home
 {
     public class ProductVm
@@ -10,7 +8,7 @@ namespace Rookie.Mvc.Areas.Customer.Models.Home
         public string MainImageUrl { get; set; }
         public int QuantityInStock { get; set; }
 
-        public List<string> ImageUrls { get; set; }
+        public List<ImageProductVm> ImageUrls { get; set; }
         public decimal Price { get; set; }
         public string CategoryName { get; set; }
 

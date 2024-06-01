@@ -15,7 +15,15 @@ namespace Rookie.Application.Orders.Mappers
                 .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate))
                 .ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.SubTotal))
                 .ForMember(dest => dest.DeliveryFee, opt => opt.MapFrom(src => src.DeliveryFee))
-                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()));
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
+                .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
+
+            CreateMap<OrderItem, OrderItemVm>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.Value))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductName : string.Empty))
+                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));
+
         }
     }
 }
