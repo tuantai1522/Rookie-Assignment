@@ -5,6 +5,7 @@ using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.ImageEntity;
 using Rookie.Domain.MainImageEntity;
+using Rookie.Domain.OrderEntity;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Persistence
@@ -18,6 +19,7 @@ namespace Rookie.Persistence
         public DbSet<Category> Categories { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<MainImage> MainImages { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

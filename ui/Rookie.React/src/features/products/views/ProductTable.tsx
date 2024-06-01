@@ -22,7 +22,7 @@ import ProductSort from "./ProductSort";
 import ProductType from "./ProductType";
 import { PAGE_NUMBER, PAGE_SIZE } from "../../../utils/config";
 import ProductParams from "../models/productParams";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetAllProductsQuery } from "../../../services/products/apiProducts";
 import EditProductForm from "./EditProductForm";
 import AddProductForm from "./AddProductForm";
@@ -40,9 +40,13 @@ const initialState: ProductParams = {
 const ProductTable = () => {
   const [page, setPage] = useState(1);
   const [params, setParams] = useState<ProductParams>(initialState);
-  const { data, isFetching } = useGetAllProductsQuery(params);
+  const { data, isFetching, refetch } = useGetAllProductsQuery(params);
 
   const navigate = useNavigate();
+
+  useEffect(function () {
+    refetch();
+  }, []);
 
   if (isFetching) return <Typography>Loading</Typography>;
 

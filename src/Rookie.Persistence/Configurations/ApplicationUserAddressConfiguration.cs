@@ -20,6 +20,8 @@ namespace Rookie.Persistence.Configurations
                 .WithMany(c => c.ApplicationUserAddresses)
                 .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }
