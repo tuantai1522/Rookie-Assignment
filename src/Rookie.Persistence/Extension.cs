@@ -33,6 +33,7 @@ namespace Rookie.Persistence
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
             services.AddScoped<IMainImageRepository, MainImageRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             services.AddScoped<ApplicationDbContextInitializer>();
 
