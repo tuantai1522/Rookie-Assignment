@@ -5,22 +5,25 @@ using Rookie.Application.Categories.Commands.DeleteCategoryCommand;
 using Rookie.Application.Categories.Commands.UpdateCategoryCommand;
 using Rookie.Application.Categories.Queries.GetByIdQuery;
 using Rookie.Application.Categories.Queries.GetListQuery;
+using Rookie.WebApi.Controllers.Base;
+using Rookie.WebApi.Controllers.Categories.Request;
 
-namespace Rookie.WebApi.Controllers
+namespace Rookie.WebApi.Controllers.Categories
 {
     [Route("api/category")]
     [ApiController]
     public class CategoryController : BaseApiController
     {
-        [HttpGet]
+        [HttpGet("GetAllCategories")]
         public async Task<IActionResult> GetAllCategories()
         {
             return Ok(await Mediator.Send(new GetListQuery()));
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(string id)
+
+        [HttpGet("GetCategoryById")]
+        public async Task<IActionResult> GetCategoryById([FromQuery] GetByIdRequest request)
         {
-            var result = await Mediator.Send(new GetByIdQuery { Id = id });
+            var result = await Mediator.Send(new GetByIdQuery { Id = request.CategoryId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -28,23 +31,28 @@ namespace Rookie.WebApi.Controllers
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpPost]
+        [HttpPost("CreateCategory")]
         [Authorize(Policy = "RequireAdminRole")]
-
-        public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
+        public async Task<IActionResult> CreateCategory([FromForm] CreateRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new CreateCategoryCommand
+            {
+                CategoryName = request.CategoryName,
+                Description = request.Description,
+            });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
             else
                 return BadRequest(new { Error = result.Error.Message });
         }
-        [HttpDelete]
+
+
+        [HttpDelete("DeleteCategoryById")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> DeleteCategoryById(string id)
+        public async Task<IActionResult> DeleteCategoryById([FromQuery] DeleteRequest request)
         {
-            var result = await Mediator.Send(new DeleteCategoryCommand { CategoryId = id });
+            var result = await Mediator.Send(new DeleteCategoryCommand { CategoryId = request.CategoryId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -52,10 +60,16 @@ namespace Rookie.WebApi.Controllers
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCategoryById(UpdateCategoryCommand command)
+        [HttpPut("UpdateCategoryById")]
+        [Authorize(Policy = "RequireAdminRole")]
+        public async Task<IActionResult> UpdateCategoryById([FromQuery] UpdateRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new UpdateCategoryCommand
+            {
+                CategoryName = request.CategoryName,
+                Description = request.Description,
+                Id = request.Id,
+            });
 
             if (result.IsSuccess)
                 return Ok(result.Value);

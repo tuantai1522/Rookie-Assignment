@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Carts.Commands.ChangeCartQuantityCommand;
 using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
+using Rookie.WebApi.Controllers.Base;
 using Rookie.WebApi.Controllers.Carts.Request;
 
 namespace Rookie.WebApi.Controllers.Carts
@@ -23,7 +24,7 @@ namespace Rookie.WebApi.Controllers.Carts
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpPost]
+        [HttpPost("ChangeCartQuantity")]
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> ChangeCartQuantity(ChangeCartQuantityRequest command)
         {

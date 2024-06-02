@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Rookie.WebApi.Controllers
+namespace Rookie.WebApi.Controllers.Base
 {
     [ApiController]
     [Route("api/[controller]")]

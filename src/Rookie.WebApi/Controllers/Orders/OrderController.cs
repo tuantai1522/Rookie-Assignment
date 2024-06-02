@@ -4,6 +4,7 @@ using Rookie.Application.Orders.Commands.CreateOrderCommand;
 using Rookie.Application.Orders.Queries.GetByIdQuery;
 using Rookie.Application.Orders.Queries.GetListQuery;
 using Rookie.Domain.OrderEntity;
+using Rookie.WebApi.Controllers.Base;
 using Rookie.WebApi.Controllers.Orders.Request;
 namespace Rookie.WebApi.Controllers.Orders
 {
@@ -11,7 +12,7 @@ namespace Rookie.WebApi.Controllers.Orders
     [ApiController]
     public class OrderController : BaseApiController
     {
-        [HttpGet]
+        [HttpGet("GetAllOrders")]
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> GetAllOrders([FromQuery] OrderParams OrderParams)
         {
@@ -24,11 +25,11 @@ namespace Rookie.WebApi.Controllers.Orders
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetOrderById")]
         [Authorize(Policy = "RequireCustomerRole")]
-        public async Task<IActionResult> GetOrderById(string id)
+        public async Task<IActionResult> GetOrderById([FromQuery] GetByIdRequest request)
         {
-            var result = await Mediator.Send(new GetByIdQuery { OrderId = id, UserName = User.Identity!.Name });
+            var result = await Mediator.Send(new GetByIdQuery { OrderId = request.OrderId, UserName = User.Identity!.Name });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -36,7 +37,7 @@ namespace Rookie.WebApi.Controllers.Orders
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpPost]
+        [HttpPost("CreateOrder")]
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> CreateOrder(CreateRequest request)
         {

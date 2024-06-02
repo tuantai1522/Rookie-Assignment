@@ -3,17 +3,23 @@ using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Users.Commands.LoginCommand;
 using Rookie.Application.Users.Commands.RegisterCommand;
 using Rookie.Application.Users.Queries.GetByUserNameQuery;
+using Rookie.WebApi.Controllers.Base;
+using Rookie.WebApi.Controllers.Users.Request;
 
-namespace Rookie.WebApi.Controllers
+namespace Rookie.WebApi.Controllers.Users
 {
     [Route("api/user")]
     [ApiController]
     public class UserController : BaseApiController
     {
         [HttpPost("LoginUser")]
-        public async Task<IActionResult> LoginUser(LoginCommand command)
+        public async Task<IActionResult> LoginUser([FromForm] LoginUserRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new LoginCommand
+            {
+                Password = request.Password,
+                UserName = request.UserName,
+            });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -22,9 +28,16 @@ namespace Rookie.WebApi.Controllers
         }
 
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> RegisterUser(RegisterCommand command)
+        public async Task<IActionResult> RegisterUser([FromForm] RegisterUserRequest request)
         {
-            var result = await Mediator.Send(command);
+            var result = await Mediator.Send(new RegisterCommand
+            {
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Password = request.Password,
+                UserName = request.UserName,
+            });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -32,8 +45,8 @@ namespace Rookie.WebApi.Controllers
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [Authorize]
         [HttpGet("GetCurrentUser")]
+        [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
             var result = await Mediator.Send(new GetByUserNameQuery { UserName = User.Identity!.Name });

@@ -1,6 +1,6 @@
 namespace Rookie.WebApi.Controllers.Orders.Request
 {
-    public class GetByIdRequest
+    public sealed record GetByIdRequest
     {
         public string? OrderId { get; set; }
     }
