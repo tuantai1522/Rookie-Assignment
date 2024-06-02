@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
@@ -10,11 +11,11 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<UserRegisterVm>>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public RegisterCommandHandler(UserManager<ApplicationUser> userManager, IMapper mapper)
+        public RegisterCommandHandler(IUserRepository userRepository, IMapper mapper)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
         public async Task<Result<UserRegisterVm>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -27,39 +28,35 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<UserRegisterVm>(UserErrors.NotEnoughInfo);
 
-            if (_userManager.Users.Any(u => u.Email != request.Email) == false)
-                //This email has already existed
+            //This email has already existed
+            if (_userRepository.CheckEmailExisted(request.Email))
                 return Result.Failure<UserRegisterVm>(UserErrors.EmailExisted);
 
-            //create new user
-            if (_userManager.Users.All(u => u.UserName != request.UserName))
+            //This user name has already existed
+            if (_userRepository.CheckUserNameExisted(request.UserName))
+                return Result.Failure<UserRegisterVm>(UserErrors.UserNameExisted);
+
+
+            //add user
+            var user = new ApplicationUser
             {
-                //add user
-                var user = new ApplicationUser
-                {
-                    Email = request.Email,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    UserName = request.UserName,
-                };
-                var result = await _userManager.CreateAsync(user, request.Password);
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                UserName = request.UserName,
+            };
+            var result = await _userRepository.CreateUser(user, request.Password);
 
-                if (!result.Succeeded)
-                {
-                    string temp = string.Join(". ", result.Errors.Select(e => e.Description));
-                    return Result.Failure<UserRegisterVm>(UserErrors.CreateCustomRegisterError(temp));
-                }
-
-                //add role
-                await _userManager.AddToRoleAsync(user, "Customer");
-
-                return _mapper.Map<UserRegisterVm>(user);
+            if (!result.Succeeded)
+            {
+                string temp = string.Join(". ", result.Errors.Select(e => e.Description));
+                return Result.Failure<UserRegisterVm>(UserErrors.CreateCustomRegisterError(temp));
             }
 
-            //This user name has already existed
-            return Result.Failure<UserRegisterVm>(UserErrors.UserNameExisted);
+            //add role
+            await _userRepository.AddToRole(user, "Customer");
 
-
+            return _mapper.Map<UserRegisterVm>(user);
         }
     }
 }

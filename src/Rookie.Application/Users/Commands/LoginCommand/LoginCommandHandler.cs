@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
@@ -12,14 +13,14 @@ namespace Rookie.Application.Users.Commands.LoginCommand
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<UserLoginVm>>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
 
         private readonly IJwtTokenGenerator _tokenGenerator;
         private readonly IMapper _mapper;
-        public LoginCommandHandler(UserManager<ApplicationUser> userManager,
+        public LoginCommandHandler(IUserRepository userRepository,
                                    IMapper mapper, IJwtTokenGenerator tokenGenerator)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
         }
@@ -35,17 +36,15 @@ namespace Rookie.Application.Users.Commands.LoginCommand
                 return Result.Failure<UserLoginVm>(UserErrors.NotEnoughInfo);
 
 
-            var user = await _userManager.Users
-                .Include(x => x.ApplicationUserAddresses)
-                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
 
             //can not find user
-            if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
+            if (user is null || !await _userRepository.CheckPasswordValid(user, request.Password))
                 return Result.Failure<UserLoginVm>(UserErrors.NotCorrectInfo);
 
 
             //find role of current user
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userRepository.GetRoles(user);
 
             var UserLoginVm = _mapper.Map<UserLoginVm>(user);
 

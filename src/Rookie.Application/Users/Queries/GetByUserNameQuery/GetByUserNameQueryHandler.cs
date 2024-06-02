@@ -1,30 +1,28 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Users.ViewModels;
-using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 
-namespace Rookie.Application.Users.Queries.GetByEmailQuery
+namespace Rookie.Application.Users.Queries.GetByUserNameQuery
 {
-    public class GetByEmailQueryHandler : IRequestHandler<GetByEmailQuery, Result<UserLoginVm>>
+    public class GetByUserNameQueryHandler : IRequestHandler<GetByUserNameQuery, Result<UserLoginVm>>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _tokenGenerator;
 
         private readonly IMapper _mapper;
-        public GetByEmailQueryHandler(UserManager<ApplicationUser> userManager, IMapper mapper, IJwtTokenGenerator tokenGenerator)
+        public GetByUserNameQueryHandler(IUserRepository userRepository, IMapper mapper, IJwtTokenGenerator tokenGenerator)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
             _mapper = mapper;
             _tokenGenerator = tokenGenerator;
         }
-        public async Task<Result<UserLoginVm>> Handle(GetByEmailQuery request, CancellationToken cancellationToken)
+        public async Task<Result<UserLoginVm>> Handle(GetByUserNameQuery request, CancellationToken cancellationToken)
         {
-            var validator = new GetByEmailQueryValidator();
+            var validator = new GetByUserNameQueryValidator();
 
             var validationResult = await validator.ValidateAsync(request, cancellationToken);
 
@@ -32,15 +30,13 @@ namespace Rookie.Application.Users.Queries.GetByEmailQuery
             if (validationResult.IsValid == false)
                 return Result.Failure<UserLoginVm>(UserErrors.NotEnoughInfo);
 
-            var user = await _userManager.Users
-                .Include(x => x.ApplicationUserAddresses)
-                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null)
                 return Result.Failure<UserLoginVm>(UserErrors.NotCorrectInfo);
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userRepository.GetRoles(user);
 
             var UserLoginVm = _mapper.Map<UserLoginVm>(user);
 

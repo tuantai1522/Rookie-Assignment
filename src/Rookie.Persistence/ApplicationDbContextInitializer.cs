@@ -74,7 +74,7 @@ namespace Rookie.Persistence
                 if (!result.Succeeded)
                     throw new ValidationException(result.Errors.First().Description);
 
-                await _userManager.AddToRolesAsync(user1, [admin.Name!]);
+                await _userManager.AddToRoleAsync(user1, admin.Name!);
 
                 _logger.LogDebug("[{Prefix}] administrator created", nameof(ApplicationDbContextInitializer));
             }

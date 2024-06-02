@@ -13,17 +13,17 @@ namespace Rookie.Application.Orders.Commands.CreateOrderCommand
 {
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<OrderId>>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICartService _cartService;
 
-        public CreateOrderCommandHandler(UserManager<ApplicationUser> userManager,
+        public CreateOrderCommandHandler(IUserRepository userRepository,
                                          IOrderRepository orderRepository,
                                          IProductRepository productRepository,
                                          ICartService cartService)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _cartService = cartService;
@@ -40,9 +40,7 @@ namespace Rookie.Application.Orders.Commands.CreateOrderCommand
                 return Result.Failure<OrderId>(OrderErrors.CreateInvalidData);
 
 
-            var user = await _userManager
-                            .Users
-                            .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null)
@@ -52,7 +50,7 @@ namespace Rookie.Application.Orders.Commands.CreateOrderCommand
             //cart is empty
             var cart = await _cartService.GetCart(request.UserName);
 
-            if (cart.CartItems.Count == 0)
+            if (cart is null || cart.CartItems.Count == 0)
                 return Result.Failure<OrderId>(OrderErrors.CartEmpty);
 
 

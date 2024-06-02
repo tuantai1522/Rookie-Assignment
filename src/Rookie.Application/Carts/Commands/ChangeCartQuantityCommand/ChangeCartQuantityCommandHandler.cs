@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
@@ -12,15 +13,15 @@ namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
     public class ChangeCartQuantityCommandHandler : IRequestHandler<ChangeCartQuantityCommand, Result<int>>
     {
         private readonly ICartService _cartService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly IProductRepository _productRepository;
 
         public ChangeCartQuantityCommandHandler(ICartService cartService,
-                                    UserManager<ApplicationUser> userManager,
+                                    IUserRepository userRepository,
                                     IProductRepository productRepository)
         {
             _cartService = cartService;
-            _userManager = userManager;
+            _userRepository = userRepository;
             _productRepository = productRepository;
         }
 
@@ -34,9 +35,7 @@ namespace Rookie.Application.Carts.Commands.ChangeCartQuantityCommand
             if (validationResult.IsValid == false)
                 return Result.Failure<int>(CartErrors.ChangeCartQuantityInvalidData);
 
-
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null)

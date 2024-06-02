@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Users.Commands.LoginCommand;
 using Rookie.Application.Users.Commands.RegisterCommand;
-using Rookie.Application.Users.Queries.GetByEmailQuery;
+using Rookie.Application.Users.Queries.GetByUserNameQuery;
 
 namespace Rookie.WebApi.Controllers
 {
@@ -36,7 +36,7 @@ namespace Rookie.WebApi.Controllers
         [HttpGet("GetCurrentUser")]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var result = await Mediator.Send(new GetByEmailQuery { UserName = User.Identity!.Name });
+            var result = await Mediator.Send(new GetByUserNameQuery { UserName = User.Identity!.Name });
 
             if (result.IsSuccess)
                 return Ok(result.Value);

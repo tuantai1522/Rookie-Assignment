@@ -2,9 +2,9 @@ using MediatR;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.Common;
 
-namespace Rookie.Application.Users.Queries.GetByEmailQuery
+namespace Rookie.Application.Users.Queries.GetByUserNameQuery
 {
-    public class GetByEmailQuery : IRequest<Result<UserLoginVm>>
+    public class GetByUserNameQuery : IRequest<Result<UserLoginVm>>
     {
         public string UserName { get; set; }
     }

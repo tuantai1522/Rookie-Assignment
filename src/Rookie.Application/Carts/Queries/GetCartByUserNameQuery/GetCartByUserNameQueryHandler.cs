@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Carts.ViewModels;
 using Rookie.Application.Contracts.Infrastructure;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CartEntity;
 using Rookie.Domain.Common;
@@ -14,16 +15,16 @@ namespace Rookie.Application.Carts.Queries.GetCartByUserNameQuery
     public class GetCartByUserNameQueryHandler : IRequestHandler<GetCartByUserNameQuery, Result<CartVm>>
     {
         private readonly ICartService _cartService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
 
         public GetCartByUserNameQueryHandler(ICartService cartService,
-                                    UserManager<ApplicationUser> userManager,
+                                    IUserRepository userRepository,
                                     IMapper mapper)
         {
             _cartService = cartService;
-            _userManager = userManager;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -37,13 +38,11 @@ namespace Rookie.Application.Carts.Queries.GetCartByUserNameQuery
             if (validationResult.IsValid == false)
                 return Result.Failure<CartVm>(CartErrors.ChangeCartQuantityInvalidData);
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
 
             //can not find user
             if (user is null)
                 return Result.Failure<CartVm>(CartErrors.CanNotFindUser);
-
 
             var cart = await _cartService.GetCart(user.UserName);
 
