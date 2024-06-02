@@ -15,6 +15,5 @@ namespace Rookie.Domain.OrderEntity
         public decimal SubTotal { get; set; }
         public decimal DeliveryFee { get; set; }
         public ICollection<OrderItem>? OrderItems { get; set; } = [];
-        public decimal GetTotal() => this.SubTotal + this.DeliveryFee;
     }
 }

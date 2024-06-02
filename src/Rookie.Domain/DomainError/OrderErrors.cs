@@ -24,5 +24,9 @@ namespace Rookie.Domain.DomainError
         public static readonly Error CartEmpty = new Error(
             "Order.CartEmpty",
             "Cart is empty. Please add more to order");
+
+        public static readonly Error QueryOrderInvalidData = new Error(
+            "Order.QueryOrderInvalidData",
+            "Info you provide to query orders is not valid");
     }
 }

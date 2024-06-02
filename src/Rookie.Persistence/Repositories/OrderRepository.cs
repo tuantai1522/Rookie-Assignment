@@ -18,7 +18,9 @@ namespace Rookie.Persistence.Repositories
         {
             var orderList = _context.Orders
                                 .FilterDate(orderParams.DateStart, orderParams.DateEnd)
-                                .FilterTotal(orderParams.MinTotal, orderParams.MaxTotal);
+                                .FilterTotal(orderParams.MinTotal, orderParams.MaxTotal)
+                                .Sort(orderParams.OrderBy)
+                                .AsQueryable();
 
             //Pagination
             var orders = await PagedList<Order>.ToPagedList(orderList, orderParams.PageNumber,

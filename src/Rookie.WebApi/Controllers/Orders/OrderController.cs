@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Orders.Commands.CreateOrderCommand;
 using Rookie.Application.Orders.Queries.GetByIdQuery;
+using Rookie.Application.Orders.Queries.GetListQuery;
+using Rookie.Domain.OrderEntity;
 using Rookie.WebApi.Controllers.Orders.Request;
 namespace Rookie.WebApi.Controllers.Orders
 {
@@ -9,6 +11,19 @@ namespace Rookie.WebApi.Controllers.Orders
     [ApiController]
     public class OrderController : BaseApiController
     {
+        [HttpGet]
+        [Authorize(Policy = "RequireAdminRole")]
+        public async Task<IActionResult> GetAllOrders([FromQuery] OrderParams OrderParams)
+        {
+            var result = await Mediator.Send(new GetListQuery { OrderParams = OrderParams });
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+            else
+                return BadRequest(new { Error = result.Error.Message });
+        }
+
         [HttpGet("{id}")]
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> GetOrderById(string id)
