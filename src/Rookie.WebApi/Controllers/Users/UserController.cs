@@ -13,7 +13,7 @@ namespace Rookie.WebApi.Controllers.Users
     public class UserController : BaseApiController
     {
         [HttpPost("LoginUser")]
-        public async Task<IActionResult> LoginUser([FromForm] LoginUserRequest request)
+        public async Task<IActionResult> LoginUser(LoginUserRequest request)
         {
             var result = await Mediator.Send(new LoginCommand
             {
@@ -28,7 +28,7 @@ namespace Rookie.WebApi.Controllers.Users
         }
 
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> RegisterUser([FromForm] RegisterUserRequest request)
+        public async Task<IActionResult> RegisterUser(RegisterUserRequest request)
         {
             var result = await Mediator.Send(new RegisterCommand
             {

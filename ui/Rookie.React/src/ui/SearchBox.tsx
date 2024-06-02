@@ -9,6 +9,7 @@ const SearchBox = ({ title, textValue, onChange }: Props) => {
   return (
     <>
       <TextField
+        autoFocus
         fullWidth
         label={title}
         onChange={onChange}

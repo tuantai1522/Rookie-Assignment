@@ -13,7 +13,7 @@ namespace Rookie.WebApi.Controllers.Images
     {
         [HttpPost("CreateImage")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> CreateImage([FromQuery] CreateRequest request)
+        public async Task<IActionResult> CreateImage([FromForm] CreateRequest request)
         {
             var result = await Mediator.Send(new CreateImageCommand
             {

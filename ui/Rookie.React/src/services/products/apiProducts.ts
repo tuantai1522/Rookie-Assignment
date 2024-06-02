@@ -14,7 +14,7 @@ export const productApi = createApi({
   endpoints: (builder) => ({
     getAllProducts: builder.query<ProductResponse, ProductParams | void>({
       query: (args: ProductParams) => ({
-        url: "/api/product",
+        url: "/api/product/GetAllProducts",
         method: "GET",
         params: {
           OrderBy: args.orderBy,
@@ -49,7 +49,7 @@ export const productApi = createApi({
 
     getProduct: builder.query<Product, string>({
       query: (args) => ({
-        url: `/api/product/${args}`,
+        url: `/api/product/GetCategoryById/?ProductId=${args}`,
         method: "GET",
       }),
       providesTags: (result, error, id) => [{ type: "Products", id }],
@@ -57,7 +57,7 @@ export const productApi = createApi({
 
     addProduct: builder.mutation<string, FormData>({
       query: (body) => ({
-        url: "/api/product",
+        url: "/api/product/CreateProduct",
         method: "POST",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -69,7 +69,7 @@ export const productApi = createApi({
 
     deleteProduct: builder.mutation<number, string>({
       query: (id) => ({
-        url: `/api/product/?id=${id}`,
+        url: `/api/product/DeleteProductById?ProductId=${id}`,
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -80,7 +80,7 @@ export const productApi = createApi({
 
     updateProduct: builder.mutation<Product, FormData>({
       query: (body) => ({
-        url: `/api/product/`,
+        url: `/api/product/UpdateProductById`,
         method: "PUT",
         headers: {
           Authorization: `Bearer ${getToken()}`,

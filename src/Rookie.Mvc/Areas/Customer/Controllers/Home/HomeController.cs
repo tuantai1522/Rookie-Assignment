@@ -13,7 +13,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Home
         {
             //call products
             List<ProductVm> productList = new List<ProductVm>();
-            HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress + $"/product");
+            HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress + $"/product/GetAllProducts");
 
             if (response1.IsSuccessStatusCode)
             {
@@ -33,7 +33,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Home
 
             //call categories
             List<CategoryVm> categoryList = new List<CategoryVm>();
-            HttpResponseMessage response2 = await _client.GetAsync(_client.BaseAddress + "/category");
+            HttpResponseMessage response2 = await _client.GetAsync(_client.BaseAddress + "/category/GetAllCategories");
             if (response2.IsSuccessStatusCode)
             {
                 string data = await response2.Content.ReadAsStringAsync();
@@ -51,7 +51,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Home
                 return NotFound();
 
             ProductVm product = new ProductVm();
-            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/product/{id}");
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/product/GetCategoryById?ProductId={id}");
             if (response.IsSuccessStatusCode)
             {
                 string data = await response.Content.ReadAsStringAsync();

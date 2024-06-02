@@ -11,7 +11,7 @@ export const mainImageApi = createApi({
   endpoints: (builder) => ({
     updateMainImage: builder.mutation<string, FormData>({
       query: (body) => ({
-        url: `/api/main-image`,
+        url: `/api/main-image/UpdateMainImage`,
         method: "PUT",
         headers: {
           Authorization: `Bearer ${getToken()}`,

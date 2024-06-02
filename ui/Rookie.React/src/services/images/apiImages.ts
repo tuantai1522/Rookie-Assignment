@@ -11,7 +11,7 @@ export const imageApi = createApi({
   endpoints: (builder) => ({
     addImage: builder.mutation<string, FormData>({
       query: (body) => ({
-        url: `/api/image`,
+        url: `/api/image/CreateImage`,
         method: "POST",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -23,7 +23,7 @@ export const imageApi = createApi({
 
     deleteImage: builder.mutation<number, string>({
       query: (id) => ({
-        url: `/api/image/?id=${id}`,
+        url: `/api/image/DeleteImage/?ImageId=${id}`,
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,

@@ -53,7 +53,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Cart
             StringContent stringContent = new StringContent(JsonConvert.SerializeObject(changeCartDto),
                                                             Encoding.UTF8, "application/json");
 
-            HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + $"/cart",
+            HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + $"/cart/ChangeCartQuantity",
                                                                         stringContent);
 
             string info = await response.Content.ReadAsStringAsync();
