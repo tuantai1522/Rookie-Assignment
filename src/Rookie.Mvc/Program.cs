@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+
+
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
     {
