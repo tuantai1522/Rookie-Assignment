@@ -30,7 +30,7 @@ namespace Rookie.Application.Users.Queries.GetByUserNameQuery
             if (validationResult.IsValid == false)
                 return Result.Failure<UserLoginVm>(UserErrors.NotEnoughInfo);
 
-            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName), "ApplicationUserAddresses");
 
             //can not find user
             if (user is null)
@@ -50,7 +50,6 @@ namespace Rookie.Application.Users.Queries.GetByUserNameQuery
             );
 
             return UserLoginVm;
-
         }
     }
 }

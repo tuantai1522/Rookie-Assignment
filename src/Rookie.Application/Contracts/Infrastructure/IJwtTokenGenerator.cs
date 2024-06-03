@@ -1,3 +1,4 @@
+using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 
 namespace Rookie.Application.Contracts.Infrastructure

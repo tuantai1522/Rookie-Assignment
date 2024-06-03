@@ -36,7 +36,7 @@ namespace Rookie.Application.Users.Commands.LoginCommand
                 return Result.Failure<UserLoginVm>(UserErrors.NotEnoughInfo);
 
 
-            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
+            var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName), "ApplicationUserAddresses");
 
             //can not find user
             if (user is null || !await _userRepository.CheckPasswordValid(user, request.Password))

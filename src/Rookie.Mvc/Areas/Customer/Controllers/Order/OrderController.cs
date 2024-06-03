@@ -4,8 +4,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Rookie.Application.Users.ViewModels;
 using Rookie.Mvc.Areas.Customer.Controllers.Common;
 using Rookie.Mvc.Areas.Customer.Models.Cart;
+using Rookie.Mvc.Areas.Customer.Models.Order;
 using Rookie.Mvc.Interface;
 using Rookie.Mvc.ViewModels;
 
@@ -40,10 +42,26 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
                 cart = JsonConvert.DeserializeObject<CartVm>(data);
             }
 
+            //call current address
+            List<UserAddressVm> addressList = new List<UserAddressVm>();
+
+
+            // Create a new HttpClient and set the authorization header with the bearer token
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            // Make a GET request to the Web API endpoint
+            HttpResponseMessage responseAddress = await _client.GetAsync(_client.BaseAddress + "/user/GetAddressUser");
+            if (responseAddress.IsSuccessStatusCode)
+            {
+                // Read the responseAddress content and deserialize it into a CartVm object
+                string data = await responseAddress.Content.ReadAsStringAsync();
+                addressList = JsonConvert.DeserializeObject<List<UserAddressVm>>(data);
+            }
+
+            ViewData["addressList"] = addressList;
+
             return View(cart);
         }
-
-
 
         [HttpPost]
         [Authorize(Policy = "RequireCustomerRole")]
