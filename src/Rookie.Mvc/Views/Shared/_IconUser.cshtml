@@ -1,0 +1,10 @@
+@if (User.Identity.IsAuthenticated){
+
+  <a href="@Url.Action("ListOrder", "Order", new { area = "Customer" })">
+    <div class="flex-w flex-r-m">
+      <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+        <i class="zmdi zmdi-accounts"></i>
+      </div>
+    </div>
+  </a>
+}

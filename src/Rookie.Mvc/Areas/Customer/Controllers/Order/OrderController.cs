@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Rookie.Application.Users.ViewModels;
+using Rookie.Domain.Common;
 using Rookie.Mvc.Areas.Customer.Controllers.Common;
 using Rookie.Mvc.Areas.Customer.Models.Cart;
 using Rookie.Mvc.Areas.Customer.Models.Order;
 using Rookie.Mvc.Interface;
 using Rookie.Mvc.ViewModels;
+using Address = Rookie.Mvc.Areas.Customer.Models.Order.Address;
 
 namespace Rookie.Mvc.Areas.Customer.Controllers.Order
 {
@@ -62,6 +64,46 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             ViewData["addressList"] = addressList;
 
             return View(cart);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "RequireCustomerRole")]
+        public async Task<IActionResult> ListOrder(int CurPage)
+        {
+            List<OrderVm> orders = new List<OrderVm>();
+
+            if (CurPage == 0)
+                CurPage = 1;
+
+            string accessToken = Request.Cookies["Jwt"];
+
+            // Create a new HttpClient and set the authorization header with the bearer token
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            // Make a GET request to the Web API endpoint
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetOrdersById?PageNumber={CurPage}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content and deserialize it into a CartVm object
+                string data = await response.Content.ReadAsStringAsync();
+                orders = JsonConvert.DeserializeObject<List<OrderVm>>(data);
+
+                //get info of pagination from current api
+                string paginationHeader = response.Headers.GetValues("pagination").FirstOrDefault();
+                MetaData paginationData = JsonConvert.DeserializeObject<MetaData>(paginationHeader);
+                int curPage = paginationData.CurPage;
+                int totalPage = paginationData.TotalPage;
+                int pageSize = paginationData.PageSize;
+                ViewData["curPage"] = curPage;
+                ViewData["totalPage"] = totalPage;
+                ViewData["pageSize"] = pageSize;
+
+                if (CurPage == 0 || CurPage == totalPage + 1)
+                    return RedirectToAction("ListOrder");
+
+            }
+
+            return View(orders);
         }
 
         [HttpPost]

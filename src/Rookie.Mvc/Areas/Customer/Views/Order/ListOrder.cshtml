@@ -1,0 +1,97 @@
+@model IEnumerable<Rookie.Mvc.Areas.Customer.Models.Order.OrderVm>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var totalPage = ViewData["totalPage"] != null ? (int)ViewData["totalPage"] : 0;
+    var curPage = ViewData["curPage"] != null ? (int)ViewData["curPage"] : 0; 
+}
+
+<div class="container m-t-100">
+
+	<!-- breadcrumb -->
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="/Customer/Cart/Index" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+
+			<span class="stext-109 cl4">
+				Order
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</span>
+		</div>
+	</div>
+		
+
+	<!-- Order -->
+	<div class="bg0 p-t-75 p-b-85">
+			<div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-xl-12 m-lr-auto m-b-50">
+              <div class="m-l-25 m-r--38 m-lr-0-xl">
+                <div class="wrap-table-shopping-cart">
+                  <table class="table-shopping-cart">
+                    <tr class="table_head">
+                      <th class="column-1 text-center w-25">Order Date</th>
+                      <th class="column-2 text-center w-25">Shipping Address</th>
+                      <th class="column-3 text-center">Sub Total</th>
+                      <th class="column-4 text-center">Delivery Fee</th>
+                      <th class="column-5 text-center">Total Price</th>
+                      <th class="column-6 text-center">Product Quantity</th>
+                    </tr>
+                      @foreach(var item in @Model)
+                      {
+                        <tr class="table_row">
+                          <td class="column-1 text-center">@item.OrderDate</td>
+                          @{
+                            var address = @item.ShippingAddress.Value + ", " + 
+                                           @item.ShippingAddress.City + ", " +
+                                           @item.ShippingAddress.Country + ", " + 
+                                           @item.ShippingAddress.ZipCode; 
+                          }
+                          <td class="column-2 text-center">@address</td>
+
+                          <td class="column-3 text-center">
+                            @item.SubTotal.ToString("C2", new System.Globalization.CultureInfo("en-US"))
+                          </td>
+                          <td class="column-4 text-center">
+                            @item.DeliveryFee.ToString("C2", new System.Globalization.CultureInfo("en-US"))
+
+                          </td>
+                          <td class="column-5 text-center">
+                              @{
+                                  var total = item.SubTotal + item.DeliveryFee;
+                              }
+                              @total.ToString("C2", new System.Globalization.CultureInfo("en-US"))
+                          </td>
+
+                          <td class="column-5">@item.OrderItems.Count</td>
+                        </tr>
+                      }
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+
+            <div class="col-12 d-flex align-items-center justify-content-center mt-4">
+              <form method="get" action="/Customer/Order/ListOrder" id="paginationForm">
+                <ul id="pagination">
+                  <button type="submit" name="CurPage" value="@(@curPage - 1)" class="m-r-5 btn btn-primary @(totalPage == 0 || @curPage == 1 ? "disabled" : "")">
+                      Previous
+                  </button>
+                  <button type="submit" name="CurPage" value="@(@curPage + 1)" class="btn btn-primary @(totalPage == 0 || @curPage == @totalPage ? "disabled" : "")">
+                      Next
+                  </button>
+                </ul>
+              </form>
+            </div>
+        </div>
+			</div>
+
+	</div>
+
+</div>

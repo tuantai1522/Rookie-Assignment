@@ -1,6 +1,8 @@
 using AutoMapper;
+using Rookie.Application.Orders.ViewModels;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
+using Rookie.Domain.OrderEntity;
 
 namespace Rookie.Application.Users.Mappers
 {
@@ -15,6 +17,7 @@ namespace Rookie.Application.Users.Mappers
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.ApplicationUserAddresses, opt => opt.MapFrom(src => src.ApplicationUserAddresses))
+                .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders))
                 .ForMember(dest => dest.Token, opt => opt.Ignore());
 
 
@@ -26,6 +29,9 @@ namespace Rookie.Application.Users.Mappers
 
             CreateMap<ApplicationUserAddress, UserAddressVm>()
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
+
+            CreateMap<Order, OrderVm>()
+                .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
         }
     }
 }

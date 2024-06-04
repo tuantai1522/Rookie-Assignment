@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Orders.Commands.CreateOrderCommand;
@@ -25,14 +26,17 @@ namespace Rookie.WebApi.Controllers.Orders
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpGet("GetOrderById")]
+        [HttpGet("GetOrdersById")]
         [Authorize(Policy = "RequireCustomerRole")]
-        public async Task<IActionResult> GetOrderById([FromQuery] GetByIdRequest request)
+        public async Task<IActionResult> GetOrdersById([FromQuery] OrderParams OrderParams)
         {
-            var result = await Mediator.Send(new GetByIdQuery { OrderId = request.OrderId, UserName = User.Identity!.Name });
+            var result = await Mediator.Send(new GetByIdQuery { UserName = User.Identity!.Name, OrderParams = OrderParams });
 
             if (result.IsSuccess)
+            {
+                Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
                 return Ok(result.Value);
+            }
             else
                 return BadRequest(new { Error = result.Error.Message });
         }

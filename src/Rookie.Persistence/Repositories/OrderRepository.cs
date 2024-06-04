@@ -22,9 +22,6 @@ namespace Rookie.Persistence.Repositories
                                 .Sort(orderParams.OrderBy)
                                 .AsQueryable();
 
-            //Pagination
-            var orders = await PagedList<Order>.ToPagedList(orderList, orderParams.PageNumber,
-                                            orderParams.PageSize);
 
             if (!string.IsNullOrEmpty(includeProperties))
             {
@@ -36,6 +33,48 @@ namespace Rookie.Persistence.Repositories
                 }
             }
 
+            //Lấy object Product
+            orderList = orderList
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product);
+
+
+            //Pagination
+            var orders = await PagedList<Order>.ToPagedList(orderList, orderParams.PageNumber,
+                                            orderParams.PageSize);
+
+            return orders;
+        }
+
+        public async Task<PagedList<Order>> GetListById(Expression<Func<Order, bool>> filter, OrderParams orderParams, string includeProperties = null)
+        {
+            var orderList = _context.Orders
+                    .Where(filter)
+                    .FilterDate(orderParams.DateStart, orderParams.DateEnd)
+                    .FilterTotal(orderParams.MinTotal, orderParams.MaxTotal)
+                    .Sort(orderParams.OrderBy)
+                    .AsQueryable();
+
+
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                //there are multiple includes
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    orderList = orderList.Include(includeProp);
+                }
+            }
+
+            //Lấy object Product
+            orderList = orderList
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product);
+
+            //Pagination
+            var orders = await PagedList<Order>.ToPagedList(orderList, orderParams.PageNumber,
+                                            orderParams.PageSize);
 
             return orders;
         }

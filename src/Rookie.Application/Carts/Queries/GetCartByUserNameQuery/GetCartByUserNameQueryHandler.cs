@@ -1,11 +1,8 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Carts.ViewModels;
 using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Application.Contracts.Persistence;
-using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CartEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
