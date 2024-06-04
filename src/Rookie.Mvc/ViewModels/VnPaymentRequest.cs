@@ -1,3 +1,5 @@
+using Rookie.Mvc.Areas.Customer.Models.Order;
+
 namespace Rookie.Mvc.ViewModels
 {
     public class VnPaymentRequest
@@ -8,5 +10,6 @@ namespace Rookie.Mvc.ViewModels
         public double Total { get; set; }
 
         public DateTime CreatedDate { get; set; }
+        public Address Address { get; set; }
     }
 }

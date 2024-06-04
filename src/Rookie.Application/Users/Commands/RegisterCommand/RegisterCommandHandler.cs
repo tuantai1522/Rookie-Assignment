@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;

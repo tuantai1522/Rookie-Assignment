@@ -81,7 +81,7 @@ namespace Rookie.Application.Orders.Commands.CreateOrderCommand
             };
 
             _orderRepository.Add(order);
-            // await _cartService.ClearCart(request.UserName);
+            await _cartService.ClearCart(request.UserName);
 
 
             return order.Id;

@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -65,8 +66,13 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
 
         [HttpPost]
         [Authorize(Policy = "RequireCustomerRole")]
-        public async Task<IActionResult> MakeOrder()
+        public async Task<IActionResult> MakeOrder(Address model)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = $"Please provide address to order";
+                return RedirectToAction("Index");
+            }
             CartVm cart = new CartVm();
 
             string accessToken = Request.Cookies["Jwt"];
@@ -89,7 +95,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
                     Description = "Make an order",
                     Total = (double)cart.TotalPrice,
                     CreatedDate = DateTime.Now,
-
+                    Address = model,
                 };
                 return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
             }
@@ -110,7 +116,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
         }
 
         [Authorize(Policy = "RequireCustomerRole")]
-        public IActionResult PaymentBack()
+        public async Task<IActionResult> PaymentBack()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
 
@@ -120,7 +126,22 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
                 return RedirectToAction("PaymentFail");
             }
 
-            TempData["SuccessMessage"] = $"Thanh toán VN Pay thành công";
+            var addressJson = response.OrderDescription;
+            var address = JsonConvert.DeserializeObject<Address>(addressJson);
+
+            var ShippingAddress = new ShippingAddressVm(address);
+
+            StringContent stringContent = new StringContent(JsonConvert.SerializeObject(ShippingAddress),
+                                                Encoding.UTF8, "application/json");
+
+            HttpResponseMessage responseCreateOrder = await _client.PostAsync(_client.BaseAddress + $"/order/CreateOrder",
+                                                                        stringContent);
+
+            string info = await responseCreateOrder.Content.ReadAsStringAsync();
+
+            dynamic data = JsonConvert.DeserializeObject<dynamic>(info);
+
+            TempData["SuccessMessage"] = $"Order with id {data.value} is made successfully";
             return RedirectToAction("PaymentSuccess");
 
         }
