@@ -81,7 +81,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             // Make a GET request to the Web API endpoint
-            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetOrdersById?PageNumber={CurPage}");
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetListByIdQuery?PageNumber={CurPage}");
             if (response.IsSuccessStatusCode)
             {
                 // Read the response content and deserialize it into a CartVm object
@@ -104,6 +104,30 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             }
 
             return View(orders);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "RequireCustomerRole")]
+        public async Task<IActionResult> GetOrderDetails(string OrderId)
+        {
+            OrderVm order = new OrderVm();
+
+            string accessToken = Request.Cookies["Jwt"];
+
+            // Create a new HttpClient and set the authorization header with the bearer token
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+            // Make a GET request to the Web API endpoint
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetByIdQuery?OrderId={OrderId}");
+            if (response.IsSuccessStatusCode)
+            {
+                // Read the response content and deserialize it into a CartVm object
+                string data = await response.Content.ReadAsStringAsync();
+                order = JsonConvert.DeserializeObject<OrderVm>(data);
+            }
+
+            return View(order);
+
         }
 
         [HttpPost]

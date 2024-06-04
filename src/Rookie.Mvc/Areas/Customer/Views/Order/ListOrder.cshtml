@@ -39,7 +39,7 @@
                       <th class="column-3 text-center">Sub Total</th>
                       <th class="column-4 text-center">Delivery Fee</th>
                       <th class="column-5 text-center">Total Price</th>
-                      <th class="column-6 text-center">Product Quantity</th>
+                      <th class="column-6">Action</th>
                     </tr>
                       @foreach(var item in @Model)
                       {
@@ -67,7 +67,11 @@
                               @total.ToString("C2", new System.Globalization.CultureInfo("en-US"))
                           </td>
 
-                          <td class="column-5">@item.OrderItems.Count</td>
+                          <td class="column-6 text center">
+                            <form method="get" action="/Customer/Order/GetOrderDetails" id="paginationForm">
+                                <button type="submit" name="OrderId" class="m-r-5 btn btn-secondary" value="@item.Id">Get details</button>
+                            </form>
+                          </td>
                         </tr>
                       }
                   </table>

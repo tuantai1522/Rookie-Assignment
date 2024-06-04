@@ -96,6 +96,11 @@ namespace Rookie.Persistence.Repositories
                 }
             }
 
+            //Lấy object Product
+            query = query
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product);
+
             return await query.FirstOrDefaultAsync();
         }
     }

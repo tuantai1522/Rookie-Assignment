@@ -27,7 +27,8 @@ namespace Rookie.Application.Orders.Queries.GetListQuery
             if (validationResult.IsValid == false)
                 return Result.Failure<PagedList<OrderVm>>(OrderErrors.QueryOrderInvalidData);
 
-            var orders = await _orderRepository.GetAll(request.OrderParams, includeProperties: "ApplicationUser,OrderItems");
+            var orders = await _orderRepository.GetAll(request.OrderParams,
+                                includeProperties: "ApplicationUser,OrderItems");
 
             var productVms = _mapper.Map<PagedList<OrderVm>>(orders);
 

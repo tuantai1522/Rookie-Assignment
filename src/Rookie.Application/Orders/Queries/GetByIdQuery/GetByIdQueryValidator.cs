@@ -10,21 +10,12 @@ namespace Rookie.Application.Orders.Queries.GetByIdQuery
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(x => x.OrderParams!.PageNumber)
-                .GreaterThan(0);
-
-            RuleFor(x => x.OrderParams!.PageSize)
-                .GreaterThan(0);
-
-            RuleFor(x => x.OrderParams!.MinTotal)
-                .GreaterThan(0);
-
-            RuleFor(x => x.OrderParams!.MaxTotal)
-                .GreaterThan(0);
-
-            RuleFor(x => x.OrderParams!.OrderBy)
+            RuleFor(x => x.OrderId)
                 .NotEmpty()
                 .NotNull();
+
+            RuleFor(x => x.OrderId)
+                .Must(OrderId => Guid.TryParse(OrderId, out _));
         }
     }
 }
