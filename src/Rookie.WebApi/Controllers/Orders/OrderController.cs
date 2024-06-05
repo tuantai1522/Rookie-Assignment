@@ -21,6 +21,7 @@ namespace Rookie.WebApi.Controllers.Orders
             var result = await Mediator.Send(new GetListQuery { OrderParams = OrderParams });
             if (result.IsSuccess)
             {
+                Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
                 return Ok(result.Value);
             }
             else

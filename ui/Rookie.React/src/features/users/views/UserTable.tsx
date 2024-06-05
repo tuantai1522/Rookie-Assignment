@@ -85,7 +85,7 @@ const UserTable = () => {
           <Grid
             container
             alignItems="center"
-            justifyContent="flex-end"
+            justifyContent="flex-start"
             sx={{ marginTop: "2rem" }}
           >
             <Grid item>

@@ -17,7 +17,6 @@ namespace Rookie.Persistence.Repositories
         public async Task<PagedList<Order>> GetAll(OrderParams orderParams, string includeProperties = null)
         {
             var orderList = _context.Orders
-                                .FilterDate(orderParams.DateStart, orderParams.DateEnd)
                                 .FilterTotal(orderParams.MinTotal, orderParams.MaxTotal)
                                 .Sort(orderParams.OrderBy)
                                 .AsQueryable();
@@ -50,7 +49,6 @@ namespace Rookie.Persistence.Repositories
         {
             var orderList = _context.Orders
                     .Where(filter)
-                    .FilterDate(orderParams.DateStart, orderParams.DateEnd)
                     .FilterTotal(orderParams.MinTotal, orderParams.MaxTotal)
                     .Sort(orderParams.OrderBy)
                     .AsQueryable();

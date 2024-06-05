@@ -5,6 +5,7 @@ import { categoryApi } from "../services/categories/apiCategories";
 import { userApi } from "../services/users/apiUsers";
 import { imageApi } from "../services/images/apiImages";
 import { mainImageApi } from "../services/mainImages/apiMainImages";
+import { orderApi } from "../services/orders/apiOrders";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [imageApi.reducerPath]: imageApi.reducer,
     [mainImageApi.reducerPath]: mainImageApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
@@ -23,7 +25,8 @@ export const store = configureStore({
       productApi.middleware,
       categoryApi.middleware,
       userApi.middleware,
-      mainImageApi.middleware
+      mainImageApi.middleware,
+      orderApi.middleware
     ),
 });
 

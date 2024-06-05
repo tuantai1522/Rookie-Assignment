@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import OrderTable from "./OrderTable";
 
 const Order = () => {
-  return <Typography>Order</Typography>;
+  return <OrderTable />;
 };
 
 export default Order;
