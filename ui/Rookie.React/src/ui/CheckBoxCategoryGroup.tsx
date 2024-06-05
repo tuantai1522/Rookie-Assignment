@@ -15,7 +15,7 @@ interface Props {
   onChange: (event: any) => void;
 }
 
-const CheckBoxGroup = ({ title, checked, onChange }: Props) => {
+const CheckBoxCategoryGroup = ({ title, checked, onChange }: Props) => {
   const { data, isFetching } = useGetAllCategoriesQuery();
 
   const [checkedItems, setCheckedItems] = useState(checked || []);
@@ -62,4 +62,4 @@ const CheckBoxGroup = ({ title, checked, onChange }: Props) => {
   );
 };
 
-export default CheckBoxGroup;
+export default CheckBoxCategoryGroup;

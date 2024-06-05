@@ -1,9 +1,12 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Users.Commands.LoginCommand;
 using Rookie.Application.Users.Commands.RegisterCommand;
 using Rookie.Application.Users.Queries.GetAddressByUserNameQuery;
 using Rookie.Application.Users.Queries.GetByUserNameQuery;
+using Rookie.Application.Users.Queries.GetListQuery;
+using Rookie.Domain.ApplicationUserEntity;
 using Rookie.WebApi.Controllers.Base;
 using Rookie.WebApi.Controllers.Users.Request;
 
@@ -13,6 +16,20 @@ namespace Rookie.WebApi.Controllers.Users
     [ApiController]
     public class UserController : BaseApiController
     {
+        [HttpGet("GetAllUsers")]
+        [Authorize(Policy = "RequireAdminRole")]
+        public async Task<IActionResult> GetAllUsers([FromQuery] ApplicationUserParams ApplicationUserParams)
+        {
+            var result = await Mediator.Send(new GetListQuery { ApplicationUserParams = ApplicationUserParams });
+            if (result.IsSuccess)
+            {
+                Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
+                return Ok(result.Value);
+            }
+            else
+                return BadRequest(new { Error = result.Error.Message });
+        }
+
         [HttpPost("LoginUser")]
         public async Task<IActionResult> LoginUser(LoginUserRequest request)
         {
@@ -29,7 +46,7 @@ namespace Rookie.WebApi.Controllers.Users
         }
 
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> RegisterUser(RegisterUserRequest request)
+        public async Task<IActionResult> RegisterUser([FromForm] RegisterUserRequest request)
         {
             var result = await Mediator.Send(new RegisterCommand
             {
@@ -38,6 +55,7 @@ namespace Rookie.WebApi.Controllers.Users
                 LastName = request.LastName,
                 Password = request.Password,
                 UserName = request.UserName,
+                Role = request.Role,
             });
 
             if (result.IsSuccess)

@@ -6,12 +6,14 @@ interface INormalTextField {
   name: string;
   defaultValue?: string | "";
   isReadOnly?: boolean;
+  validate?: (value: string) => string | boolean;
 }
 const NormalTextField = ({
   label,
   name,
   defaultValue,
   isReadOnly,
+  validate,
 }: INormalTextField) => {
   const {
     register,
@@ -23,7 +25,9 @@ const NormalTextField = ({
       <TextField
         defaultValue={defaultValue}
         required
-        {...register(name)}
+        {...register(name, {
+          validate: validate ? validate : undefined,
+        })}
         fullWidth
         label={label}
         InputLabelProps={{

@@ -34,8 +34,6 @@ namespace Rookie.Application.Products.Queries.GetListQuery
 
             return Result.Success(productVms);
         }
-
-
     }
 
 }

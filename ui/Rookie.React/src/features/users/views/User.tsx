@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import UserTable from "./UserTable";
 
 const User = () => {
-  return <Typography>User</Typography>;
+  return <UserTable />;
 };
 
 export default User;

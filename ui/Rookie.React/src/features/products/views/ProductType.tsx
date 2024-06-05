@@ -1,4 +1,4 @@
-import CheckBoxGroup from "../../../ui/CheckBoxGroup";
+import CheckBoxCategoryGroup from "../../../ui/CheckBoxCategoryGroup";
 
 interface Props {
   checked: string[];
@@ -8,7 +8,7 @@ interface Props {
 const ProductType = ({ checked, onChange }: Props) => {
   return (
     <>
-      <CheckBoxGroup
+      <CheckBoxCategoryGroup
         title="Product categories"
         checked={checked}
         onChange={onChange}

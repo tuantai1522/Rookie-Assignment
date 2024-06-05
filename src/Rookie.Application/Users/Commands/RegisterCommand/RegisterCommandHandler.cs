@@ -53,7 +53,10 @@ namespace Rookie.Application.Users.Commands.RegisterCommand
             }
 
             //add role
-            await _userRepository.AddToRole(user, "Customer");
+            if (string.IsNullOrEmpty(request.Role))
+                await _userRepository.AddToRole(user, "Customer");
+            else
+                await _userRepository.AddToRole(user, "Admin");
 
             return _mapper.Map<UserRegisterVm>(user);
         }

@@ -20,6 +20,10 @@ namespace Rookie.Domain.DomainError
             "User.UserNameExisted",
             "This user name has already existed");
 
+        public static readonly Error QueryUserInvalidData = new Error(
+            "User.QueryUserInvalidData",
+            "Info you provide to query users is not valid");
+
         // Method to create custom error messages
         public static Error CreateCustomRegisterError(string customMessage)
         {

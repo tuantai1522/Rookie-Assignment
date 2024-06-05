@@ -62,7 +62,7 @@ namespace Rookie.WebApi.Controllers.Categories
 
         [HttpPut("UpdateCategoryById")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> UpdateCategoryById([FromQuery] UpdateRequest request)
+        public async Task<IActionResult> UpdateCategoryById([FromForm] UpdateRequest request)
         {
             var result = await Mediator.Send(new UpdateCategoryCommand
             {

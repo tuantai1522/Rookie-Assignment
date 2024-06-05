@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Contracts.Persistence;
+using Rookie.Application.Users.Extensions;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 
@@ -26,7 +27,8 @@ namespace Rookie.Persistence.Repositories
 
         public async Task<PagedList<ApplicationUser>> GetAll(ApplicationUserParams applicationUserParams, string includeProperties = null)
         {
-            var userList = this._userManager.Users.AsQueryable();
+            var userList = await this._userManager.Users
+                                .FilterByRolesAsync(_userManager, applicationUserParams.Role);
 
             if (!string.IsNullOrEmpty(includeProperties))
             {

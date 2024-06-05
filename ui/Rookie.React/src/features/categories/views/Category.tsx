@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import CategoryTable from "./CategoryTable";
 
 const Category = () => {
-  return <Typography>Category</Typography>;
+  return <CategoryTable />;
 };
 
 export default Category;

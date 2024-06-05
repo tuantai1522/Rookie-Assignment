@@ -7,11 +7,13 @@ interface IPasswordTextField {
   name: string;
   label: string;
   defaultValue?: string;
+  validate?: (value: string) => string | boolean;
 }
 const PasswordTextField = ({
   name,
   label,
   defaultValue,
+  validate,
 }: IPasswordTextField) => {
   const [visible, setVisible] = useState(false);
 
@@ -27,7 +29,9 @@ const PasswordTextField = ({
         type={visible ? "text" : "password"}
         defaultValue={defaultValue}
         required
-        {...register(name)}
+        {...register(name, {
+          validate: validate ? validate : undefined,
+        })}
         fullWidth
         label={label}
         InputLabelProps={{
