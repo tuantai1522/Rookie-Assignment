@@ -17,7 +17,11 @@ namespace Rookie.WebApi.Controllers.Categories
         [HttpGet("GetAllCategories")]
         public async Task<IActionResult> GetAllCategories()
         {
-            return Ok(await Mediator.Send(new GetListQuery()));
+            var result = await Mediator.Send(new GetListQuery());
+            if (result.IsSuccess)
+                return Ok(result.Value);
+            else
+                return BadRequest(new { Error = result.Error.Message });
         }
 
         [HttpGet("GetCategoryById")]

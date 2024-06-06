@@ -53,7 +53,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             // Make a GET request to the Web API endpoint
-            HttpResponseMessage responseAddress = await _client.GetAsync(_client.BaseAddress + "/user/GetAddressUser");
+            HttpResponseMessage responseAddress = await _client.GetAsync(_client.BaseAddress + "/address/GetAddressUser");
             if (responseAddress.IsSuccessStatusCode)
             {
                 // Read the responseAddress content and deserialize it into a CartVm object

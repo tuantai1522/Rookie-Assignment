@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Rookie.Application.Users.Queries.GetAddressByUserNameQuery
+namespace Rookie.Application.Addresses.Queries.GetAddressByUserNameQuery
 {
     public class GetAddressByUserNameValidator : AbstractValidator<GetAddressByUserNameQuery>
     {

@@ -6,7 +6,7 @@ using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 
-namespace Rookie.Application.Users.Queries.GetAddressByUserNameQuery
+namespace Rookie.Application.Addresses.Queries.GetAddressByUserNameQuery
 {
     public class GetAddressByUserNameQueryHandler : IRequestHandler<GetAddressByUserNameQuery, Result<ICollection<UserAddressVm>>>
     {

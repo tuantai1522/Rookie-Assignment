@@ -19,6 +19,8 @@ using Moq;
 using Rookie.Persistence.Repositories;
 using Microsoft.Data.SqlClient;
 using MediatR;
+using AutoFixture;
+using Rookie.Application.Enumerable;
 
 
 
@@ -26,8 +28,11 @@ namespace Rookie.Domain.Tests
 {
     public class SetupTest : IDisposable
     {
+
         protected readonly Mock<IMapper> _mockMapper;
+
         protected readonly ApplicationDbContext _dbContext;
+
         protected readonly Mock<IMediator> _mockMediator;
 
         protected readonly Mock<ICategoryRepository> _mockCategoryRepository;
@@ -42,8 +47,13 @@ namespace Rookie.Domain.Tests
 
         public SetupTest()
         {
+
+
             _mockMediator = new Mock<IMediator>();
             _mockMapper = new Mock<IMapper>();
+
+
+
 
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = "data source=.; initial catalog=Rookie; integrated security=true; Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true";
