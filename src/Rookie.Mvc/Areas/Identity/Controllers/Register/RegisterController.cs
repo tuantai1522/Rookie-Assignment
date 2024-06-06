@@ -28,33 +28,50 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Register
         {
             if (ModelState.IsValid)
             {
-                StringContent stringContent = new StringContent(JsonConvert.SerializeObject(data),
-                                                                Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + $"/user/RegisterUser",
-                                                                            stringContent);
-
-                string info = await response.Content.ReadAsStringAsync();
-
-                using (JsonDocument doc = JsonDocument.Parse(info))
+                using (var content = new MultipartFormDataContent())
                 {
-                    //username or password is not correct
-                    if (doc.RootElement.TryGetProperty("error", out JsonElement errorElement))
+                    content.Add(new StringContent(data.Email), "Email");
+                    content.Add(new StringContent(data.FirstName), "FirstName");
+                    content.Add(new StringContent(data.LastName), "LastName");
+                    content.Add(new StringContent(data.PassWord), "Password");
+                    content.Add(new StringContent(data.UserName), "UserName");
+
+                    HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + $"/user/RegisterUser", content);
+
+                    if (!response.IsSuccessStatusCode)
                     {
-                        ViewBag.ErrorMessage = errorElement.GetString();
+                        ViewBag.ErrorMessage = $"Error: {response.StatusCode} - {response.ReasonPhrase}";
                         return View("Index", data); // Return to the login view with the current data and validation errors
                     }
 
+                    string info = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        using (JsonDocument doc = JsonDocument.Parse(info))
+                        {
+                            // Check if there is an error property in the response JSON
+                            if (doc.RootElement.TryGetProperty("error", out JsonElement errorElement))
+                            {
+                                ViewBag.ErrorMessage = errorElement.GetString();
+                                return View("Index", data); // Return to the login view with the current data and validation errors
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.ErrorMessage = "Error when registering.";
+                        return View("Index", data);
+                    }
+
+                    ViewBag.SuccessMessage = "Registered successfully";
+                    return View("Index");
                 }
-
-                ViewBag.SuccessMessage = "Register successfully";
-
-                return View("Index");
             }
 
-            ViewBag.ErrorMessage = "Please provide full infomration";
-            return View("Index", data); // Return to the login view with the current data and validation errors
+            ViewBag.SuccessMessage = "Register successfully";
 
+            return View("Index");
         }
 
     }

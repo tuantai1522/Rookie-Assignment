@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rookie.Domain.CategoryEntity;
+using Rookie.Application.Contracts.Persistence;
 
 namespace Rookie.Persistence.Repositories
 {

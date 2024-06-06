@@ -4,6 +4,7 @@ using Rookie.Application.Products.ViewModels;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
+using Rookie.Application.Contracts.Persistence;
 
 
 namespace Rookie.Application.Products.Queries.GetByIdQuery

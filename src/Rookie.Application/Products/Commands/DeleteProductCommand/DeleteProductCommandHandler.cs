@@ -37,7 +37,7 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
             //find all images related to this product 
             var images = await _imageRepository.GetAll(x => x.ProductId.Equals(new ProductId(request.ProductId)));
 
-            if (images == null)
+            if (images == null || !images.Any()) // Also check if the list is empty
                 return Result.Failure<int>(ProductErrors.NotFindImage);
 
             //delete on local
@@ -45,17 +45,10 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
 
 
             //delete on cloud
-            int check = 1;
             foreach (var image in images)
-            {
-                int temp = await _imageService.DeletePhoto(image.PublicId);
-                if (temp == 0)
-                {
-                    check = 0;
-                    break;
-                }
-            }
-            return check == 1 ? 1 : 0;
+                await _imageService.DeletePhoto(image.PublicId);
+            
+            return 1;
         }
     }
 }

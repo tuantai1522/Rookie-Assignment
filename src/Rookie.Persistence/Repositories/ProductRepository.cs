@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Rookie.Application.Products.Extensions;
 using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
+using Rookie.Application.Contracts.Persistence;
 
 namespace Rookie.Persistence.Repositories
 {

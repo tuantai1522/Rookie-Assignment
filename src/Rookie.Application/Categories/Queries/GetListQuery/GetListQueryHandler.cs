@@ -2,6 +2,7 @@ using AutoMapper;
 using MediatR;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Domain.CategoryEntity;
+using Rookie.Application.Contracts.Persistence;
 
 namespace Rookie.Application.Categories.Queries.GetListQuery
 {

@@ -1,4 +1,5 @@
 using MediatR;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;

@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
 using Rookie.Application.Contracts.Persistence;
+using Rookie.Domain.CategoryEntity;
 
-namespace Rookie.Domain.CategoryEntity
+namespace Rookie.Application.Contracts.Persistence
 {
     public interface ICategoryRepository : IGenericRepository<Category>
     {

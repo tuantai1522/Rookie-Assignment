@@ -4,6 +4,7 @@ using Rookie.Application.Categories.ViewModels;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
+using Rookie.Application.Contracts.Persistence;
 
 namespace Rookie.Application.Categories.Commands.UpdateCategoryCommand
 {

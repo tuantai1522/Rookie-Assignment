@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Rookie.Application.Categories.ViewModels;
+using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;

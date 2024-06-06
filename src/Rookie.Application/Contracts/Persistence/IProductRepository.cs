@@ -1,8 +1,9 @@
 using System.Linq.Expressions;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Common;
+using Rookie.Domain.ProductEntity;
 
-namespace Rookie.Domain.ProductEntity
+namespace Rookie.Application.Contracts.Persistence
 {
     public interface IProductRepository : IGenericRepository<Product>
     {

@@ -5,6 +5,7 @@ using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
+using Rookie.Application.Contracts.Persistence;
 
 namespace Rookie.Application.Products.Commands.UpdateProductCommand
 {
@@ -53,7 +54,6 @@ namespace Rookie.Application.Products.Commands.UpdateProductCommand
                 return _mapper.Map<Product, ProductVm>(ProductUpdated);
             else
                 return Result.Failure<ProductVm>(ProductErrors.NotFindProduct);
-
         }
     }
 }

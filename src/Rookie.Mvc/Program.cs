@@ -40,7 +40,6 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:Secret"]))
         };
     })
-    // this is the key piece!
     .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
     {
         // runs on each request

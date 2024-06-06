@@ -4,6 +4,8 @@ using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Domain.CartEntity;
 using Rookie.Domain.ProductEntity;
 using StackExchange.Redis;
+using Rookie.Application.Contracts.Persistence;
+
 namespace Rookie.Infrastructure.Carts
 {
     public class CartService : ICartService
