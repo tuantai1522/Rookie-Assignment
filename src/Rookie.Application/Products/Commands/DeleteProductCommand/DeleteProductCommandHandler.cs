@@ -37,7 +37,7 @@ namespace Rookie.Application.Products.Commands.DeleteProductCommand
             //find all images related to this product 
             var images = await _imageRepository.GetAll(x => x.ProductId.Equals(new ProductId(request.ProductId)));
 
-            if (images == null || !images.Any()) // Also check if the list is empty
+            if (images == null || !images.Any())
                 return Result.Failure<int>(ProductErrors.NotFindImage);
 
             //delete on local

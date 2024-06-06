@@ -1,8 +1,8 @@
 namespace Rookie.Application.Categories.ViewModels
 {
-    public sealed record CategoryVm(
-        string Id,
-        string Name,
-        string Description
-    );
+    public class CategoryVm {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }
