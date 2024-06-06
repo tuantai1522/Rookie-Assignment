@@ -1,11 +1,10 @@
 ﻿using Moq;
-using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
-using Rookie.Application.Carts.ViewModels;
-using Rookie.Application.Products.Commands.CreateProductCommand;
+using Rookie.Application.Users.Commands.RegisterCommand;
+using Rookie.Application.Users.Queries.GetAddressByUserNameQuery;
+using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
-using Rookie.Domain.CartEntity;
+using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
-using Rookie.Domain.ProductEntity;
 using Rookie.Domain.Tests;
 using System;
 using System.Collections.Generic;
@@ -14,21 +13,20 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Carts
+namespace Rookie.Application.Tests.Users
 {
-    public class GetCartByUserNameQueryHandlerTests : SetupTest
+    public class GetAddressByUserNameQueryHandlerTests : SetupTest
     {
         [Fact]
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetAddressByUserNameQuery
             {
                 UserName = "",
             };
-            
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+
+            var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
                 _mockMapper.Object
                 );
@@ -38,23 +36,22 @@ namespace Rookie.Application.Tests.Carts
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.ChangeCartQuantityInvalidData, result.Error);
+            Assert.Equal(UserErrors.NotEnoughInfo, result.Error);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserIsNotFound()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetAddressByUserNameQuery
             {
                 UserName = Guid.NewGuid().ToString(),
             };
 
-            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
+            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
                 .ReturnsAsync((ApplicationUser)null);
 
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+            var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
                 _mockMapper.Object
                 );
@@ -64,16 +61,14 @@ namespace Rookie.Application.Tests.Carts
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.CanNotFindUser, result.Error);
-
-
+            Assert.Equal(UserErrors.NotCorrectInfo, result.Error);
         }
 
         [Fact]
-        public async Task ReturnsSuccessResult_WhenCartIsFound()
+        public async Task ReturnsSuccessResult_WhenAddressIsNotFound()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetAddressByUserNameQuery
             {
                 UserName = Guid.NewGuid().ToString(),
             };
@@ -82,19 +77,14 @@ namespace Rookie.Application.Tests.Carts
             {
                 UserName = Guid.NewGuid().ToString(),
             };
-            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
+            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
                 .ReturnsAsync(user);
 
-            var cartVm = new CartVm()
-            {
-                TotalPrice = 0,
-                CartItems = new List<CartItemVm>()
-            };
-            _mockMapper.Setup(m => m.Map<Cart, CartVm>(It.IsAny<Cart>()))
-                .Returns(cartVm);
+            var listUserAddress = new List<UserAddressVm> { };
+            _mockMapper.Setup(mapper => mapper.Map<ICollection<UserAddressVm>>(user.ApplicationUserAddresses))
+                .Returns(listUserAddress);
 
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+            var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
                 _mockMapper.Object
                 );
@@ -104,7 +94,7 @@ namespace Rookie.Application.Tests.Carts
 
             // Assert
             Assert.True(result.IsSuccess);
-
+            Assert.NotNull(result.Value);
         }
     }
 }

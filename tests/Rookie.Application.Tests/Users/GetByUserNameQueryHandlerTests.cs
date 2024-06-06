@@ -1,11 +1,9 @@
 ﻿using Moq;
-using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
-using Rookie.Application.Carts.ViewModels;
-using Rookie.Application.Products.Commands.CreateProductCommand;
+using Rookie.Application.Users.Commands.LoginCommand;
+using Rookie.Application.Users.Queries.GetByUserNameQuery;
+using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
-using Rookie.Domain.CartEntity;
 using Rookie.Domain.DomainError;
-using Rookie.Domain.ProductEntity;
 using Rookie.Domain.Tests;
 using System;
 using System.Collections.Generic;
@@ -14,23 +12,23 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Carts
+namespace Rookie.Application.Tests.Users
 {
-    public class GetCartByUserNameQueryHandlerTests : SetupTest
+    public class GetByUserNameQueryHandlerTests : SetupTest
     {
         [Fact]
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetByUserNameQuery
             {
                 UserName = "",
             };
-            
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+
+            var handler = new GetByUserNameQueryHandler(
                 _mockUserRepository.Object,
-                _mockMapper.Object
+                _mockMapper.Object,
+                _mockJwtTokenGenerator.Object
                 );
 
             // Act
@@ -38,73 +36,80 @@ namespace Rookie.Application.Tests.Carts
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.ChangeCartQuantityInvalidData, result.Error);
+            Assert.Equal(UserErrors.NotEnoughInfo, result.Error);
         }
 
         [Fact]
-        public async Task ReturnsFailureResult_WhenUserIsNotFound()
+        public async Task ReturnsFailureResult_WhenInfoIsNotCorrect()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetByUserNameQuery
             {
                 UserName = Guid.NewGuid().ToString(),
             };
 
+
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync((ApplicationUser)null);
 
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+            var handler = new GetByUserNameQueryHandler(
                 _mockUserRepository.Object,
-                _mockMapper.Object
-                );
+                _mockMapper.Object,
+                _mockJwtTokenGenerator.Object
+            );
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.CanNotFindUser, result.Error);
-
-
+            Assert.Equal(UserErrors.NotCorrectInfo, result.Error);
         }
 
         [Fact]
-        public async Task ReturnsSuccessResult_WhenCartIsFound()
+        public async Task ReturnsSuccessResult_WhenUserIsFound()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
+            var request = new GetByUserNameQuery
             {
                 UserName = Guid.NewGuid().ToString(),
             };
 
             var user = new ApplicationUser()
             {
-                UserName = Guid.NewGuid().ToString(),
+                UserName = request.UserName,
             };
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(user);
 
-            var cartVm = new CartVm()
-            {
-                TotalPrice = 0,
-                CartItems = new List<CartItemVm>()
-            };
-            _mockMapper.Setup(m => m.Map<Cart, CartVm>(It.IsAny<Cart>()))
-                .Returns(cartVm);
+            var roles = new string[] { "Role1", "Role2" };
+            _mockUserRepository.Setup(repo => repo.GetRoles(user))
+                .ReturnsAsync(roles);
 
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
+
+            var userLoginVm = new UserLoginVm()
+            {
+                UserName = user.UserName,
+            };
+            _mockMapper.Setup(mapper => mapper.Map<UserLoginVm>(user))
+                .Returns(userLoginVm);
+
+            var handler = new GetByUserNameQueryHandler(
                 _mockUserRepository.Object,
-                _mockMapper.Object
-                );
+                _mockMapper.Object,
+                _mockJwtTokenGenerator.Object
+            );
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
             Assert.True(result.IsSuccess);
+            Assert.NotNull(result.Value);
 
         }
+
+
+
     }
 }

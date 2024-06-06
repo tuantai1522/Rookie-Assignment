@@ -72,12 +72,12 @@ namespace Rookie.Application.Tests.Products
         }
         private List<ProductVm> GetFakeProductVms()
         {
-            return new List<ProductVm>
-            {
+            return
+            [
                 new ProductVm { Id = "1", ProductName = "ProductVm 1" },
                 new ProductVm { Id = "2", ProductName = "ProductVm 2" },
                 new ProductVm { Id = "3", ProductName = "ProductVm 3" },
-            };
+            ];
         }
     }
 }
