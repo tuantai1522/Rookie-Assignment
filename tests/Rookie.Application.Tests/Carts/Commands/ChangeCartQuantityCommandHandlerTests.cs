@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Carts
+namespace Rookie.Application.Tests.Carts.Commands
 {
     public class ChangeCartQuantityCommandHandlerTests : SetupTest
     {

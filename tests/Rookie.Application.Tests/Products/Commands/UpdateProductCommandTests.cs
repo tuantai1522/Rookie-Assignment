@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Moq;
-using Rookie.Application.Contracts.Infrastructure;
-using Rookie.Application.Contracts.Persistence;
-using Rookie.Application.Images.ViewModels;
-using Rookie.Application.Products.Commands.CreateProductCommand;
+using Rookie.Application.Products.Commands.UpdateProductCommand;
+using Rookie.Application.Products.ViewModels;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.DomainError;
 using Rookie.Domain.ProductEntity;
@@ -16,15 +13,15 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Products
+namespace Rookie.Application.Tests.Products.Commands
 {
-    public class CreateProductCommandTests : SetupTest
+    public class UpdateProductCommandTests : SetupTest
     {
         [Fact]
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new CreateProductCommand
+            var request = new UpdateProductCommand
             {
                 CategoryId = Guid.NewGuid().ToString(),
                 Price = 123,
@@ -32,45 +29,41 @@ namespace Rookie.Application.Tests.Products
 
 
 
-            var handler = new CreateProductCommandHandler(
+            var handler = new UpdateProductCommandHandler(
                 _mockProductRepository.Object,
                 _mockCategoryRepository.Object,
-                _mockImageService.Object,
-                _mockImageRepository.Object,
-                _mockMainImageRepository.Object
-                );
+                _mockMapper.Object
+            );
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.CreateProductInvalidData, result.Error);
+            Assert.Equal(ProductErrors.UpdateProductInvalidData, result.Error);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenCategoryDoesNotExist()
         {
             // Arrange
-            var request = new CreateProductCommand
+            var request = new UpdateProductCommand
             {
-                CategoryId = Guid.NewGuid().ToString(), // Use any GUID for testing
+                Id = Guid.NewGuid().ToString(),
+                CategoryId = Guid.NewGuid().ToString(),
                 ProductName = "Test Product",
                 Description = "Test Description",
                 Price = 100,
                 QuantityInStock = 10,
-                FileImage = new Mock<IFormFile>().Object // Mock or create a sample IFormFile
             };
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync((Category)null);
 
-            var handler = new CreateProductCommandHandler(
+            var handler = new UpdateProductCommandHandler(
                 _mockProductRepository.Object,
                 _mockCategoryRepository.Object,
-                _mockImageService.Object,
-                _mockImageRepository.Object,
-                _mockMainImageRepository.Object
+                _mockMapper.Object
                 );
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
@@ -81,91 +74,98 @@ namespace Rookie.Application.Tests.Products
         }
 
         [Fact]
-        public async Task ReturnsFailureResult_WhenUploadImageFailed()
+        public async Task ReturnsFailureResult_WhenProductDoesNotExist()
         {
             // Arrange
-            var category = new Category
+            var category = new Category()
             {
-                Id = new CategoryId(Guid.NewGuid()),
-                Name = "Category 1"
+                Id = new CategoryId(Guid.NewGuid().ToString()),
+                Name = "Category 1",
             };
 
-
-            var request = new CreateProductCommand
+            var request = new UpdateProductCommand
             {
+                Id = Guid.NewGuid().ToString(),
                 CategoryId = category.Id.ToString(),
                 ProductName = "Test Product",
                 Description = "Test Description",
                 Price = 100,
                 QuantityInStock = 10,
-                FileImage = new Mock<IFormFile>().Object // Mock or create a sample IFormFile
             };
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(category);
 
-            ImageVm imageVm = new ImageVm()
-            {
-                Url = "",
-                PublicId = "",
-            };
-            _mockImageService.Setup(service => service.AddPhoto(It.IsAny<IFormFile>()))
-                .ReturnsAsync(imageVm);
+            _mockProductRepository.Setup(repo => repo.Update(It.IsAny<Product>()))
+                .ReturnsAsync(false);
 
-            var handler = new CreateProductCommandHandler(
+            var handler = new UpdateProductCommandHandler(
                 _mockProductRepository.Object,
                 _mockCategoryRepository.Object,
-                _mockImageService.Object,
-                _mockImageRepository.Object,
-                _mockMainImageRepository.Object
+                _mockMapper.Object
                 );
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.UploadImageFailed, result.Error);
+            Assert.Equal(ProductErrors.NotFindProduct, result.Error);
         }
 
         [Fact]
-        public async Task ReturnsSuccessResult_WhenProductIsCreated()
+        public async Task ReturnsSuccessResult_WhenProductIsUpdated()
         {
             // Arrange
-            var category = new Category
+            var category = new Category()
             {
-                Id = new CategoryId(Guid.NewGuid()),
-                Name = "Category 1"
+                Id = new CategoryId(Guid.NewGuid().ToString()),
+                Name = "Category 1",
             };
 
-
-            var request = new CreateProductCommand
+            var product = new Product()
             {
-                CategoryId = category.Id.ToString(),
+                Id = new ProductId(Guid.NewGuid().ToString()),
+                CategoryId = new CategoryId(category.Id.ToString()),
                 ProductName = "Test Product",
                 Description = "Test Description",
                 Price = 100,
                 QuantityInStock = 10,
-                FileImage = new Mock<IFormFile>().Object
+            };
+
+            var request = new UpdateProductCommand
+            {
+                Id = product.Id.ToString(),
+                CategoryId = category.Id.ToString(),
+                ProductName = "Updated Product",
+                Description = "Updated Description",
+                Price = 200,
+                QuantityInStock = 20,
+            };
+
+            var productVm = new ProductVm
+            {
+                Id = request.Id,
+                ProductName = request.ProductName,
+                Description = request.Description,
+                Price = request.Price,
+                QuantityInStock = request.QuantityInStock,
             };
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(category);
 
-            ImageVm imageVm = new ImageVm()
-            {
-                Url = Guid.NewGuid().ToString(),
-                PublicId = Guid.NewGuid().ToString(),
-            };
-            _mockImageService.Setup(service => service.AddPhoto(It.IsAny<IFormFile>()))
-                .ReturnsAsync(imageVm);
+            _mockProductRepository.Setup(repo => repo.Update(It.IsAny<Product>()))
+                .ReturnsAsync(true);
 
-            var handler = new CreateProductCommandHandler(
+            _mockMapper.Setup(m => m.Map<Product, ProductVm>(It.IsAny<Product>()))
+                .Returns(productVm);
+
+            var handler = new UpdateProductCommandHandler(
                 _mockProductRepository.Object,
                 _mockCategoryRepository.Object,
-                _mockImageService.Object,
-                _mockImageRepository.Object,
-                _mockMainImageRepository.Object
-                );
+                _mockMapper.Object
+            );
+
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 

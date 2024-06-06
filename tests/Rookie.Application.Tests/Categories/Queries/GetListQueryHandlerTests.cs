@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Categories
+namespace Rookie.Application.Tests.Categories.Queries
 {
     public class GetListQueryHandlerTests : SetupTest
     {

@@ -14,7 +14,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Users
+namespace Rookie.Application.Tests.Users.Commands
 {
     public class LoginCommandHandlerTests : SetupTest
     {
@@ -54,7 +54,7 @@ namespace Rookie.Application.Tests.Users
 
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
                 .ReturnsAsync((ApplicationUser)null);
-        
+
             var handler = new LoginCommandHandler(
                 _mockUserRepository.Object,
                 _mockMapper.Object,

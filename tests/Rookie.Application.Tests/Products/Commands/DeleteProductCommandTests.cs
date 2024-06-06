@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Image = Rookie.Domain.ImageEntity.Image;
 
-namespace Rookie.Application.Tests.Products
+namespace Rookie.Application.Tests.Products.Commands
 {
     public class DeleteProductCommandTests : SetupTest
     {
@@ -26,7 +26,7 @@ namespace Rookie.Application.Tests.Products
             var request = new DeleteProductCommand
             {
                 ProductId = "123"
-            }; 
+            };
 
             var handler = new DeleteProductCommandHandler(
                 _mockProductRepository.Object,
@@ -97,7 +97,7 @@ namespace Rookie.Application.Tests.Products
             Assert.False(result.IsSuccess);
             Assert.Equal(ProductErrors.NotFindImage, result.Error);
         }
-    
+
         [Fact]
         public async Task ReturnsSuccessResult_WhenProductIsDeleted()
         {

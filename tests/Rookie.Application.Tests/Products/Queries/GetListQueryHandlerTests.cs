@@ -10,7 +10,7 @@ using Rookie.Domain.ProductEntity;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Tests;
 
-namespace Rookie.Application.Tests.Products
+namespace Rookie.Application.Tests.Products.Queries
 {
     public class GetListQueryHandlerTests : SetupTest
     {
@@ -21,10 +21,10 @@ namespace Rookie.Application.Tests.Products
             var productParams = new ProductParams { PageNumber = 1, PageSize = 6 };
 
             _mockProductRepository.Setup(repo => repo.GetAll(It.IsAny<ProductParams>(), It.IsAny<string>()))
-                .ReturnsAsync(new PagedList<Product>(GetFakeProducts(), this.GetFakeProducts().Count, 1, 6));
+                .ReturnsAsync(new PagedList<Product>(GetFakeProducts(), GetFakeProducts().Count, 1, 6));
 
             _mockMapper.Setup(mapper => mapper.Map<PagedList<ProductVm>>(It.IsAny<PagedList<Product>>()))
-                .Returns(new PagedList<ProductVm>(GetFakeProductVms(), this.GetFakeProductVms().Count, 1, 6));
+                .Returns(new PagedList<ProductVm>(GetFakeProductVms(), GetFakeProductVms().Count, 1, 6));
 
             var handler = new GetListQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
             var query = new GetListQuery { ProductParams = productParams };

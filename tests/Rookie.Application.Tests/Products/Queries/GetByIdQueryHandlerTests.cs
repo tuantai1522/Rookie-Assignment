@@ -14,7 +14,7 @@ using Rookie.Domain.DomainError;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Tests;
 
-namespace Rookie.Application.Tests.Products
+namespace Rookie.Application.Tests.Products.Queries
 {
     public class GetByIdQueryHandlerTests : SetupTest
     {

@@ -13,7 +13,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Users
+namespace Rookie.Application.Tests.Users.Commands
 {
     public class RegisterCommandHandlerTests : SetupTest
     {
@@ -134,7 +134,7 @@ namespace Rookie.Application.Tests.Users
             // Assert
             Assert.False(result.IsSuccess);
 
-            Assert.Equal("User.RegisterError", UserErrors.CreateCustomRegisterError(string.Join(". ", 
+            Assert.Equal("User.RegisterError", UserErrors.CreateCustomRegisterError(string.Join(". ",
                                         identityResult.Errors.Select(e => e.Description))));
         }
 

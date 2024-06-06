@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Users
+namespace Rookie.Application.Tests.Users.Queries
 {
     public class GetListQueryHandlerTests : SetupTest
     {
@@ -22,10 +22,10 @@ namespace Rookie.Application.Tests.Users
             var applicationUserParams = new ApplicationUserParams { PageNumber = -1, PageSize = 6 };
 
             _mockUserRepository.Setup(repo => repo.GetAll(It.IsAny<ApplicationUserParams>(), It.IsAny<string>()))
-                .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), this.GetFakeUsers().Count, -1, 6));
+                .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), GetFakeUsers().Count, -1, 6));
 
             _mockMapper.Setup(mapper => mapper.Map<PagedList<UserInfoVm>>(It.IsAny<PagedList<Product>>()))
-                .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), this.GetFakeUserInfoVms().Count, -1, 6));
+                .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), GetFakeUserInfoVms().Count, -1, 6));
 
             var handler = new GetListQueryHandler(_mockUserRepository.Object, _mockMapper.Object);
             var query = new GetListQuery { ApplicationUserParams = applicationUserParams };
@@ -45,10 +45,10 @@ namespace Rookie.Application.Tests.Users
             var applicationUserParams = new ApplicationUserParams { PageNumber = 1, PageSize = 6 };
 
             _mockUserRepository.Setup(repo => repo.GetAll(It.IsAny<ApplicationUserParams>(), It.IsAny<string>()))
-                .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), this.GetFakeUsers().Count, 1, 6));
+                .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), GetFakeUsers().Count, 1, 6));
 
             _mockMapper.Setup(mapper => mapper.Map<PagedList<UserInfoVm>>(It.IsAny<PagedList<ApplicationUser>>()))
-                .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), this.GetFakeUserInfoVms().Count, 1, 6));
+                .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), GetFakeUserInfoVms().Count, 1, 6));
 
             var handler = new GetListQueryHandler(_mockUserRepository.Object, _mockMapper.Object);
             var query = new GetListQuery { ApplicationUserParams = applicationUserParams };

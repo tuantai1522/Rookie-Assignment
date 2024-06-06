@@ -13,7 +13,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Users
+namespace Rookie.Application.Tests.Users.Queries
 {
     public class GetAddressByUserNameQueryHandlerTests : SetupTest
     {

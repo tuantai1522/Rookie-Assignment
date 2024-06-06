@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Categories
+namespace Rookie.Application.Tests.Categories.Commands
 {
     public class CreateCategoryCommandHandlerTests : SetupTest
     {
@@ -22,7 +22,7 @@ namespace Rookie.Application.Tests.Categories
             var request = new CreateCategoryCommand
             {
                 CategoryName = ""
-            }; 
+            };
 
             var handler = new CreateCategoryCommandHandler(
                 _mockCategoryRepository.Object
