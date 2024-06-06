@@ -36,9 +36,6 @@ namespace Rookie.Application.Users.Mappers
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
                 .ForMember(dest => dest.Orders, opt => opt.MapFrom(src => src.Orders));
 
-            CreateMap<ApplicationUserAddress, UserAddressVm>()
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address));
-
             CreateMap<Order, OrderVm>()
                 .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems));
         }

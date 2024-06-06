@@ -20,7 +20,6 @@ using Rookie.Persistence.Repositories;
 using Microsoft.Data.SqlClient;
 using MediatR;
 using AutoFixture;
-using Rookie.Application.Enumerable;
 
 
 
@@ -41,6 +40,9 @@ namespace Rookie.Domain.Tests
         protected readonly Mock<IMainImageRepository> _mockMainImageRepository;
         protected readonly Mock<IOrderRepository> _mockOrderRepository;
         protected readonly Mock<IUserRepository> _mockUserRepository;
+
+        protected readonly Mock<IAddressRepository> _mockAddressRepository;
+
         protected readonly Mock<ICartService> _mockCartService;
         protected readonly Mock<IImageService> _mockImageService;
         protected readonly Mock<IJwtTokenGenerator> _mockJwtTokenGenerator;
@@ -68,6 +70,7 @@ namespace Rookie.Domain.Tests
             _mockMainImageRepository = new Mock<IMainImageRepository>();
             _mockOrderRepository = new Mock<IOrderRepository>();
             _mockUserRepository = new Mock<IUserRepository>();
+            _mockAddressRepository = new Mock<IAddressRepository>();
             _mockCartService = new Mock<ICartService>();
             _mockImageService = new Mock<IImageService>();
             _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();

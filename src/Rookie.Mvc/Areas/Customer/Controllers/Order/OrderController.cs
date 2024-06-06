@@ -5,7 +5,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Rookie.Application.Users.ViewModels;
+using Rookie.Application.Addresses.ViewModels;
+using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 using Rookie.Mvc.Areas.Customer.Controllers.Common;
 using Rookie.Mvc.Areas.Customer.Models.Cart;
@@ -46,7 +47,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             }
 
             //call current address
-            List<UserAddressVm> addressList = new List<UserAddressVm>();
+            List<ApplicationUserAddressVm> addressList = new List<ApplicationUserAddressVm>();
 
 
             // Create a new HttpClient and set the authorization header with the bearer token
@@ -58,7 +59,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             {
                 // Read the responseAddress content and deserialize it into a CartVm object
                 string data = await responseAddress.Content.ReadAsStringAsync();
-                addressList = JsonConvert.DeserializeObject<List<UserAddressVm>>(data);
+                addressList = JsonConvert.DeserializeObject<List<ApplicationUserAddressVm>>(data);
             }
 
             ViewData["addressList"] = addressList;

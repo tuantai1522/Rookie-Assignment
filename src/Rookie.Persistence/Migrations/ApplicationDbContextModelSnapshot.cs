@@ -234,12 +234,12 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 960, DateTimeKind.Utc).AddTicks(1262));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 688, DateTimeKind.Utc).AddTicks(5166));
 
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 960, DateTimeKind.Utc).AddTicks(2337));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 688, DateTimeKind.Utc).AddTicks(5977));
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -248,7 +248,7 @@ namespace Rookie.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ApplicationUserAddress");
+                    b.ToTable("ApplicationUserAddresses");
                 });
 
             modelBuilder.Entity("Rookie.Domain.CategoryEntity.Category", b =>
@@ -259,7 +259,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 967, DateTimeKind.Utc).AddTicks(999));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 692, DateTimeKind.Utc).AddTicks(1563));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -270,7 +270,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 967, DateTimeKind.Utc).AddTicks(2680));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 692, DateTimeKind.Utc).AddTicks(2612));
 
                     b.HasKey("Id");
 
@@ -285,7 +285,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 970, DateTimeKind.Utc).AddTicks(1269));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 694, DateTimeKind.Utc).AddTicks(7581));
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
@@ -296,7 +296,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 970, DateTimeKind.Utc).AddTicks(2936));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 694, DateTimeKind.Utc).AddTicks(8505));
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -316,7 +316,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 976, DateTimeKind.Utc).AddTicks(291));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 698, DateTimeKind.Utc).AddTicks(273));
 
                     b.Property<Guid?>("ImageId")
                         .HasColumnType("uniqueidentifier");
@@ -324,7 +324,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 976, DateTimeKind.Utc).AddTicks(1285));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 698, DateTimeKind.Utc).AddTicks(1097));
 
                     b.HasKey("ProductId");
 
@@ -341,7 +341,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 978, DateTimeKind.Utc).AddTicks(8991));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 700, DateTimeKind.Utc).AddTicks(6919));
 
                     b.Property<decimal>("DeliveryFee")
                         .HasColumnType("decimal(18,2)");
@@ -355,7 +355,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 978, DateTimeKind.Utc).AddTicks(9771));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 700, DateTimeKind.Utc).AddTicks(7681));
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -375,7 +375,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 983, DateTimeKind.Utc).AddTicks(8898));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 705, DateTimeKind.Utc).AddTicks(1090));
 
                     b.Property<Guid?>("OrderId")
                         .HasColumnType("uniqueidentifier");
@@ -392,7 +392,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 983, DateTimeKind.Utc).AddTicks(9957));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 705, DateTimeKind.Utc).AddTicks(2323));
 
                     b.HasKey("Id");
 
@@ -414,7 +414,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 988, DateTimeKind.Utc).AddTicks(7931));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 710, DateTimeKind.Utc).AddTicks(4103));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -431,7 +431,7 @@ namespace Rookie.Persistence.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2024, 6, 1, 3, 52, 50, 988, DateTimeKind.Utc).AddTicks(9452));
+                        .HasDefaultValue(new DateTime(2024, 6, 6, 14, 43, 42, 710, DateTimeKind.Utc).AddTicks(6078));
 
                     b.HasKey("Id");
 
@@ -521,7 +521,7 @@ namespace Rookie.Persistence.Migrations
 
                             b1.HasKey("ApplicationUserAddressId");
 
-                            b1.ToTable("ApplicationUserAddress");
+                            b1.ToTable("ApplicationUserAddresses");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserAddressId");

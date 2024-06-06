@@ -2,6 +2,7 @@ using System.Reflection;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Rookie.Application.Addresses.Mappers;
 using Rookie.Application.Carts.Mappers;
 using Rookie.Application.Categories.Mappers;
 using Rookie.Application.MainImages.Mappers;
@@ -30,6 +31,7 @@ namespace Rookie.Application
                     cfg.AddProfile<CartProfile>();
 
                     cfg.AddProfile<OrderProfile>();
+                    cfg.AddProfile<ApplicationUserAddressProfile>();
 
                 });
                 return config.CreateMapper();

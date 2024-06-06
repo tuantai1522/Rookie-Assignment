@@ -1,6 +1,7 @@
 ﻿using Moq;
+using Rookie.Application.Addresses.Queries.GetAddressByUserNameQuery;
+using Rookie.Application.Addresses.ViewModels;
 using Rookie.Application.Users.Commands.RegisterCommand;
-using Rookie.Application.Users.Queries.GetAddressByUserNameQuery;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
@@ -28,6 +29,7 @@ namespace Rookie.Application.Tests.Users.Queries
 
             var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
+                _mockAddressRepository.Object,
                 _mockMapper.Object
                 );
 
@@ -53,6 +55,7 @@ namespace Rookie.Application.Tests.Users.Queries
 
             var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
+                _mockAddressRepository.Object,
                 _mockMapper.Object
                 );
 
@@ -80,12 +83,13 @@ namespace Rookie.Application.Tests.Users.Queries
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
                 .ReturnsAsync(user);
 
-            var listUserAddress = new List<UserAddressVm> { };
-            _mockMapper.Setup(mapper => mapper.Map<ICollection<UserAddressVm>>(user.ApplicationUserAddresses))
+            var listUserAddress = new List<ApplicationUserAddressVm> { };
+            _mockMapper.Setup(mapper => mapper.Map<ICollection<ApplicationUserAddressVm>>(user.ApplicationUserAddresses))
                 .Returns(listUserAddress);
 
             var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
+                _mockAddressRepository.Object,
                 _mockMapper.Object
                 );
 

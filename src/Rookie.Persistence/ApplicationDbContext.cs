@@ -20,6 +20,7 @@ namespace Rookie.Persistence
         public DbSet<Image> Images { get; set; }
         public DbSet<MainImage> MainImages { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<ApplicationUserAddress> ApplicationUserAddresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
