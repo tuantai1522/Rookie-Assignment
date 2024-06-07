@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoFixture;
+using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using Rookie.Application.Users.Commands.LoginCommand;
 using Rookie.Application.Users.Commands.RegisterCommand;
@@ -21,36 +23,25 @@ namespace Rookie.Application.Tests.Users.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = "",
-            };
+            var request = _fixture.Build<RegisterCommand>()
+                            .With(x => x.UserName, "")
+                            .Create();
 
-            var handler = new RegisterCommandHandler(
-                _mockUserRepository.Object,
-                _mockMapper.Object
-                );
+            var handler = _fixture.Create<RegisterCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.NotEnoughInfo, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(UserErrors.NotEnoughInfo);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenEmailExists()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                Email = Guid.NewGuid().ToString(),
-                FirstName = Guid.NewGuid().ToString(),
-                LastName = Guid.NewGuid().ToString(),
-                Password = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<RegisterCommand>();
 
             _mockUserRepository.Setup(repo => repo.CheckEmailExisted(It.IsAny<string>()))
                 .Returns(true);
@@ -64,22 +55,15 @@ namespace Rookie.Application.Tests.Users.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.EmailExisted, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(UserErrors.EmailExisted);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserNameExists()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                Email = Guid.NewGuid().ToString(),
-                FirstName = Guid.NewGuid().ToString(),
-                LastName = Guid.NewGuid().ToString(),
-                Password = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<RegisterCommand>();
 
             _mockUserRepository.Setup(repo => repo.CheckEmailExisted(It.IsAny<string>()))
                 .Returns(false);
@@ -96,22 +80,15 @@ namespace Rookie.Application.Tests.Users.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.UserNameExisted, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(UserErrors.UserNameExisted);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserIsCreatedFailed()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                Email = Guid.NewGuid().ToString(),
-                FirstName = Guid.NewGuid().ToString(),
-                LastName = Guid.NewGuid().ToString(),
-                Password = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<RegisterCommand>();
 
             _mockUserRepository.Setup(repo => repo.CheckEmailExisted(It.IsAny<string>()))
                 .Returns(false);
@@ -132,9 +109,9 @@ namespace Rookie.Application.Tests.Users.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
 
-            Assert.Equal("User.RegisterError", UserErrors.CreateCustomRegisterError(string.Join(". ",
+            result.IsSuccess.Should().Be(false);
+            "User.RegisterError".Should().Be(UserErrors.CreateCustomRegisterError(string.Join(". ",
                                         identityResult.Errors.Select(e => e.Description))));
         }
 
@@ -142,14 +119,9 @@ namespace Rookie.Application.Tests.Users.Commands
         public async Task ReturnsSuccessResult_WhenCustomerIsCreatedSuccessfully()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                Email = Guid.NewGuid().ToString(),
-                FirstName = Guid.NewGuid().ToString(),
-                LastName = Guid.NewGuid().ToString(),
-                Password = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<RegisterCommand>()
+                                .With(x => x.Role, "")
+                                .Create();
 
             _mockUserRepository.Setup(repo => repo.CheckEmailExisted(It.IsAny<string>()))
                 .Returns(false);
@@ -161,15 +133,10 @@ namespace Rookie.Application.Tests.Users.Commands
             _mockUserRepository.Setup(repo => repo.CreateUser(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .ReturnsAsync(identityResult);
 
-            var user = new ApplicationUser()
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
 
-            var userRegisterVm = new UserRegisterVm()
-            {
-                UserName = user.UserName,
-            };
+            var user = _fixture.Create<ApplicationUser>();
+            var userRegisterVm = _fixture.Create<UserRegisterVm>();
+
             _mockMapper.Setup(mapper => mapper.Map<UserRegisterVm>(It.IsAny<ApplicationUser>()))
                 .Returns(userRegisterVm);
 
@@ -182,8 +149,8 @@ namespace Rookie.Application.Tests.Users.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
 
         }
 
@@ -191,15 +158,7 @@ namespace Rookie.Application.Tests.Users.Commands
         public async Task ReturnsSuccessResult_WhenAdminIsCreatedSuccessfully()
         {
             // Arrange
-            var request = new RegisterCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                Email = Guid.NewGuid().ToString(),
-                FirstName = Guid.NewGuid().ToString(),
-                LastName = Guid.NewGuid().ToString(),
-                Password = Guid.NewGuid().ToString(),
-                Role = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<RegisterCommand>();
 
             _mockUserRepository.Setup(repo => repo.CheckEmailExisted(It.IsAny<string>()))
                 .Returns(false);
@@ -211,15 +170,9 @@ namespace Rookie.Application.Tests.Users.Commands
             _mockUserRepository.Setup(repo => repo.CreateUser(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
                 .ReturnsAsync(identityResult);
 
-            var user = new ApplicationUser()
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var user = _fixture.Create<ApplicationUser>();
+            var userRegisterVm = _fixture.Create<UserRegisterVm>();
 
-            var userRegisterVm = new UserRegisterVm()
-            {
-                UserName = user.UserName,
-            };
             _mockMapper.Setup(mapper => mapper.Map<UserRegisterVm>(It.IsAny<ApplicationUser>()))
                 .Returns(userRegisterVm);
 
@@ -232,11 +185,8 @@ namespace Rookie.Application.Tests.Users.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
-
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
         }
-
-
     }
 }

@@ -9,6 +9,9 @@ using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Tests;
+using AutoFixture;
+using FluentAssertions;
+using Rookie.Domain.DomainError;
 
 namespace Rookie.Application.Tests.Products.Queries
 {
@@ -20,6 +23,10 @@ namespace Rookie.Application.Tests.Products.Queries
             // Arrange
             var productParams = new ProductParams { PageNumber = 1, PageSize = 6 };
 
+            var request = _fixture.Build<GetListQuery>()
+                .With(x => x.ProductParams, productParams)
+                .Create();
+
             _mockProductRepository.Setup(repo => repo.GetAll(It.IsAny<ProductParams>(), It.IsAny<string>()))
                 .ReturnsAsync(new PagedList<Product>(GetFakeProducts(), GetFakeProducts().Count, 1, 6));
 
@@ -27,15 +34,14 @@ namespace Rookie.Application.Tests.Products.Queries
                 .Returns(new PagedList<ProductVm>(GetFakeProductVms(), GetFakeProductVms().Count, 1, 6));
 
             var handler = new GetListQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
-            var query = new GetListQuery { ProductParams = productParams };
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
-            Assert.NotEmpty(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
+            result.Value.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -44,21 +50,18 @@ namespace Rookie.Application.Tests.Products.Queries
             // Arrange
             var productParams = new ProductParams { PageNumber = -1, PageSize = 6 };
 
-            _mockProductRepository.Setup(repo => repo.GetAll(It.IsAny<ProductParams>(), It.IsAny<string>()))
-                .ReturnsAsync(new PagedList<Product>(GetFakeProducts(), -1, 6, GetFakeProducts().Count));
+            var request = _fixture.Build<GetListQuery>()
+                            .With(x => x.ProductParams, productParams)
+                            .Create();
 
-            _mockMapper.Setup(mapper => mapper.Map<PagedList<ProductVm>>(It.IsAny<PagedList<Product>>()))
-                .Returns(new PagedList<ProductVm>(GetFakeProductVms(), -1, 6, GetFakeProductVms().Count));
-
-            var handler = new GetListQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
-            var query = new GetListQuery { ProductParams = productParams };
+            var handler = _fixture.Create<GetListQueryHandler>();
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.NotNull(result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().NotBeNull();
         }
 
         private List<Product> GetFakeProducts()

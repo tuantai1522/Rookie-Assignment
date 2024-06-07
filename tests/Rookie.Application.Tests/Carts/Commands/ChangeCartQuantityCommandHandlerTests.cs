@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
+using Rookie.Application.Addresses.Queries.GetAddressByUserNameQuery;
 using Rookie.Application.Carts.Commands.ChangeCartQuantityCommand;
 using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
 using Rookie.Domain.ApplicationUserEntity;
@@ -20,38 +23,31 @@ namespace Rookie.Application.Tests.Carts.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new ChangeCartQuantityCommand
-            {
-                UserName = "",
-            };
+            var request = _fixture.Build<ChangeCartQuantityCommand>()
+                      .With(x => x.UserName, "")
+                      .Create();
 
-            var handler = new ChangeCartQuantityCommandHandler(
-                _mockCartService.Object,
-                _mockUserRepository.Object,
-                _mockProductRepository.Object
-                );
 
+            var handler = _fixture.Create<ChangeCartQuantityCommandHandler>();
+            
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.ChangeCartQuantityInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CartErrors.ChangeCartQuantityInvalidData);
+
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserIsNotFound()
         {
             // Arrange
-            var request = new ChangeCartQuantityCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                ProductId = Guid.NewGuid().ToString(),
-                Quantity = 3,
-            };
+            var request = _fixture.Build<ChangeCartQuantityCommand>()
+                            .Create();
 
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((ApplicationUser)null);
+                .ReturnsAsync(null as ApplicationUser);
 
             var handler = new ChangeCartQuantityCommandHandler(
                 _mockCartService.Object,
@@ -63,20 +59,16 @@ namespace Rookie.Application.Tests.Carts.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.CanNotFindUser, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CartErrors.CanNotFindUser);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenProductIsNotFound()
         {
             // Arrange
-            var request = new ChangeCartQuantityCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                ProductId = Guid.NewGuid().ToString(),
-                Quantity = 3,
-            };
+            var request = _fixture.Build<ChangeCartQuantityCommand>()
+                            .Create();
 
             var user = new ApplicationUser()
             {
@@ -86,7 +78,7 @@ namespace Rookie.Application.Tests.Carts.Commands
                 .ReturnsAsync(user);
 
             _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((Product)null);
+                .ReturnsAsync(null as Product);
 
             var handler = new ChangeCartQuantityCommandHandler(
                 _mockCartService.Object,
@@ -98,47 +90,26 @@ namespace Rookie.Application.Tests.Carts.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.CanNotFindProduct, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CartErrors.CanNotFindProduct);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenCartIsChanged()
         {
             // Arrange
-            var request = new ChangeCartQuantityCommand
-            {
-                UserName = Guid.NewGuid().ToString(),
-                ProductId = Guid.NewGuid().ToString(),
-                Quantity = 3,
-            };
+            var request = _fixture.Build<ChangeCartQuantityCommand>()
+                            .Create();
 
-            var user = new ApplicationUser()
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(user);
+            var handler = _fixture.Create<ChangeCartQuantityCommandHandler>();
 
-            var product = new Product()
-            {
-                Id = new ProductId(Guid.NewGuid().ToString())
-            };
-            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(product);
-
-            var handler = new ChangeCartQuantityCommandHandler(
-                _mockCartService.Object,
-                _mockUserRepository.Object,
-                _mockProductRepository.Object
-                );
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().Be(1);
         }
 
 

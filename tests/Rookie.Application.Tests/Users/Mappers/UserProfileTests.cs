@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.CategoryEntity;
@@ -23,7 +24,8 @@ namespace Rookie.Application.Tests.Users.Mappers
 
             var result = _mapper.Map<UserLoginVm>(userMock);
 
-            Assert.Equal(result.Id, userMock.Id);
+            result.Id.Should().Be(userMock.Id.ToString());
+
         }
 
         [Fact]
@@ -52,7 +54,8 @@ namespace Rookie.Application.Tests.Users.Mappers
 
             var result = _mapper.Map<UserInfoVm>(userMock);
 
-            Assert.Equal(result.Id, userMock.Id);
+            result.Id.Should().Be(userMock.Id.ToString());
+
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Products.Commands.CreateProductCommand;
 using Rookie.Application.Products.Commands.DeleteProductCommand;
 using Rookie.Domain.CategoryEntity;
@@ -23,33 +25,30 @@ namespace Rookie.Application.Tests.Products.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new DeleteProductCommand
-            {
-                ProductId = "123"
-            };
+            var request = _fixture.Build<DeleteProductCommand>()
+              .With(r => r.ProductId, "")
+              .Create();
 
-            var handler = new DeleteProductCommandHandler(
-                _mockProductRepository.Object,
-                _mockImageService.Object,
-                _mockImageRepository.Object
-            );
+            var handler = _fixture.Create<DeleteProductCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.DeleteProductInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.DeleteProductInvalidData);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenProductIsNotFound()
         {
             // Arrange
-            var request = new DeleteProductCommand
-            {
-                ProductId = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<DeleteProductCommand>()
+                .With(r => r.ProductId, Guid.NewGuid().ToString())
+                .Create();
+
+            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
+                .ReturnsAsync(null as Product);
 
             var handler = new DeleteProductCommandHandler(
                 _mockProductRepository.Object,
@@ -61,18 +60,27 @@ namespace Rookie.Application.Tests.Products.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.NotFindProduct, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.NotFindProduct);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenImageIsNotFound()
         {
             // Arrange
-            var request = new DeleteProductCommand
-            {
-                ProductId = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<DeleteProductCommand>()
+                .With(r => r.ProductId, Guid.NewGuid().ToString())
+                .Create();
+
+            var product = _fixture.Build<Product>()
+                .With(r => r.Id, new ProductId(request.ProductId))
+                .Create();
+
+            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
+                .ReturnsAsync(product);
+
+            _mockImageRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<Image, bool>>>(), It.IsAny<string>()))
+                .ReturnsAsync(new List<Image>());
 
             var handler = new DeleteProductCommandHandler(
                 _mockProductRepository.Object,
@@ -80,32 +88,36 @@ namespace Rookie.Application.Tests.Products.Commands
                 _mockImageRepository.Object
             );
 
-            var Product = new Product()
-            {
-                Id = new ProductId(request.ProductId),
-            };
-            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(Product);
-
-            _mockImageRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<Image, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(new List<Image>());
-
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.NotFindImage, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.NotFindImage);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenProductIsDeleted()
         {
             // Arrange
-            var request = new DeleteProductCommand
-            {
-                ProductId = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<DeleteProductCommand>()
+                .With(r => r.ProductId, Guid.NewGuid().ToString())
+                .Create();
+
+            var product = _fixture.Build<Product>()
+                .With(r => r.Id, new ProductId(request.ProductId))
+                .Create();
+
+            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
+                .ReturnsAsync(product);
+
+
+            var image = _fixture.Build<Image>()
+                .With(r => r.Id, new ImageId(Guid.NewGuid().ToString()))
+                .Create();
+
+            _mockImageRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<Image, bool>>>(), It.IsAny<string>()))
+                .ReturnsAsync(new List<Image>([image]));
 
             var handler = new DeleteProductCommandHandler(
                 _mockProductRepository.Object,
@@ -113,26 +125,12 @@ namespace Rookie.Application.Tests.Products.Commands
                 _mockImageRepository.Object
             );
 
-            var Product = new Product()
-            {
-                Id = new ProductId(request.ProductId),
-            };
-            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(Product);
-
-            var Image = new Image()
-            {
-                Id = new ImageId(Guid.NewGuid().ToString())
-            };
-            _mockImageRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<Image, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(new List<Image>([Image]));
-
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.Equal(1, result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().Be(1);
         }
     }
 }

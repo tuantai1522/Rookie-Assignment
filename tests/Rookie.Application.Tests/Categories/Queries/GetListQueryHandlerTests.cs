@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Categories.Queries.GetListQuery;
 using Rookie.Application.Categories.ViewModels;
 using Rookie.Domain.CategoryEntity;
@@ -21,40 +23,16 @@ namespace Rookie.Application.Tests.Categories.Queries
         {
             // Arrange
 
-            _mockCategoryRepository.Setup(repo => repo.GetAll(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(GetFakeCategories);
+            var request = _fixture.Create<GetListQuery>();
 
-            _mockMapper.Setup(mapper => mapper.Map<IEnumerable<CategoryVm>>(It.IsAny<IEnumerable<Category>>()))
-                .Returns(GetFakeCategoriesVm);
-
-            var handler = new GetListQueryHandler(_mockCategoryRepository.Object, _mockMapper.Object);
-            var query = new GetListQuery { };
+            var handler = _fixture.Create<GetListQueryHandler>();
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-        }
-        private IEnumerable<Category> GetFakeCategories()
-        {
-            return
-            [
-                new Category { Id = new CategoryId(Guid.NewGuid()), Name = "Category 1" },
-                new Category { Id = new CategoryId(Guid.NewGuid()), Name = "Category 2" },
-                new Category { Id = new CategoryId(Guid.NewGuid()), Name = "Category 3" },
-            ];
-        }
-        private IEnumerable<CategoryVm> GetFakeCategoriesVm()
-        {
-            return
-            [
-                new CategoryVm { Id = "1", Name = "CategoryVm 1" },
-                new CategoryVm { Id = "2", Name = "CategoryVm 2" },
-                new CategoryVm { Id = "3", Name = "CategoryVm 3" },
-            ];
+            result.IsSuccess.Should().Be(true);
+
         }
     }
-
-
 }

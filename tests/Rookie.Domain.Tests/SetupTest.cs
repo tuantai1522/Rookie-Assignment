@@ -20,6 +20,7 @@ using Rookie.Persistence.Repositories;
 using Microsoft.Data.SqlClient;
 using MediatR;
 using AutoFixture;
+using AutoFixture.AutoMoq;
 
 
 
@@ -34,9 +35,7 @@ namespace Rookie.Domain.Tests
 
         protected readonly Mock<IMediator> _mockMediator;
 
-        protected readonly Fixture _fixture;
-
-
+        protected readonly IFixture _fixture;
 
         protected readonly Mock<ICategoryRepository> _mockCategoryRepository;
         protected readonly Mock<IProductRepository> _mockProductRepository;
@@ -56,7 +55,8 @@ namespace Rookie.Domain.Tests
             _mockMediator = new Mock<IMediator>();
             _mockMapper = new Mock<IMapper>();
 
-            _fixture = new Fixture();
+            _fixture = new Fixture().Customize(new AutoMoqCustomization());
+
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 

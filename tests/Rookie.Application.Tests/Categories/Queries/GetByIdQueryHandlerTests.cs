@@ -13,6 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Rookie.Application.Categories.ViewModels;
+using AutoFixture;
+using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
+using FluentAssertions;
 
 
 namespace Rookie.Application.Tests.Categories.Queries
@@ -23,35 +26,31 @@ namespace Rookie.Application.Tests.Categories.Queries
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetByIdQuery
-            {
-                Id = "",
-            };
+            var request = _fixture.Build<GetByIdQuery>()
+              .With(x => x.Id, "")
+              .Create();
 
-            var handler = new GetByIdQueryHandler(
-                _mockCategoryRepository.Object,
-                _mockMapper.Object
-            );
+            var handler = _fixture.Create<GetByIdQueryHandler>();
+
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CategoryErrors.GetCategoryByIdInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CategoryErrors.GetCategoryByIdInvalidData);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenCategoryIsNotFound()
         {
             // Arrange
-            var request = new GetByIdQuery
-            {
-                Id = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetByIdQuery>()
+              .With(x => x.Id, Guid.NewGuid().ToString())
+              .Create();
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((Category)null);
+                .ReturnsAsync(null as Category);
 
             var handler = new GetByIdQueryHandler(
                 _mockCategoryRepository.Object,
@@ -62,50 +61,26 @@ namespace Rookie.Application.Tests.Categories.Queries
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CategoryErrors.NotFindCategory, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CategoryErrors.NotFindCategory);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenCategoryIsFound()
         {
             // Arrange
-            var request = new GetByIdQuery
-            {
-                Id = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetByIdQuery>()
+              .With(x => x.Id, Guid.NewGuid().ToString())
+              .Create();
 
-            var category = new Category()
-            {
-                Id = new CategoryId(request.Id),
-                Name = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-            };
-
-            var categoryVm = new CategoryVm
-            {
-                Id = request.Id,
-                Name = category.Id.ToString(),
-                Description = category.Description,
-            };
-
-            _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(category);
-
-            _mockMapper.Setup(m => m.Map<Category, CategoryVm>(It.IsAny<Category>()))
-                .Returns(categoryVm);
-
-            var handler = new GetByIdQueryHandler(
-                _mockCategoryRepository.Object,
-                _mockMapper.Object
-            );
+            var handler = _fixture.Create<GetByIdQueryHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
 
         }
     }

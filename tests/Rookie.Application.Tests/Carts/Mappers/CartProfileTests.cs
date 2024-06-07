@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Rookie.Application.Carts.ViewModels;
 using Rookie.Domain.CartEntity;
 using Rookie.Domain.CategoryEntity;
@@ -21,8 +22,8 @@ namespace Rookie.Application.Tests.Carts.Mappers
 
             var result = _mapper.Map<CartVm>(cartMock);
 
-            Assert.Equal(result.TotalPrice, cartMock.TotalPrice);
-            Assert.Equal(result.CartItems.Count, cartMock.CartItems.Count);
+            result.TotalPrice.Should().Be(cartMock.TotalPrice);
+            result.CartItems.Count.Should().Be(cartMock.CartItems.Count);
         }
     }
 }

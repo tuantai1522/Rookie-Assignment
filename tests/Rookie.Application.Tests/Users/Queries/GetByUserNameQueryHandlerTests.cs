@@ -1,5 +1,8 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Users.Commands.LoginCommand;
+using Rookie.Application.Users.Commands.RegisterCommand;
 using Rookie.Application.Users.Queries.GetByUserNameQuery;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
@@ -20,37 +23,31 @@ namespace Rookie.Application.Tests.Users.Queries
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetByUserNameQuery
-            {
-                UserName = "",
-            };
+            var request = _fixture.Build<GetByUserNameQuery>()
+                        .With(x => x.UserName, "")
+                        .Create();
 
-            var handler = new GetByUserNameQueryHandler(
-                _mockUserRepository.Object,
-                _mockMapper.Object,
-                _mockJwtTokenGenerator.Object
-                );
+
+            var handler = _fixture.Create<GetByUserNameQueryHandler>();
+
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.NotEnoughInfo, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(UserErrors.NotEnoughInfo);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenInfoIsNotCorrect()
         {
             // Arrange
-            var request = new GetByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<GetByUserNameQuery>();
 
 
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((ApplicationUser)null);
+                .ReturnsAsync(null as ApplicationUser);
 
             var handler = new GetByUserNameQueryHandler(
                 _mockUserRepository.Object,
@@ -62,23 +59,18 @@ namespace Rookie.Application.Tests.Users.Queries
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.NotCorrectInfo, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(UserErrors.NotCorrectInfo);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenUserIsFound()
         {
             // Arrange
-            var request = new GetByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<GetByUserNameQuery>();
+            var user = _fixture.Create<ApplicationUser>();
 
-            var user = new ApplicationUser()
-            {
-                UserName = request.UserName,
-            };
+
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(user);
 
@@ -87,10 +79,8 @@ namespace Rookie.Application.Tests.Users.Queries
                 .ReturnsAsync(roles);
 
 
-            var userLoginVm = new UserLoginVm()
-            {
-                UserName = user.UserName,
-            };
+            var userLoginVm = _fixture.Create<UserLoginVm>();
+
             _mockMapper.Setup(mapper => mapper.Map<UserLoginVm>(user))
                 .Returns(userLoginVm);
 
@@ -107,9 +97,8 @@ namespace Rookie.Application.Tests.Users.Queries
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Value);
 
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
         }
-
-
-
     }
 }

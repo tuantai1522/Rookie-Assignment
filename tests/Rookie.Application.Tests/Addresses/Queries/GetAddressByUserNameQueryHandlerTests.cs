@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Addresses.Queries.GetAddressByUserNameQuery;
 using Rookie.Application.Addresses.ViewModels;
 using Rookie.Application.Users.Commands.RegisterCommand;
@@ -22,83 +24,64 @@ namespace Rookie.Application.Tests.Addresses.Queries
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetAddressByUserNameQuery
-            {
-                UserName = "",
-            };
+            var request = _fixture.Build<GetAddressByUserNameQuery>()
+                                  .With(x => x.UserName, "")
+                                  .Create();
 
-            var handler = new GetAddressByUserNameQueryHandler(
-                _mockUserRepository.Object,
-                _mockAddressRepository.Object,
-                _mockMapper.Object
-                );
+            var handler = _fixture.Create<GetAddressByUserNameQueryHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(AddressError.NotEnoughInfo, result.Error);
+            result.IsFailure.Should().Be(true);
+            result.Error.Should().Be(AddressError.NotEnoughInfo);
+
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserIsNotFound()
         {
             // Arrange
-            var request = new GetAddressByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetAddressByUserNameQuery>()
+                                  .With(x => x.UserName, Guid.NewGuid().ToString())
+                                  .Create();
 
+            // Set up the mock repository to return null when user is not found
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
-                .ReturnsAsync((ApplicationUser)null);
+                .ReturnsAsync(null as ApplicationUser);
 
             var handler = new GetAddressByUserNameQueryHandler(
                 _mockUserRepository.Object,
                 _mockAddressRepository.Object,
-                _mockMapper.Object
-                );
+                _mockMapper.Object);
+
+
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(AddressError.NotFindUser, result.Error);
+            result.IsFailure.Should().BeTrue(); // Ensure failure result
+            result.Error.Should().Be(AddressError.NotFindUser);
         }
 
         [Fact]
-        public async Task ReturnsSuccessResult_WhenAddressIsNotFound()
+        public async Task ReturnsSuccessResult_WhenAddressIsFound()
         {
             // Arrange
-            var request = new GetAddressByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetAddressByUserNameQuery>()
+                                  .With(x => x.UserName, Guid.NewGuid().ToString())
+                                  .Create();
 
-            var user = new ApplicationUser()
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), "ApplicationUserAddresses"))
-                .ReturnsAsync(user);
-
-            var listUserAddress = new List<ApplicationUserAddressVm> { };
-            _mockMapper.Setup(mapper => mapper.Map<ICollection<ApplicationUserAddressVm>>(user.ApplicationUserAddresses))
-                .Returns(listUserAddress);
-
-            var handler = new GetAddressByUserNameQueryHandler(
-                _mockUserRepository.Object,
-                _mockAddressRepository.Object,
-                _mockMapper.Object
-                );
+            var handler = _fixture.Create<GetAddressByUserNameQueryHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
         }
     }
 }

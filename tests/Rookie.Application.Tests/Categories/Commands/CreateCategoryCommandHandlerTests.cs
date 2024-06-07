@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
+using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
 using Rookie.Application.Categories.Commands.CreateCategoryCommand;
 using Rookie.Application.Products.Commands.CreateProductCommand;
 using Rookie.Domain.CategoryEntity;
@@ -19,38 +22,27 @@ namespace Rookie.Application.Tests.Categories.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new CreateCategoryCommand
-            {
-                CategoryName = ""
-            };
+            var request = _fixture.Build<CreateCategoryCommand>()
+                  .With(x => x.CategoryName, "")
+                  .Create();
 
-            var handler = new CreateCategoryCommandHandler(
-                _mockCategoryRepository.Object
-                );
+            var handler = _fixture.Create<CreateCategoryCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CategoryErrors.CreateCategoryInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CategoryErrors.CreateCategoryInvalidData);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenCategoryIsCreated()
         {
             // Arrange
-            var request = new CreateCategoryCommand
-            {
-                CategoryName = Guid.NewGuid().ToString(),
-                Description = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Create<CreateCategoryCommand>();
 
-            _mockCategoryRepository.Setup(repo => repo.Add(It.IsAny<Category>()));
-
-            var handler = new CreateCategoryCommandHandler(
-                _mockCategoryRepository.Object
-                );
+            var handler = _fixture.Create<CreateCategoryCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
@@ -58,6 +50,10 @@ namespace Rookie.Application.Tests.Categories.Commands
             // Assert
             Assert.True(result.IsSuccess);
             Assert.NotNull(result.Value);
+
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
+
         }
     }
 }

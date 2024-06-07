@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Users.Queries.GetListQuery;
 using Rookie.Application.Users.ViewModels;
 using Rookie.Domain.ApplicationUserEntity;
@@ -21,6 +23,11 @@ namespace Rookie.Application.Tests.Users.Queries
             // Arrange
             var applicationUserParams = new ApplicationUserParams { PageNumber = -1, PageSize = 6 };
 
+
+            var request = _fixture.Build<GetListQuery>()
+                .With(x => x.ApplicationUserParams, applicationUserParams)
+                .Create();
+
             _mockUserRepository.Setup(repo => repo.GetAll(It.IsAny<ApplicationUserParams>(), It.IsAny<string>()))
                 .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), GetFakeUsers().Count, -1, 6));
 
@@ -28,14 +35,13 @@ namespace Rookie.Application.Tests.Users.Queries
                 .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), GetFakeUserInfoVms().Count, -1, 6));
 
             var handler = new GetListQueryHandler(_mockUserRepository.Object, _mockMapper.Object);
-            var query = new GetListQuery { ApplicationUserParams = applicationUserParams };
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.NotNull(result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().NotBeNull();
         }
 
         [Fact]
@@ -44,6 +50,10 @@ namespace Rookie.Application.Tests.Users.Queries
             // Arrange
             var applicationUserParams = new ApplicationUserParams { PageNumber = 1, PageSize = 6 };
 
+            var request = _fixture.Build<GetListQuery>()
+                .With(x => x.ApplicationUserParams, applicationUserParams)
+                .Create();
+
             _mockUserRepository.Setup(repo => repo.GetAll(It.IsAny<ApplicationUserParams>(), It.IsAny<string>()))
                 .ReturnsAsync(new PagedList<ApplicationUser>(GetFakeUsers(), GetFakeUsers().Count, 1, 6));
 
@@ -51,15 +61,15 @@ namespace Rookie.Application.Tests.Users.Queries
                 .Returns(new PagedList<UserInfoVm>(GetFakeUserInfoVms(), GetFakeUserInfoVms().Count, 1, 6));
 
             var handler = new GetListQueryHandler(_mockUserRepository.Object, _mockMapper.Object);
-            var query = new GetListQuery { ApplicationUserParams = applicationUserParams };
+
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
-            Assert.NotEmpty(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
+            result.Value.Should().NotBeEmpty();
         }
 
         private List<ApplicationUser> GetFakeUsers()

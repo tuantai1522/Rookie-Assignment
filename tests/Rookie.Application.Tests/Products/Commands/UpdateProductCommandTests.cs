@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoFixture;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
+using Rookie.Application.Products.Commands.DeleteProductCommand;
 using Rookie.Application.Products.Commands.UpdateProductCommand;
 using Rookie.Application.Products.ViewModels;
 using Rookie.Domain.CategoryEntity;
@@ -21,44 +24,32 @@ namespace Rookie.Application.Tests.Products.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new UpdateProductCommand
-            {
-                CategoryId = Guid.NewGuid().ToString(),
-                Price = 123,
-            }; //Not enough field
 
+            var request = _fixture.Build<UpdateProductCommand>()
+              .With(r => r.Id, "")
+              .Create();
 
-
-            var handler = new UpdateProductCommandHandler(
-                _mockProductRepository.Object,
-                _mockCategoryRepository.Object,
-                _mockMapper.Object
-            );
+            var handler = _fixture.Create<UpdateProductCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.UpdateProductInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.UpdateProductInvalidData);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenCategoryDoesNotExist()
         {
             // Arrange
-            var request = new UpdateProductCommand
-            {
-                Id = Guid.NewGuid().ToString(),
-                CategoryId = Guid.NewGuid().ToString(),
-                ProductName = "Test Product",
-                Description = "Test Description",
-                Price = 100,
-                QuantityInStock = 10,
-            };
+            var request = _fixture.Build<UpdateProductCommand>()
+              .With(r => r.Id, Guid.NewGuid().ToString())
+              .With(r => r.CategoryId, Guid.NewGuid().ToString())
+              .Create();
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((Category)null);
+                .ReturnsAsync(null as Category);
 
             var handler = new UpdateProductCommandHandler(
                 _mockProductRepository.Object,
@@ -69,30 +60,22 @@ namespace Rookie.Application.Tests.Products.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.NotFindCategory, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.NotFindCategory);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenProductDoesNotExist()
         {
             // Arrange
-            var category = new Category()
-            {
-                Id = new CategoryId(Guid.NewGuid().ToString()),
-                Name = "Category 1",
-            };
+            var request = _fixture.Build<UpdateProductCommand>()
+              .With(r => r.Id, Guid.NewGuid().ToString())
+              .With(r => r.CategoryId, Guid.NewGuid().ToString())
+              .Create();
 
-            var request = new UpdateProductCommand
-            {
-                Id = Guid.NewGuid().ToString(),
-                CategoryId = category.Id.ToString(),
-                ProductName = "Test Product",
-                Description = "Test Description",
-                Price = 100,
-                QuantityInStock = 10,
-            };
-
+            var category = _fixture.Build<Category>()
+              .With(r => r.Id, new CategoryId(Guid.NewGuid().ToString()))
+              .Create();
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(category);
 
@@ -108,55 +91,36 @@ namespace Rookie.Application.Tests.Products.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.NotFindProduct, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.NotFindProduct);
         }
 
         [Fact]
         public async Task ReturnsSuccessResult_WhenProductIsUpdated()
         {
             // Arrange
-            var category = new Category()
-            {
-                Id = new CategoryId(Guid.NewGuid().ToString()),
-                Name = "Category 1",
-            };
+            var request = _fixture.Build<UpdateProductCommand>()
+                  .With(r => r.Id, Guid.NewGuid().ToString())
+                  .With(r => r.CategoryId, Guid.NewGuid().ToString())
+                  .Create();
 
-            var product = new Product()
-            {
-                Id = new ProductId(Guid.NewGuid().ToString()),
-                CategoryId = new CategoryId(category.Id.ToString()),
-                ProductName = "Test Product",
-                Description = "Test Description",
-                Price = 100,
-                QuantityInStock = 10,
-            };
-
-            var request = new UpdateProductCommand
-            {
-                Id = product.Id.ToString(),
-                CategoryId = category.Id.ToString(),
-                ProductName = "Updated Product",
-                Description = "Updated Description",
-                Price = 200,
-                QuantityInStock = 20,
-            };
-
-            var productVm = new ProductVm
-            {
-                Id = request.Id,
-                ProductName = request.ProductName,
-                Description = request.Description,
-                Price = request.Price,
-                QuantityInStock = request.QuantityInStock,
-            };
-
+            var category = _fixture.Build<Category>()
+                  .With(r => r.Id, new CategoryId(Guid.NewGuid().ToString()))
+                  .Create();
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
                 .ReturnsAsync(category);
 
+
+
+            var product = _fixture.Build<Product>()
+                  .With(r => r.Id, new ProductId(category.Id.ToString()))
+                  .Create();
             _mockProductRepository.Setup(repo => repo.Update(It.IsAny<Product>()))
                 .ReturnsAsync(true);
 
+            var productVm = _fixture.Build<ProductVm>()
+                  .With(r => r.Id, request.Id)
+                  .Create();
             _mockMapper.Setup(m => m.Map<Product, ProductVm>(It.IsAny<Product>()))
                 .Returns(productVm);
 
@@ -170,8 +134,8 @@ namespace Rookie.Application.Tests.Products.Commands
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
         }
     }
 }

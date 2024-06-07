@@ -1,4 +1,7 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
+using Rookie.Application.Carts.Commands.ChangeCartQuantityCommand;
 using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
 using Rookie.Application.Carts.ViewModels;
 using Rookie.Application.Products.Commands.CreateProductCommand;
@@ -22,36 +25,30 @@ namespace Rookie.Application.Tests.Carts.Queries
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
-            {
-                UserName = "",
-            };
+            var request = _fixture.Build<GetCartByUserNameQuery>()
+              .With(x => x.UserName, "")
+              .Create();
 
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
-                _mockUserRepository.Object,
-                _mockMapper.Object
-                );
+            var handler = _fixture.Create<GetCartByUserNameQueryHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.ChangeCartQuantityInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CartErrors.ChangeCartQuantityInvalidData);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenUserIsNotFound()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetCartByUserNameQuery>()
+              .With(x => x.UserName, Guid.NewGuid().ToString())
+              .Create();
 
             _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((ApplicationUser)null);
+                .ReturnsAsync(null as ApplicationUser);
 
             var handler = new GetCartByUserNameQueryHandler(
                 _mockCartService.Object,
@@ -63,8 +60,8 @@ namespace Rookie.Application.Tests.Carts.Queries
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CartErrors.CanNotFindUser, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CartErrors.CanNotFindUser);
 
 
         }
@@ -73,37 +70,16 @@ namespace Rookie.Application.Tests.Carts.Queries
         public async Task ReturnsSuccessResult_WhenCartIsFound()
         {
             // Arrange
-            var request = new GetCartByUserNameQuery
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<GetCartByUserNameQuery>()
+              .Create();
 
-            var user = new ApplicationUser()
-            {
-                UserName = Guid.NewGuid().ToString(),
-            };
-            _mockUserRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<ApplicationUser, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(user);
-
-            var cartVm = new CartVm()
-            {
-                TotalPrice = 0,
-                CartItems = new List<CartItemVm>()
-            };
-            _mockMapper.Setup(m => m.Map<Cart, CartVm>(It.IsAny<Cart>()))
-                .Returns(cartVm);
-
-            var handler = new GetCartByUserNameQueryHandler(
-                _mockCartService.Object,
-                _mockUserRepository.Object,
-                _mockMapper.Object
-                );
+            var handler = _fixture.Create<GetCartByUserNameQueryHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
+            result.IsSuccess.Should().Be(true);
 
         }
     }

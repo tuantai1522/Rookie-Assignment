@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
 using Rookie.Application.Categories.Commands.CreateCategoryCommand;
 using Rookie.Application.Categories.Commands.DeleteCategoryCommand;
 using Rookie.Domain.CategoryEntity;
@@ -20,77 +22,59 @@ namespace Rookie.Application.Tests.Categories.Commands
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var request = new DeleteCategoryCommand
-            {
-                CategoryId = "",
-            };
+            var request = _fixture.Build<DeleteCategoryCommand>()
+              .With(x => x.CategoryId, "")
+              .Create();
 
-            var handler = new DeleteCategoryCommandHandler(
-                _mockCategoryRepository.Object
-                );
+            var handler = _fixture.Create<DeleteCategoryCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CategoryErrors.DeleteCategoryInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CategoryErrors.DeleteCategoryInvalidData);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenCategoryIsNotFound()
         {
             // Arrange
-            var request = new DeleteCategoryCommand
-            {
-                CategoryId = Guid.NewGuid().ToString(),
-            };
-
+            var request = _fixture.Build<DeleteCategoryCommand>()
+              .With(x => x.CategoryId, Guid.NewGuid().ToString())
+              .Create();
 
             var handler = new DeleteCategoryCommandHandler(
                 _mockCategoryRepository.Object
             );
 
             _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((Category)null);
+                .ReturnsAsync(null as Category);
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(CategoryErrors.NotFindCategory, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(CategoryErrors.NotFindCategory);
         }
 
         [Fact]
-        public async Task ReturnsFailureResult_WhenCategoryIsDeleted()
+        public async Task ReturnsSuccessResult_WhenCategoryIsDeleted()
         {
             // Arrange
-            var request = new DeleteCategoryCommand
-            {
-                CategoryId = Guid.NewGuid().ToString(),
-            };
+            var request = _fixture.Build<DeleteCategoryCommand>()
+              .With(x => x.CategoryId, Guid.NewGuid().ToString())
+              .Create();
 
-
-            var handler = new DeleteCategoryCommandHandler(
-                _mockCategoryRepository.Object
-            );
-
-            var category = new Category()
-            {
-                Id = new CategoryId(request.CategoryId),
-            };
-            _mockCategoryRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(category);
-
-            _mockCategoryRepository.Setup(repo => repo.Delete(It.IsAny<Category>()));
+            var handler = _fixture.Create<DeleteCategoryCommandHandler>();
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.Equal(1, result.Value);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().Be(1);
         }
     }
 }

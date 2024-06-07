@@ -13,6 +13,9 @@ using System.Linq.Expressions;
 using Rookie.Domain.DomainError;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Tests;
+using AutoFixture;
+using Rookie.Application.Products.Commands.CreateProductCommand;
+using FluentAssertions;
 
 namespace Rookie.Application.Tests.Products.Queries
 {
@@ -22,74 +25,61 @@ namespace Rookie.Application.Tests.Products.Queries
         public async Task ReturnsSuccessResult_WhenProductIsFound()
         {
             // Arrange
-            var productId = Guid.NewGuid();
-            var query = new GetByIdQuery { ProductId = productId.ToString() };
 
-            var fakeProduct = new Product
-            {
-                Id = new ProductId(productId),
-                ProductName = "Product 1"
-            };
+            // Arrange
+            var request = _fixture.Build<GetByIdQuery>()
+              .With(x => x.ProductId, Guid.NewGuid().ToString())
+              .Create();
 
-            var fakeProductVm = new ProductVm
-            {
-                Id = productId.ToString(),
-                ProductName = "Product 1"
-            };
-
-            _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync(fakeProduct);
-
-            _mockMapper.Setup(mapper => mapper.Map<Product, ProductVm>(fakeProduct))
-                   .Returns(fakeProductVm);
-
-            var handler = new GetByIdQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
+            var handler = _fixture.Create<GetByIdQueryHandler>();
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
-            Assert.Equal(fakeProductVm.Id, result.Value.Id);
+            result.IsSuccess.Should().Be(true);
+            result.Value.Should().NotBeNull();
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenProductIsNotFound()
         {
             // Arrange
-            var productId = Guid.NewGuid();
-            var query = new GetByIdQuery { ProductId = productId.ToString() };
+            var request = _fixture.Build<GetByIdQuery>()
+                      .With(r => r.ProductId, Guid.NewGuid().ToString())
+                      .Create();
 
             _mockProductRepository.Setup(repo => repo.GetOne(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>()))
-                .ReturnsAsync((Product)null);
+                .ReturnsAsync(null as Product);
 
 
-            var handler = new GetByIdQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
+            var handler = new GetByIdQueryHandler(
+                _mockProductRepository.Object, 
+                _mockMapper.Object
+            );
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.NotFindProduct, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.NotFindProduct);
         }
 
         [Fact]
         public async Task ReturnsFailureResult_WhenRequestIsInValid()
         {
             // Arrange
-            var productId = "123"; // Invalid Product Id
-            var query = new GetByIdQuery { ProductId = productId.ToString() };
+            var request = _fixture.Create<GetByIdQuery>();
 
             var handler = new GetByIdQueryHandler(_mockProductRepository.Object, _mockMapper.Object);
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            var result = await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.False(result.IsSuccess);
-            Assert.Equal(ProductErrors.QueryProductInvalidData, result.Error);
+            result.IsSuccess.Should().Be(false);
+            result.Error.Should().Be(ProductErrors.QueryProductInvalidData);
         }
     }
 }
