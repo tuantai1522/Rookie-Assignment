@@ -9,6 +9,5 @@ namespace Rookie.Application.Contracts.Persistence
         Task<bool> Update(Category entity);
         Task<Category> GetOne(Expression<Func<Category, bool>> filter, string includeProperties = null);
         Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> filter, string includeProperties = null);
-
     }
 }

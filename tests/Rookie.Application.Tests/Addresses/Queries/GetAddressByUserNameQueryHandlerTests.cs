@@ -14,7 +14,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rookie.Application.Tests.Users.Queries
+namespace Rookie.Application.Tests.Addresses.Queries
 {
     public class GetAddressByUserNameQueryHandlerTests : SetupTest
     {
@@ -38,7 +38,7 @@ namespace Rookie.Application.Tests.Users.Queries
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.NotEnoughInfo, result.Error);
+            Assert.Equal(AddressError.NotEnoughInfo, result.Error);
         }
 
         [Fact]
@@ -64,7 +64,7 @@ namespace Rookie.Application.Tests.Users.Queries
 
             // Assert
             Assert.False(result.IsSuccess);
-            Assert.Equal(UserErrors.NotCorrectInfo, result.Error);
+            Assert.Equal(AddressError.NotFindUser, result.Error);
         }
 
         [Fact]

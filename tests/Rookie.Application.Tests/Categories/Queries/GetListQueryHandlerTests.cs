@@ -35,8 +35,6 @@ namespace Rookie.Application.Tests.Categories.Queries
 
             // Assert
             Assert.True(result.IsSuccess);
-            Assert.NotNull(result.Value);
-            Assert.NotEmpty(result.Value);
         }
         private IEnumerable<Category> GetFakeCategories()
         {

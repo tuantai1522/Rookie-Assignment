@@ -11,5 +11,10 @@ namespace Rookie.Domain.DomainError
         public static readonly Error NotFindUser = new Error(
             "Address.NotFindUser",
             "Can't find user");
+
+
+        public static readonly Error CreateAddressInvalid = new Error(
+            "Address.CreateAddressInvalid",
+            "Please provide me full info to create address");
     }
 }

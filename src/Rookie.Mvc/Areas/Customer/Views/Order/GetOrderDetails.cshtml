@@ -44,7 +44,7 @@
                           <td class="column-3 text-center">@item.Quantity</td>
                           <td class="column-4 text-center">
                               @{
-                                  var total = item.UnitPrice + item.Quantity;
+                                  var total = item.UnitPrice * item.Quantity;
                               }
                               @total.ToString("C2", new System.Globalization.CultureInfo("en-US"))
                           </td>

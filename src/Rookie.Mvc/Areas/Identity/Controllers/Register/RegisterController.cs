@@ -1,8 +1,6 @@
 
-using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Rookie.Mvc.Areas.Identity.Models.Register;
 using Rookie.Mvc.Utils;
 
@@ -60,7 +58,7 @@ namespace Rookie.Mvc.Areas.Identity.Controllers.Register
                     }
                     catch (Exception ex)
                     {
-                        ViewBag.ErrorMessage = "Error when registering.";
+                        ViewBag.ErrorMessage = $"Error when registering: {ex.Message}";
                         return View("Index", data);
                     }
 

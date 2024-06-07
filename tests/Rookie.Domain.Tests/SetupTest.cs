@@ -34,6 +34,10 @@ namespace Rookie.Domain.Tests
 
         protected readonly Mock<IMediator> _mockMediator;
 
+        protected readonly Fixture _fixture;
+
+
+
         protected readonly Mock<ICategoryRepository> _mockCategoryRepository;
         protected readonly Mock<IProductRepository> _mockProductRepository;
         protected readonly Mock<IImageRepository> _mockImageRepository;
@@ -49,13 +53,15 @@ namespace Rookie.Domain.Tests
 
         public SetupTest()
         {
-
-
             _mockMediator = new Mock<IMediator>();
             _mockMapper = new Mock<IMapper>();
 
+            _fixture = new Fixture();
+            _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-
+            _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
+                .ForEach(b => _fixture.Behaviors.Remove(b));
 
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = "data source=.; initial catalog=Rookie; integrated security=true; Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true";
