@@ -2,27 +2,15 @@
 using Rookie.Application.Contracts.Infrastructure;
 using Rookie.Application.Contracts.Persistence;
 using Rookie.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Rookie.Application.Carts.Mappers;
-using Rookie.Application.Categories.Mappers;
-using Rookie.Application.MainImages.Mappers;
-using Rookie.Application.Orders.Mappers;
-using Rookie.Application.PagedList;
-using Rookie.Application.Products.Mappers;
-using Rookie.Application.Users.Mappers;
 using Moq;
-using Rookie.Persistence.Repositories;
 using Microsoft.Data.SqlClient;
 using MediatR;
 using AutoFixture;
 using AutoFixture.AutoMoq;
-
-
+using Microsoft.AspNetCore.Identity;
+using Rookie.Domain.ApplicationUserEntity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Rookie.Domain.Tests
 {
@@ -63,12 +51,15 @@ namespace Rookie.Domain.Tests
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                 .ForEach(b => _fixture.Behaviors.Remove(b));
 
+
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = "data source=.; initial catalog=Rookie; integrated security=true; Trusted_Connection=True;Encrypt=false;TrustServerCertificate=true";
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                             .UseSqlServer(conn)
                             .Options;
             _dbContext = new ApplicationDbContext(options);
+
+
 
             _mockCategoryRepository = new Mock<ICategoryRepository>();
             _mockProductRepository = new Mock<IProductRepository>();
@@ -80,6 +71,18 @@ namespace Rookie.Domain.Tests
             _mockCartService = new Mock<ICartService>();
             _mockImageService = new Mock<IImageService>();
             _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
+
+            var _userManager = new UserManager<ApplicationUser>(
+                new UserStore<ApplicationUser>(_dbContext),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            );
         }
 
         public void Dispose()

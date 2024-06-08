@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using AutoFixture.AutoMoq;
 using AutoMapper;
 using Rookie.Application.Addresses.Mappers;
 using Rookie.Application.Carts.Mappers;
@@ -13,18 +14,18 @@ namespace Rookie.Domain.Tests
 {
     public class SetupProfileTest
     {
-        protected readonly Fixture _fixture;
+        protected readonly IFixture _fixture;
 
         protected readonly IMapper _mapper;
 
         public SetupProfileTest()
         {
-            _fixture = new Fixture();
+            _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
-
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                 .ForEach(b => _fixture.Behaviors.Remove(b));
+
             var mappingConfig = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new PagedListProfile());
