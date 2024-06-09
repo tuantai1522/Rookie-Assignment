@@ -11,12 +11,15 @@ using AutoFixture.AutoMoq;
 using Microsoft.AspNetCore.Identity;
 using Rookie.Domain.ApplicationUserEntity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.EntityFrameworkCore.Storage;
+using CloudinaryDotNet;
+
 
 namespace Rookie.Domain.Tests
 {
     public class SetupTest : IDisposable
     {
-
         protected readonly Mock<IMapper> _mockMapper;
 
         protected readonly ApplicationDbContext _dbContext;

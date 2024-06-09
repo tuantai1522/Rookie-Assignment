@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Rookie.Domain.OrderEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Domain.ApplicationUserEntity
 {
@@ -9,5 +10,7 @@ namespace Rookie.Domain.ApplicationUserEntity
         public string? LastName { get; set; }
         public ICollection<ApplicationUserAddress>? ApplicationUserAddresses { get; set; } = [];
         public ICollection<Order>? Orders { get; set; } = [];
+        public ICollection<Rating>? Ratings { get; set; } = [];
+
     }
 }

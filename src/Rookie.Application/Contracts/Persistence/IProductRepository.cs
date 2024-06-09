@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using Rookie.Application.Contracts.Persistence;
 using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
 

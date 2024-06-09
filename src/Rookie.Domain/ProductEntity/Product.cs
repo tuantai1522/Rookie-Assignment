@@ -4,6 +4,7 @@ using Rookie.Domain.Common;
 using Rookie.Domain.ImageEntity;
 using Rookie.Domain.MainImageEntity;
 using Rookie.Domain.OrderEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Domain.ProductEntity
 {
@@ -20,6 +21,7 @@ namespace Rookie.Domain.ProductEntity
 
         public ICollection<Image>? Images { get; set; } = [];
         public ICollection<OrderItem>? OrderItems { get; set; } = [];
+        public ICollection<Rating>? Ratings { get; set; } = [];
 
         public MainImage? MainImage { get; set; }
     }

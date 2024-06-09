@@ -7,6 +7,7 @@ using Rookie.Domain.ImageEntity;
 using Rookie.Domain.MainImageEntity;
 using Rookie.Domain.OrderEntity;
 using Rookie.Domain.ProductEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Persistence
 {
@@ -20,6 +21,7 @@ namespace Rookie.Persistence
         public DbSet<Image> Images { get; set; }
         public DbSet<MainImage> MainImages { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
         public DbSet<ApplicationUserAddress> ApplicationUserAddresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

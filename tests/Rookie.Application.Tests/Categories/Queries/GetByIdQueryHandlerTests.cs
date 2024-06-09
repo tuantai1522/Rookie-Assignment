@@ -1,20 +1,10 @@
 ﻿using Moq;
 using Rookie.Application.Categories.Queries.GetByIdQuery;
-using Rookie.Application.Products.Commands.UpdateProductCommand;
 using Rookie.Domain.CategoryEntity;
 using Rookie.Domain.DomainError;
-using Rookie.Domain.ProductEntity;
 using Rookie.Domain.Tests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-using Rookie.Application.Categories.ViewModels;
 using AutoFixture;
-using Rookie.Application.Carts.Queries.GetCartByUserNameQuery;
 using FluentAssertions;
 
 
