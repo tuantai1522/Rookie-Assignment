@@ -45,7 +45,7 @@ namespace Rookie.Persistence.Repositories
             IQueryable<Rating> query = this._context.Ratings;
 
             if (filter != null)
-                query = query.Where(filter);
+                query = query.Where(filter).OrderByDescending(x => x.CreatedDate);
 
             var ratingList = query.AsQueryable();
 

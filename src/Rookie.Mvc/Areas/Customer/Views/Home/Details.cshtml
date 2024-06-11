@@ -50,9 +50,12 @@
                   </div>
                 }
 
-
 							</div>
+
 						</div>
+
+						<input class="d-none" id='productId' value=@Model.Id/>
+
 					</div>
 				</div>
 					
@@ -126,7 +129,7 @@
 							<a class="nav-link active" data-toggle="tab" href="#description" role="tab">Description</a>
 						</li>
 						<li class="nav-item p-b-10">
-							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews (1)</a>
+							<a class="nav-link" data-toggle="tab" href="#reviews" role="tab">Reviews</a>
 						</li>
 					</ul>
 
@@ -147,35 +150,24 @@
 								<div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
 									<div class="p-b-30 m-lr-15-sm">
 										<!-- Review -->
-										<div class="flex-w flex-t p-b-68">
+										<div id="list-ratings" class="flex-w flex-t p-b-68">
 
-											<div class="size-207 m-b-30">
-												<div class="flex-w flex-sb-m p-b-10">
-													<span class="mtext-107 cl2 p-r-20">
-														Ariana Grande
-													</span>
+										</div>
 
-
-													<div>
-														<span class="mtext-107 cl2 p-r-20">
-															Date Time
-														</span>
-
-														<span class="fs-18 cl11">
-															<i class="zmdi zmdi-star"></i>
-															<i class="zmdi zmdi-star"></i>
-															<i class="zmdi zmdi-star"></i>
-															<i class="zmdi zmdi-star"></i>
-															<i class="zmdi zmdi-star-half"></i>
-														</span>
-													</div>
-
-												</div>
-
-												<p class="stext-102 cl6">
-													Quod autem in homine praestantissimum atque optimum est, id deseruit. Apud ceteros autem philosophos
-												</p>
-											</div>
+										<!-- Pagination -->
+										<div class="col-12 d-flex align-items-center justify-content-center mt-4">
+												<ul id="pagination">
+														<button onclick="fetchRating(this)" value="1" class="m-r-5 btn btn-primary" >
+																<li class="previous-button">
+																		<span >Previous</span>
+																</li>
+														</button>
+														<button onclick="fetchRating(this)" class="btn btn-primary">
+																<li class="next-button">
+																		<span >Next</span>
+																</li>
+														</button>
+												</ul>
 										</div>
 									</div>
 								</div>
