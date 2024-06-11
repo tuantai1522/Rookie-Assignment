@@ -62,8 +62,6 @@ namespace Rookie.Domain.Tests
                             .Options;
             _dbContext = new ApplicationDbContext(options);
 
-
-
             _mockCategoryRepository = new Mock<ICategoryRepository>();
             _mockProductRepository = new Mock<IProductRepository>();
             _mockImageRepository = new Mock<IImageRepository>();
@@ -74,18 +72,6 @@ namespace Rookie.Domain.Tests
             _mockCartService = new Mock<ICartService>();
             _mockImageService = new Mock<IImageService>();
             _mockJwtTokenGenerator = new Mock<IJwtTokenGenerator>();
-
-            var _userManager = new UserManager<ApplicationUser>(
-                new UserStore<ApplicationUser>(_dbContext),
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-            );
         }
 
         public void Dispose()

@@ -10,12 +10,11 @@ namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
                 .NotEmpty()
                 .NotNull();
 
-            RuleFor(x => x.ProductId)
+            RuleFor(x => x.OrderItemId)
                 .NotEmpty()
                 .NotNull();
-
-            RuleFor(x => x.ProductId)
-                .Must(ProductId => Guid.TryParse(ProductId, out _));
+            RuleFor(x => x.OrderItemId)
+                .Must(OrderItemId => Guid.TryParse(OrderItemId, out _));
 
             RuleFor(x => x.Rating)
                 .NotEmpty()

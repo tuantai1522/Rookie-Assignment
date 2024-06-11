@@ -1,28 +1,34 @@
+using AutoMapper;
 using MediatR;
 using Rookie.Application.Contracts.Persistence;
+using Rookie.Application.Ratings.ViewModels;
 using Rookie.Domain.Common;
 using Rookie.Domain.DomainError;
+using Rookie.Domain.OrderEntity;
 using Rookie.Domain.ProductEntity;
 using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
 {
-    public class CreateRatingCommandHandler : IRequestHandler<CreateRatingCommand, Result<RatingId>>
+    public class CreateRatingCommandHandler : IRequestHandler<CreateRatingCommand, Result<RatingVm>>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IProductRepository _productRepository;
+        private readonly IOrderRepository _orderRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IMapper _mapper;
 
         public CreateRatingCommandHandler(IUserRepository userRepository,
-                                 IProductRepository productRepository,
-                                 IRatingRepository ratingRepository)
+                                 IOrderRepository orderRepository,
+                                 IRatingRepository ratingRepository,
+                                 IMapper mapper)
         {
             _userRepository = userRepository;
-            _productRepository = productRepository;
+            _orderRepository = orderRepository;
             _ratingRepository = ratingRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Result<RatingId>> Handle(CreateRatingCommand request, CancellationToken cancellationToken)
+        public async Task<Result<RatingVm>> Handle(CreateRatingCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateRatingCommandValidator();
 
@@ -30,32 +36,39 @@ namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
 
             //data is not valid
             if (validationResult.IsValid == false)
-                return Result.Failure<RatingId>(RatingErrors.CreateRatingInvalidData);
+                return Result.Failure<RatingVm>(RatingErrors.CreateRatingInvalidData);
 
 
+            //can not find user
             var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
-
-            //can not find user
             if (user is null)
-                return Result.Failure<RatingId>(RatingErrors.NotFindUser);
+                return Result.Failure<RatingVm>(RatingErrors.NotFindUser);
 
-            var product = await _productRepository.GetOne(x => x.Id.Equals(new ProductId(request.ProductId)));
 
-            //can not find user
-            if (product is null)
-                return Result.Failure<RatingId>(RatingErrors.NotFindProduct);
+            //this orderItem does not exist
+            var orderItem = await _orderRepository.CheckOrderItemExists(new OrderItemId(request.OrderItemId));
+            if (orderItem == false)
+                return Result.Failure<RatingVm>(RatingErrors.NotFindOrderItem);
+
+            //this orderItem was rated
+            var rating = await _ratingRepository.GetOne(x => x.OrderItemId.Equals(new OrderItemId(request.OrderItemId)));
+            if (rating is not null)
+                return Result.Failure<RatingVm>(RatingErrors.AlreadyRated);
 
             var NewRating = new Rating
             {
-                ProductId = product.Id,
                 UserId = user.Id,
                 Value = (RatingValue)request.Rating,
                 Comment = request.Comment,
+                OrderItemId = new OrderItemId(request.OrderItemId),
             };
 
 
             _ratingRepository.Add(NewRating);
-            return NewRating.Id;
+
+            var ratingVm = _mapper.Map<RatingVm>(NewRating);
+
+            return ratingVm;
         }
     }
 }

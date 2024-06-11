@@ -9,6 +9,7 @@ using Rookie.Application.MainImages.Mappers;
 using Rookie.Application.Orders.Mappers;
 using Rookie.Application.PagedList;
 using Rookie.Application.Products.Mappers;
+using Rookie.Application.Ratings.Mappers;
 using Rookie.Application.Users.Mappers;
 
 namespace Rookie.Application
@@ -32,6 +33,9 @@ namespace Rookie.Application
 
                     cfg.AddProfile<OrderProfile>();
                     cfg.AddProfile<ApplicationUserAddressProfile>();
+
+                    cfg.AddProfile<RatingProfile>();
+
 
                 });
                 return config.CreateMapper();

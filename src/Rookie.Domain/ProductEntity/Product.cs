@@ -21,8 +21,6 @@ namespace Rookie.Domain.ProductEntity
 
         public ICollection<Image>? Images { get; set; } = [];
         public ICollection<OrderItem>? OrderItems { get; set; } = [];
-        public ICollection<Rating>? Ratings { get; set; } = [];
-
         public MainImage? MainImage { get; set; }
     }
 }

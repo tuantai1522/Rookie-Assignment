@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Rookie.Domain.Common;
 using Rookie.Domain.ProductEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Domain.OrderEntity
 {
@@ -16,5 +17,7 @@ namespace Rookie.Domain.OrderEntity
         public Order? Order { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
+
+        public Rating? Rating { get; set; }
     }
 }

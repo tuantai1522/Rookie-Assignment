@@ -59,8 +59,8 @@ namespace Rookie.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 589, DateTimeKind.Utc).AddTicks(3607)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 589, DateTimeKind.Utc).AddTicks(4394))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 657, DateTimeKind.Utc).AddTicks(5270)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 657, DateTimeKind.Utc).AddTicks(8387))
                 },
                 constraints: table =>
                 {
@@ -98,8 +98,8 @@ namespace Rookie.Persistence.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 586, DateTimeKind.Utc).AddTicks(185)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 586, DateTimeKind.Utc).AddTicks(1049))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 653, DateTimeKind.Utc).AddTicks(3747)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 653, DateTimeKind.Utc).AddTicks(4694))
                 },
                 constraints: table =>
                 {
@@ -210,8 +210,8 @@ namespace Rookie.Persistence.Migrations
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DeliveryFee = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 598, DateTimeKind.Utc).AddTicks(725)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 598, DateTimeKind.Utc).AddTicks(1498))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 671, DateTimeKind.Utc).AddTicks(9060)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 671, DateTimeKind.Utc).AddTicks(9880))
                 },
                 constraints: table =>
                 {
@@ -234,8 +234,8 @@ namespace Rookie.Persistence.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 607, DateTimeKind.Utc).AddTicks(969)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 607, DateTimeKind.Utc).AddTicks(1950))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 717, DateTimeKind.Utc).AddTicks(9168)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 718, DateTimeKind.Utc).AddTicks(1469))
                 },
                 constraints: table =>
                 {
@@ -256,8 +256,8 @@ namespace Rookie.Persistence.Migrations
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 591, DateTimeKind.Utc).AddTicks(4264)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 591, DateTimeKind.Utc).AddTicks(5129))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 663, DateTimeKind.Utc).AddTicks(5986)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 663, DateTimeKind.Utc).AddTicks(7681))
                 },
                 constraints: table =>
                 {
@@ -279,8 +279,8 @@ namespace Rookie.Persistence.Migrations
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 602, DateTimeKind.Utc).AddTicks(5173)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 602, DateTimeKind.Utc).AddTicks(6160))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 703, DateTimeKind.Utc).AddTicks(852)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 703, DateTimeKind.Utc).AddTicks(3461))
                 },
                 constraints: table =>
                 {
@@ -300,42 +300,13 @@ namespace Rookie.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ratings",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Value = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 612, DateTimeKind.Utc).AddTicks(7790)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 612, DateTimeKind.Utc).AddTicks(8850))
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ratings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ratings_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Ratings_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MainImages",
                 columns: table => new
                 {
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 595, DateTimeKind.Utc).AddTicks(2277)),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 9, 4, 25, 42, 595, DateTimeKind.Utc).AddTicks(3117))
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 668, DateTimeKind.Utc).AddTicks(6063)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 668, DateTimeKind.Utc).AddTicks(6903))
                 },
                 constraints: table =>
                 {
@@ -351,6 +322,34 @@ namespace Rookie.Persistence.Migrations
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    OrderItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 726, DateTimeKind.Utc).AddTicks(5920)),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2024, 6, 10, 13, 58, 19, 726, DateTimeKind.Utc).AddTicks(7366))
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.OrderItemId);
+                    table.ForeignKey(
+                        name: "FK_Ratings_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Ratings_OrderItem_OrderItemId",
+                        column: x => x.OrderItemId,
+                        principalTable: "OrderItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -428,11 +427,6 @@ namespace Rookie.Persistence.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_ProductId",
-                table: "Ratings",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ratings_UserId",
                 table: "Ratings",
                 column: "UserId");
@@ -463,9 +457,6 @@ namespace Rookie.Persistence.Migrations
                 name: "MainImages");
 
             migrationBuilder.DropTable(
-                name: "OrderItem");
-
-            migrationBuilder.DropTable(
                 name: "Ratings");
 
             migrationBuilder.DropTable(
@@ -473,6 +464,9 @@ namespace Rookie.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "OrderItem");
 
             migrationBuilder.DropTable(
                 name: "Orders");

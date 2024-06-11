@@ -14,6 +14,32 @@ namespace Rookie.Persistence.Repositories
         {
             this._context = context;
         }
+
+        public async Task<Rating> GetOne(Expression<Func<Rating, bool>> filter, string includeProperties = null)
+        {
+            IQueryable<Rating> query = this._context.Ratings;
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                //there are multiple includes
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            //Lấy object Product
+            query = query
+                .Include(o => o.OrderItem)
+                .ThenInclude(oi => oi.Product);
+
+            return await query.FirstOrDefaultAsync();
+        }
+
         public async Task<PagedList<Rating>> GetRatingBasedOnProduct(Expression<Func<Rating, bool>> filter, RatingParams ratingParams, string includeProperties = null)
         {
             IQueryable<Rating> query = this._context.Ratings;
@@ -33,6 +59,10 @@ namespace Rookie.Persistence.Repositories
                 }
             }
 
+            //Lấy object Product
+            ratingList = ratingList
+                .Include(o => o.OrderItem)
+                .ThenInclude(oi => oi.Product);
 
             //Pagination
             var ratings = await PagedList<Rating>.ToPagedList(ratingList,

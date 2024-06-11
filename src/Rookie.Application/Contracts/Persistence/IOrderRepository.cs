@@ -9,5 +9,6 @@ namespace Rookie.Application.Contracts.Persistence
         Task<Order> GetOne(Expression<Func<Order, bool>> filter, string includeProperties = null);
         Task<PagedList<Order>> GetAll(OrderParams orderParams, string includeProperties = null);
         Task<PagedList<Order>> GetListById(Expression<Func<Order, bool>> filter, OrderParams orderParams, string includeProperties = null);
+        Task<bool> CheckOrderItemExists(OrderItemId orderItemId);
     }
 }

@@ -9,5 +9,8 @@ namespace Rookie.Application.Contracts.Persistence
         Task<PagedList<Rating>> GetRatingBasedOnProduct(Expression<Func<Rating, bool>> filter,
                                                         RatingParams ratingParams,
                                                         string includeProperties = null);
+
+        Task<Rating> GetOne(Expression<Func<Rating, bool>> filter, string includeProperties = null);
+
     }
 }

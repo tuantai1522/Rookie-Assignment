@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Rookie.Domain.OrderEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Persistence.Configurations
 {
@@ -27,6 +28,11 @@ namespace Rookie.Persistence.Configurations
                 .WithMany(c => c.OrderItems)
                 .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            //One orderItem belongs to one rating
+            builder.HasOne(a => a.Rating)
+                 .WithOne(b => b.OrderItem)
+                 .HasForeignKey<Rating>(b => b.OrderItemId);
         }
     }
 }

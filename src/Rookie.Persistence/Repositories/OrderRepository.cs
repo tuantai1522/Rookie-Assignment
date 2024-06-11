@@ -101,5 +101,13 @@ namespace Rookie.Persistence.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+
+
+        public async Task<bool> CheckOrderItemExists(OrderItemId orderItemId)
+        {
+            return await _context.Orders
+                .SelectMany(o => o.OrderItems)
+                .AnyAsync(oi => oi.Id == orderItemId);
+        }
     }
 }
