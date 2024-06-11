@@ -8,11 +8,11 @@ namespace Rookie.Application.Ratings.Mappers
     {
         public RatingProfile()
         {
-            CreateMap<List<Rating>, RatingVm>()
-                .ForMember(dest => dest.ProductName, opt => opt.Ignore())
-                .ForMember(dest => dest.UserNames, opt => opt.MapFrom(src => src.Select(r => r.ApplicationUser != null ? r.ApplicationUser.UserName : string.Empty).ToList()))
-                .ForMember(dest => dest.Rating, opt => opt.Ignore())
-                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Select(r => r.Comment ?? string.Empty).ToList()));
+            CreateMap<Rating, RatingVm>()
+                .ForMember(des => des.UserName, act => act.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : "null"))
+                .ForMember(dest => dest.Rating, act => act.MapFrom(x => (int)x.Value))
+                .ForMember(dest => dest.CreatedDate, act => act.MapFrom(x => x.CreatedDate))
+                .ForMember(dest => dest.Comment, act => act.MapFrom(x => x.Comment));
         }
     }
 }

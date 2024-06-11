@@ -10,7 +10,7 @@ using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
 {
-    public class CreateRatingCommandHandler : IRequestHandler<CreateRatingCommand, Result<RatingVm>>
+    public class CreateRatingCommandHandler : IRequestHandler<CreateRatingCommand, Result<string>>
     {
         private readonly IUserRepository _userRepository;
         private readonly IOrderRepository _orderRepository;
@@ -28,7 +28,7 @@ namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
             _mapper = mapper;
         }
 
-        public async Task<Result<RatingVm>> Handle(CreateRatingCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(CreateRatingCommand request, CancellationToken cancellationToken)
         {
             var validator = new CreateRatingCommandValidator();
 
@@ -36,24 +36,24 @@ namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
 
             //data is not valid
             if (validationResult.IsValid == false)
-                return Result.Failure<RatingVm>(RatingErrors.CreateRatingInvalidData);
+                return Result.Failure<string>(RatingErrors.CreateRatingInvalidData);
 
 
             //can not find user
             var user = await _userRepository.GetOne(u => u.UserName.Equals(request.UserName));
             if (user is null)
-                return Result.Failure<RatingVm>(RatingErrors.NotFindUser);
+                return Result.Failure<string>(RatingErrors.NotFindUser);
 
 
             //this orderItem does not exist
             var orderItem = await _orderRepository.CheckOrderItemExists(new OrderItemId(request.OrderItemId));
             if (orderItem == false)
-                return Result.Failure<RatingVm>(RatingErrors.NotFindOrderItem);
+                return Result.Failure<string>(RatingErrors.NotFindOrderItem);
 
             //this orderItem was rated
             var rating = await _ratingRepository.GetOne(x => x.OrderItemId.Equals(new OrderItemId(request.OrderItemId)));
             if (rating is not null)
-                return Result.Failure<RatingVm>(RatingErrors.AlreadyRated);
+                return Result.Failure<string>(RatingErrors.AlreadyRated);
 
             var NewRating = new Rating
             {
@@ -66,9 +66,8 @@ namespace Rookie.Application.Ratings.Commands.CreateRatingCommand
 
             _ratingRepository.Add(NewRating);
 
-            var ratingVm = _mapper.Map<RatingVm>(NewRating);
+            return request.OrderItemId;
 
-            return ratingVm;
         }
     }
 }

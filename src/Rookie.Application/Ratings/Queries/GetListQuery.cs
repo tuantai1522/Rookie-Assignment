@@ -5,7 +5,7 @@ using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Application.Ratings.Queries
 {
-    public class GetListQuery : IRequest<Result<RatingVm>>
+    public class GetListQuery : IRequest<Result<PagedList<RatingVm>>>
     {
         public string ProductId { get; set; }
         public RatingParams RatingParams { get; set; }

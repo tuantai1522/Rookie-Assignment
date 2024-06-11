@@ -30,9 +30,9 @@ namespace Rookie.WebApi.Controllers.Orders
 
         [HttpGet("GetListByIdQuery")]
         [Authorize(Policy = "RequireCustomerRole")]
-        public async Task<IActionResult> GetListByIdQuery([FromQuery] OrderParams OrderParams)
+        public async Task<IActionResult> GetListByIdQuery([FromQuery] GetListByIdRequest request)
         {
-            var result = await Mediator.Send(new GetListByIdQuery { UserName = User.Identity!.Name, OrderParams = OrderParams });
+            var result = await Mediator.Send(new GetListByIdQuery { UserName = User.Identity!.Name, OrderParams = request.OrderParams });
 
             if (result.IsSuccess)
             {

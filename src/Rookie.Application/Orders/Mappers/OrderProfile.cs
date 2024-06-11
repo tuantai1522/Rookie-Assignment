@@ -1,6 +1,7 @@
 using AutoMapper;
 using Rookie.Application.Orders.ViewModels;
 using Rookie.Domain.OrderEntity;
+using Rookie.Domain.RatingEntity;
 
 namespace Rookie.Application.Orders.Mappers
 {
@@ -21,7 +22,8 @@ namespace Rookie.Application.Orders.Mappers
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product != null ? src.Product.ProductName : string.Empty))
                 .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPrice))
-                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Rating != null ? src.Rating.Value : 0));
         }
     }
 }

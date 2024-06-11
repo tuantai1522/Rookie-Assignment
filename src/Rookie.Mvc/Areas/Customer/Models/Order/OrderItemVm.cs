@@ -1,3 +1,5 @@
+using Rookie.Application.Ratings.ViewModels;
+
 namespace Rookie.Mvc.Areas.Customer.Models.Order
 {
     public class OrderItemVm
@@ -6,5 +8,7 @@ namespace Rookie.Mvc.Areas.Customer.Models.Order
         public string ProductName { get; set; }
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
+        public int Value { get; set; }
+
     }
 }

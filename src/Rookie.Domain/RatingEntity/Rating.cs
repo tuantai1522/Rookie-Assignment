@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using Rookie.Domain.ApplicationUserEntity;
 using Rookie.Domain.Common;
 using Rookie.Domain.OrderEntity;
-using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Domain.RatingEntity
 {

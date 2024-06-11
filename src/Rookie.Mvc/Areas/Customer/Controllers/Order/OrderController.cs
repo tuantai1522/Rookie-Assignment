@@ -81,7 +81,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             // Make a GET request to the Web API endpoint
-            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetListByIdQuery?PageNumber={CurPage}");
+            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/order/GetListByIdQuery?OrderParams.PageNumber={CurPage}&OrderParams.PageSize=6");
             if (response.IsSuccessStatusCode)
             {
                 // Read the response content and deserialize it into a CartVm object

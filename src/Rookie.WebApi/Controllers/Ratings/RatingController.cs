@@ -8,7 +8,7 @@ using Rookie.WebApi.Controllers.Ratings.Request;
 
 namespace Rookie.WebApi.Controllers.Ratings
 {
-    [Route("api/product")]
+    [Route("api/rating")]
     [ApiController]
     public class RatingController : BaseApiController
     {
@@ -22,6 +22,7 @@ namespace Rookie.WebApi.Controllers.Ratings
             });
             if (result.IsSuccess)
             {
+                Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
                 return Ok(result.Value);
             }
             else

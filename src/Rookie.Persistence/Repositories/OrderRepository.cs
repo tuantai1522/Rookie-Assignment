@@ -32,10 +32,13 @@ namespace Rookie.Persistence.Repositories
                 }
             }
 
-            //Lấy object Product
+            //Lấy object Product, Rating
             orderList = orderList
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product);
+                .ThenInclude(oi => oi.Product)
+                .Include(oi => oi.OrderItems)
+                .ThenInclude(oi => oi.Rating);
+
 
 
             //Pagination
@@ -68,7 +71,10 @@ namespace Rookie.Persistence.Repositories
             //Lấy object Product
             orderList = orderList
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product);
+                .ThenInclude(oi => oi.Product)
+                .Include(oi => oi.OrderItems)
+                .ThenInclude(oi => oi.Rating);
+
 
             //Pagination
             var orders = await PagedList<Order>.ToPagedList(orderList, orderParams.PageNumber,
@@ -97,7 +103,9 @@ namespace Rookie.Persistence.Repositories
             //Lấy object Product
             query = query
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.Product);
+                .ThenInclude(oi => oi.Product)
+                .Include(oi => oi.OrderItems)
+                .ThenInclude(oi => oi.Rating);
 
             return await query.FirstOrDefaultAsync();
         }

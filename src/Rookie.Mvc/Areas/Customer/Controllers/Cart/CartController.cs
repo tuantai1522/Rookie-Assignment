@@ -56,8 +56,6 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Cart
             HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + $"/cart/ChangeCartQuantity",
                                                                         stringContent);
 
-            string info = await response.Content.ReadAsStringAsync();
-
             return RedirectToAction("Index", "Cart", new { area = "Customer" });
         }
     }
