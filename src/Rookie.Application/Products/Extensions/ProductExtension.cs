@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using System.Reflection;
 using Rookie.Domain.ProductEntity;
 
 namespace Rookie.Application.Products.Extensions
@@ -8,14 +10,32 @@ namespace Rookie.Application.Products.Extensions
         {
             if (string.IsNullOrWhiteSpace(OrderBy)) return query.OrderBy(p => p.ProductName);
 
-            query = OrderBy switch
-            {
-                "priceAsc" => query.OrderBy(p => p.Price),
-                "priceDesc" => query.OrderByDescending(p => p.Price),
-                _ => query.OrderBy(p => p.ProductName)
-            };
+            // Parse the orderBy string
+            var SortType = OrderBy.EndsWith("asc", StringComparison.OrdinalIgnoreCase);
 
-            return query;
+            string propertyName = string.Empty;
+
+            if (SortType == true)
+                propertyName = OrderBy[..^3];//get 3 last characters (asc)
+            else
+                propertyName = OrderBy[..^4];//get 4 last characters (desc)
+
+            // Get the property to sort by
+            var propertyInfo = typeof(Product).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (propertyInfo == null)
+                return query;
+
+            // Create the sorting expression
+            var parameter = Expression.Parameter(typeof(Product), "p");
+            var propertyAccess = Expression.MakeMemberAccess(parameter, propertyInfo);
+            var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+
+            // Apply the sorting
+            var methodName = SortType ? "OrderBy" : "OrderByDescending";
+            var resultExpression = Expression.Call(typeof(Queryable), methodName, [typeof(Product), propertyInfo.PropertyType],
+                                                   query.Expression, Expression.Quote(orderByExpression));
+            return query.Provider.CreateQuery<Product>(resultExpression);
+
         }
 
         public static IQueryable<Product> Search(this IQueryable<Product> query, string KeyWord)

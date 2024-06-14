@@ -1,7 +1,7 @@
-import ProductTable from "./ProductTable";
+import ProductView from "./ProductView";
 
 const Product = () => {
-  return <ProductTable />;
+  return <ProductView />;
 };
 
 export default Product;
