@@ -1,4 +1,5 @@
 using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Orders.Commands.CreateOrderCommand;
@@ -12,13 +13,13 @@ namespace Rookie.WebApi.Controllers.Orders
 {
     [Route("api/order")]
     [ApiController]
-    public class OrderController : BaseApiController
+    public class OrderController(IMediator mediator) : BaseApiController(mediator)
     {
         [HttpGet("GetAllOrders")]
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> GetAllOrders([FromQuery] OrderParams OrderParams)
         {
-            var result = await Mediator.Send(new GetListQuery { OrderParams = OrderParams });
+            var result = await _mediator.Send(new GetListQuery { OrderParams = OrderParams });
             if (result.IsSuccess)
             {
                 Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
@@ -32,7 +33,7 @@ namespace Rookie.WebApi.Controllers.Orders
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> GetListByIdQuery([FromQuery] GetListByIdRequest request)
         {
-            var result = await Mediator.Send(new GetListByIdQuery { UserName = User.Identity!.Name, OrderParams = request.OrderParams });
+            var result = await _mediator.Send(new GetListByIdQuery { UserName = User.Identity!.Name, OrderParams = request.OrderParams });
 
             if (result.IsSuccess)
             {
@@ -47,7 +48,7 @@ namespace Rookie.WebApi.Controllers.Orders
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> GetByIdQuery([FromQuery] GetByIdRequest request)
         {
-            var result = await Mediator.Send(new GetByIdQuery { UserName = User.Identity!.Name, OrderId = request.OrderId });
+            var result = await _mediator.Send(new GetByIdQuery { UserName = User.Identity!.Name, OrderId = request.OrderId });
 
             if (result.IsSuccess)
             {
@@ -61,7 +62,7 @@ namespace Rookie.WebApi.Controllers.Orders
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> CreateOrder(CreateRequest request)
         {
-            var result = await Mediator.Send(new CreateOrderCommand
+            var result = await _mediator.Send(new CreateOrderCommand
             {
                 ShippingAddress = request.ShippingAddress,
                 UserName = User.Identity!.Name,

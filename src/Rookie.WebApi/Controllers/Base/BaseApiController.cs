@@ -7,8 +7,10 @@ namespace Rookie.WebApi.Controllers.Base
     [Route("api/[controller]")]
     public abstract class BaseApiController : ControllerBase
     {
-        private IMediator? _mediator;
-
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;
+        protected readonly IMediator _mediator;
+        public BaseApiController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
     }
 }

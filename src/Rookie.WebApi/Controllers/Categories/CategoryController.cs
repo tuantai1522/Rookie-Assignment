@@ -7,17 +7,18 @@ using Rookie.Application.Categories.Queries.GetByIdQuery;
 using Rookie.Application.Categories.Queries.GetListQuery;
 using Rookie.WebApi.Controllers.Base;
 using Rookie.WebApi.Controllers.Categories.Request;
+using MediatR;
 
 namespace Rookie.WebApi.Controllers.Categories
 {
     [Route("api/category")]
     [ApiController]
-    public class CategoryController : BaseApiController
+    public class CategoryController(IMediator mediator) : BaseApiController(mediator)
     {
         [HttpGet("GetAllCategories")]
         public async Task<IActionResult> GetAllCategories()
         {
-            var result = await Mediator.Send(new GetListQuery());
+            var result = await _mediator.Send(new GetListQuery());
             if (result.IsSuccess)
                 return Ok(result.Value);
             else
@@ -27,7 +28,7 @@ namespace Rookie.WebApi.Controllers.Categories
         [HttpGet("GetCategoryById")]
         public async Task<IActionResult> GetCategoryById([FromQuery] GetByIdRequest request)
         {
-            var result = await Mediator.Send(new GetByIdQuery { Id = request.CategoryId });
+            var result = await _mediator.Send(new GetByIdQuery { Id = request.CategoryId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -39,7 +40,7 @@ namespace Rookie.WebApi.Controllers.Categories
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> CreateCategory([FromForm] CreateRequest request)
         {
-            var result = await Mediator.Send(new CreateCategoryCommand
+            var result = await _mediator.Send(new CreateCategoryCommand
             {
                 CategoryName = request.CategoryName,
                 Description = request.Description,
@@ -56,7 +57,7 @@ namespace Rookie.WebApi.Controllers.Categories
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> DeleteCategoryById([FromQuery] DeleteRequest request)
         {
-            var result = await Mediator.Send(new DeleteCategoryCommand { CategoryId = request.CategoryId });
+            var result = await _mediator.Send(new DeleteCategoryCommand { CategoryId = request.CategoryId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -68,7 +69,7 @@ namespace Rookie.WebApi.Controllers.Categories
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> UpdateCategoryById([FromForm] UpdateRequest request)
         {
-            var result = await Mediator.Send(new UpdateCategoryCommand
+            var result = await _mediator.Send(new UpdateCategoryCommand
             {
                 CategoryName = request.CategoryName,
                 Description = request.Description,

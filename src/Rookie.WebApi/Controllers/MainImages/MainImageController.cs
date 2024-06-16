@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.MainImages.Commands.UpdateMainImageCommand;
@@ -8,13 +9,13 @@ namespace Rookie.WebApi.Controllers.MainImages
 {
     [Route("api/main-image")]
     [ApiController]
-    public class MainImageController : BaseApiController
+    public class MainImageController(IMediator mediator) : BaseApiController(mediator)
     {
         [HttpPut("UpdateMainImage")]
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> UpdateMainImage([FromForm] UpdateRequest request)
         {
-            var result = await Mediator.Send(new UpdateMainImageCommand { ProductId = request.ProductId, ImageId = request.ImageId });
+            var result = await _mediator.Send(new UpdateMainImageCommand { ProductId = request.ProductId, ImageId = request.ImageId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);

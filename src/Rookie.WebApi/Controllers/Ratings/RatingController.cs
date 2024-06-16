@@ -1,4 +1,5 @@
 using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rookie.Application.Ratings.Commands.CreateRatingCommand;
@@ -10,12 +11,12 @@ namespace Rookie.WebApi.Controllers.Ratings
 {
     [Route("api/rating")]
     [ApiController]
-    public class RatingController : BaseApiController
+    public class RatingController(IMediator mediator) : BaseApiController(mediator)
     {
         [HttpGet("GetAllRatings")]
         public async Task<IActionResult> GetAllRatings([FromQuery] GetListRequest request)
         {
-            var result = await Mediator.Send(new GetListQuery
+            var result = await _mediator.Send(new GetListQuery
             {
                 ProductId = request.ProductId,
                 RatingParams = request.RatingParams,
@@ -33,7 +34,7 @@ namespace Rookie.WebApi.Controllers.Ratings
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> CreateRating([FromForm] CreateRequest request)
         {
-            var result = await Mediator.Send(new CreateRatingCommand
+            var result = await _mediator.Send(new CreateRatingCommand
             {
                 UserName = User.Identity!.Name,
                 OrderItemId = request.OrderItemId,

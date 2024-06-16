@@ -15,12 +15,12 @@ namespace Rookie.WebApi.Controllers.Products
 {
     [Route("api/product")]
     [ApiController]
-    public class ProductController : BaseApiController
+    public class ProductController(IMediator mediator) : BaseApiController(mediator)
     {
         [HttpGet("GetAllProducts")]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductParams ProductParams)
         {
-            var result = await Mediator.Send(new GetListQuery { ProductParams = ProductParams });
+            var result = await _mediator.Send(new GetListQuery { ProductParams = ProductParams });
             if (result.IsSuccess)
             {
                 Response.Headers.Append("pagination", JsonSerializer.Serialize(result.Value.MetaData));
@@ -30,10 +30,10 @@ namespace Rookie.WebApi.Controllers.Products
                 return BadRequest(new { Error = result.Error.Message });
         }
 
-        [HttpGet("GetCategoryById")]
+        [HttpGet("GetProductById")]
         public async Task<IActionResult> GetProductById([FromQuery] GetByIdRequest request)
         {
-            var result = await Mediator.Send(new GetByIdQuery { ProductId = request.ProductId });
+            var result = await _mediator.Send(new GetByIdQuery { ProductId = request.ProductId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -45,7 +45,7 @@ namespace Rookie.WebApi.Controllers.Products
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> CreateProduct([FromForm] CreateRequest request)
         {
-            var result = await Mediator.Send(new CreateProductCommand
+            var result = await _mediator.Send(new CreateProductCommand
             {
                 Description = request.Description,
                 Price = request.Price,
@@ -65,7 +65,7 @@ namespace Rookie.WebApi.Controllers.Products
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> DeleteProductById([FromQuery] DeleteRequest request)
         {
-            var result = await Mediator.Send(new DeleteProductCommand { ProductId = request.ProductId });
+            var result = await _mediator.Send(new DeleteProductCommand { ProductId = request.ProductId });
 
             if (result.IsSuccess)
                 return Ok(result.Value);
@@ -77,7 +77,7 @@ namespace Rookie.WebApi.Controllers.Products
         [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> UpdateProductById([FromForm] UpdateRequest request)
         {
-            var result = await Mediator.Send(new UpdateProductCommand
+            var result = await _mediator.Send(new UpdateProductCommand
             {
                 CategoryId = request.CategoryId,
                 ProductName = request.ProductName,
