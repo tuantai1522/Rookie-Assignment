@@ -10,9 +10,10 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Common
     public class BaseController : Controller
     {
         protected readonly HttpClient _client;
-        protected BaseController()
+
+        public BaseController(HttpClient client)
         {
-            _client = new HttpClient();
+            _client = client;
             _client.BaseAddress = Utilities.BASE_ADDRESS;
         }
 

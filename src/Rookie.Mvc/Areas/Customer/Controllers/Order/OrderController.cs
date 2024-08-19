@@ -20,7 +20,7 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Order
     public class OrderController : BaseController
     {
         private readonly IVnPayService _vnPayService;
-        public OrderController(IVnPayService vnPayService)
+        public OrderController(HttpClient client, IVnPayService vnPayService) : base(client)
         {
             this._vnPayService = vnPayService;
         }

@@ -12,6 +12,10 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Info
     [Area("Customer")]
     public class InfoController : BaseController
     {
+        public InfoController(HttpClient client) : base(client)
+        {
+        }
+
         [HttpGet]
         public IActionResult Index()
         {

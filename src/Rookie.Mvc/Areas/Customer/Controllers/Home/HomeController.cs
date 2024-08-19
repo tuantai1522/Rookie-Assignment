@@ -1,47 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Rookie.Domain.Common;
-using Rookie.Mvc.Areas.Customer.Controllers.Common;
 using Rookie.Mvc.Areas.Customer.Models.Home;
+using Rookie.Mvc.Services.Customer.Interface;
 namespace Rookie.Mvc.Areas.Customer.Controllers.Home
 {
     [Area("Customer")]
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+
+        public HomeController(IProductService productService,
+                                ICategoryService categoryService)
+        {
+            _productService = productService;
+            _categoryService = categoryService;
+        }
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             //call products
-            List<ProductVm> productList = new List<ProductVm>();
-            HttpResponseMessage response1 = await _client.GetAsync(_client.BaseAddress + $"/product/GetAllProducts");
-
-            if (response1.IsSuccessStatusCode)
+            ListProductResponse response = await _productService.GetAllProductsAsync();
+            if (response.ProductVms != null)
             {
-                string data = await response1.Content.ReadAsStringAsync();
-                productList = JsonConvert.DeserializeObject<List<ProductVm>>(data);
-
-                //get info of pagination from current api
-                string paginationHeader = response1.Headers.GetValues("pagination").FirstOrDefault();
-                MetaData paginationData = JsonConvert.DeserializeObject<MetaData>(paginationHeader);
-                int curPage = paginationData.CurPage;
-                int totalPage = paginationData.TotalPage;
-                int pageSize = paginationData.PageSize;
-                ViewData["curPage"] = curPage;
-                ViewData["totalPage"] = totalPage;
-                ViewData["pageSize"] = pageSize;
+                ViewData["curPage"] = response.CurPage;
+                ViewData["totalPage"] = response.TotalPage;
+                ViewData["pageSize"] = response.PageSize;
             }
 
             //call categories
-            List<CategoryVm> categoryList = new List<CategoryVm>();
-            HttpResponseMessage response2 = await _client.GetAsync(_client.BaseAddress + "/category/GetAllCategories");
-            if (response2.IsSuccessStatusCode)
-            {
-                string data = await response2.Content.ReadAsStringAsync();
-                categoryList = JsonConvert.DeserializeObject<List<CategoryVm>>(data);
-            }
-            ViewData["categoryList"] = categoryList;
+            List<CategoryVm> categoryVms = await _categoryService.GetAllCategories();
+            if (categoryVms != null)
+                ViewData["categoryList"] = categoryVms;
 
-            return View(productList);
+            return View(response.ProductVms);
         }
 
         [HttpGet]
@@ -50,14 +42,8 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Home
             if (id == null)
                 return NotFound();
 
-            ProductVm product = new ProductVm();
-            HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"/product/GetCategoryById?ProductId={id}");
-            if (response.IsSuccessStatusCode)
-            {
-                string data = await response.Content.ReadAsStringAsync();
-                product = JsonConvert.DeserializeObject<ProductVm>(data);
-            }
-            else
+            ProductVm product = await _productService.GetProductById(id);
+            if (product == null)
                 return View();
 
             if (product == null)

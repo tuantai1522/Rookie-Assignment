@@ -11,6 +11,10 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Cart
     [Area("Customer")]
     public class CartController : BaseController
     {
+        public CartController(HttpClient client) : base(client)
+        {
+        }
+
         [HttpGet]
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> Index()

@@ -1,8 +1,6 @@
 using System.Net.Http.Headers;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Rookie.Mvc.Areas.Customer.Controllers.Common;
 using Rookie.Mvc.Areas.Customer.Models.Rating;
 
@@ -12,6 +10,10 @@ namespace Rookie.Mvc.Areas.Customer.Controllers.Rating
 
     public class RatingController : BaseController
     {
+        public RatingController(HttpClient client) : base(client)
+        {
+        }
+
         [HttpPost]
         [Authorize(Policy = "RequireCustomerRole")]
         public async Task<IActionResult> AddRating(CreateRequest data)

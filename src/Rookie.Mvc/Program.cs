@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
+using Rookie.Mvc.Extension;
 using Rookie.Mvc.Implementation;
 using Rookie.Mvc.Interface;
 
@@ -9,9 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-builder.Services.AddScoped<IVnPayService, VnPayService>();
-
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
@@ -61,9 +59,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
 });
 
-// Register the user service
-builder.Services.AddScoped<IClaimsService, ClaimsService>();
-builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddClient();
 
 //to config session
 builder.Services.AddDistributedMemoryCache();
@@ -73,6 +70,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
 
 var app = builder.Build();
 
